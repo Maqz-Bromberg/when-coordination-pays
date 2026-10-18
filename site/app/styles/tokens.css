@@ -5,6 +5,9 @@
   --mg: #3A4BA6; --nl: #2B7351; --ss: #A3621A; --tr: #7A3E7A;
   --hc: #1F7A85; --ext: #3A4BA6; --an: #A23B5A; --rail-w: 248px; --top-h: 52px;
   --ob: #B5462E; --hi: #2B7351; --di: #6F9BBF;
+  --noise-1: #E3AD48; --noise-2: #D17C2C; --noise-3: #AD4320; --noise-4: #741C14;
+  --size-1: #93BDE3; --size-2: #568ECB; --size-3: #2E5DA6; --size-4: #1A2D6B;
+  --kappa-1: #9FD0AD; --kappa-2: #5BAA77; --kappa-3: #2B7351; --kappa-4: #154532;
   --accent: #A3621A; --bg-elev: #E9EEEB; --glass: rgba(242,245,243,.82); --shadow: 0 10px 30px rgba(23,32,28,.12);
   --f-display: var(--font-display), "Avenir Next", "Segoe UI", sans-serif;
   --f-body: var(--font-serif), "Iowan Old Style", Georgia, serif;
@@ -16,7 +19,10 @@
     --mg: #9AA6EE; --nl: #6CC497; --ss: #E2A65C; --tr: #D69AD6; color-scheme: dark;
     --hc: #6CC8D2; --ext: #9AA6EE; --an: #E48AA4;
     --ob: #E07A62; --hi: #6CC497; --di: #8FB8DA;
-    --accent: #E2A65C; --bg-elev: #131917; --glass: rgba(15,20,18,.8); --shadow: 0 10px 30px rgba(0,0,0,.45);
+      --noise-1: #F3D48A; --noise-2: #EFA35A; --noise-3: #E6683F; --noise-4: #D9352B;
+    --size-1: #C8DDF4; --size-2: #8CB4E8; --size-3: #5C86D6; --size-4: #3F5BC0;
+    --kappa-1: #CDEFD7; --kappa-2: #8FD7A8; --kappa-3: #57B884; --kappa-4: #2F9363;
+  --accent: #E2A65C; --bg-elev: #131917; --glass: rgba(15,20,18,.8); --shadow: 0 10px 30px rgba(0,0,0,.45);
   }
 }
 :root[data-theme="dark"] {
@@ -24,5 +30,16 @@
   --mg: #9AA6EE; --nl: #6CC497; --ss: #E2A65C; --tr: #D69AD6; color-scheme: dark;
   --hc: #6CC8D2; --ext: #9AA6EE; --an: #E48AA4;
   --ob: #E07A62; --hi: #6CC497; --di: #8FB8DA;
+  --noise-1: #F3D48A; --noise-2: #EFA35A; --noise-3: #E6683F; --noise-4: #D9352B;
+  --size-1: #C8DDF4; --size-2: #8CB4E8; --size-3: #5C86D6; --size-4: #3F5BC0;
+  --kappa-1: #CDEFD7; --kappa-2: #8FD7A8; --kappa-3: #57B884; --kappa-4: #2F9363;
   --accent: #E2A65C; --bg-elev: #131917; --glass: rgba(15,20,18,.8); --shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+
+/* Sequential ramps for series along a continuous variable (noise ν, group size N, self-reinforcement κ):
+   read at runtime by lib/ramp.ts; lighter = less, deeper = more. */
+:root {
+  --ramp-noise: var(--noise-1), var(--noise-2), var(--noise-3), var(--noise-4);
+  --ramp-size: var(--size-1), var(--size-2), var(--size-3), var(--size-4);
+  --ramp-kappa: var(--kappa-1), var(--kappa-2), var(--kappa-3), var(--kappa-4);
 }

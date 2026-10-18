@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { rampColors, useThemeKey, type Ramp } from "../../lib/ramp";
 
 export type PathPoint = { v: number; T: number; F: number; O: number; n: number };
 export type PathGroup = {
@@ -28,6 +29,7 @@ type PlotlyLike = {
 export default function MorphPaths3D({ groups, initial, height = 560 }: { groups: PathGroup[]; initial: [string, string]; height?: number }) {
   const [sel, setSel] = useState<[string, string]>(initial);
   const refs = useRef<(HTMLDivElement | null)[]>([]);
+  const themeKey = useThemeKey();
   const camera = useRef<unknown>({ eye: { x: 2.1, y: 2.0, z: 1.15 }, center: { x: 0, y: 0, z: -0.08 } });
 
   useEffect(() => {
@@ -49,8 +51,11 @@ export default function MorphPaths3D({ groups, initial, height = 560 }: { groups
         const el = nodes[i];
         const g = groups.find((x) => x.id === id);
         if (!el || !g) return;
+        // lines along a continuous factor (κ, noise, group size) take that factor's ramp, light to deep
+        const ramp: Ramp | null = g.by.includes("ν") ? "noise" : g.by.includes("κ") ? "kappa" : g.by === "N" ? "size" : null;
+        const ramped = ramp ? rampColors(ramp, g.lines.length) : null;
         const traces = g.lines.map((ln, j) => {
-          const color = PALETTE[j % PALETTE.length];
+          const color = ramped ? ramped[j] : PALETTE[j % PALETTE.length];
           const k = ln.points.length;
           return {
             type: "scatter3d", mode: "lines+markers", name: ln.name,
@@ -95,7 +100,7 @@ export default function MorphPaths3D({ groups, initial, height = 560 }: { groups
       });
     });
     return () => { cancelled = true; };
-  }, [groups, sel, height]);
+  }, [groups, sel, height, themeKey]);
 
   useEffect(() => {
     const nodes = refs.current;

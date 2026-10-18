@@ -4,7 +4,7 @@ import PlotFigure from "../components/diagrams/PlotFigure";
 import { ScalingDiagram, WindowDiagram } from "../components/diagrams/SummaryDiagrams";
 import Figure from "../components/figure/Figure";
 import T from "../components/ui/T";
-import { AN, E8, e8bests, e8byN, e8frontier, e8overT, f2, N_COLORS, NU_COLORS, windowRows } from "../lib/data";
+import { AN, E8, e8bests, e8byN, e8frontier, e8overT, f2, windowRows } from "../lib/data";
 
 export const metadata = { title: "Size and noise" };
 
@@ -29,17 +29,17 @@ export default function Page() {
           <li>With the best commitment, coordination recovers 94–99% of the possible <T k="benefit">benefit</T> up to 50%
             false alarms, at every size. At 75% it recovers 67–75%.</li>
           <li><T k="cost">Structural cost</T> stays at 1.8–2.0 times that of evenly spread attention at every size. Benefit
-            per unit of cost therefore rises from 1.2 to 2.3 nats between 10 and 80 agents.</li>
+            per unit of cost therefore rises from 1.2 to 2.3 <T k="nat">nats</T> between 10 and 80 agents.</li>
           <li>Heavy noise lowers the cost (1.4–1.7×) because the group commits less. At 80 agents the return per unit of
             cost is unchanged.</li>
         </ul>
         <div className="fig-row">
           <Figure id="e8-benefit" title="Benefit at the best commitment" caption="As a share of the most possible, ln(N − 1).">
-            <PlotFigure spec={{ kind: "lines", logX: true, xTicks: E8.ns, data: e8byN("frac"), x: "N", y: "y", series: "nu", colors: NU_COLORS,
+            <PlotFigure spec={{ kind: "lines", logX: true, xTicks: E8.ns, data: e8byN("frac"), x: "N", y: "y", series: "nu", ramp: "noise",
               xLabel: "group size N", yLabel: "benefit / ln(N − 1)" }} />
           </Figure>
           <Figure id="e8-per-cost" title="Benefit per unit of cost" caption="Nats per unit of structural cost. Larger groups coordinate more cheaply per nat at every noise level.">
-            <PlotFigure spec={{ kind: "lines", logX: true, xTicks: E8.ns, data: e8byN("perCost"), x: "N", y: "y", series: "nu", colors: NU_COLORS,
+            <PlotFigure spec={{ kind: "lines", logX: true, xTicks: E8.ns, data: e8byN("perCost"), x: "N", y: "y", series: "nu", ramp: "noise",
               xLabel: "group size N", yLabel: "benefit / cost (nats)" }} />
           </Figure>
         </div>
@@ -54,7 +54,7 @@ export default function Page() {
         <div className="fig-row">
           {[10, 80].map((n) => (
             <Figure key={n} id={`e8-frontier-${n}`} title={`Cost against benefit, ${n} agents`} caption="One curve per noise level, over T > κ.">
-              <PlotFigure spec={{ kind: "lines", data: e8frontier(n), x: "cost", y: "frac", series: "nu", colors: NU_COLORS,
+              <PlotFigure spec={{ kind: "lines", data: e8frontier(n), x: "cost", y: "frac", series: "nu", ramp: "noise",
                 xLabel: `structural cost (${n} agents)`, yLabel: "benefit / ln(N − 1)" }} />
             </Figure>
           ))}
@@ -78,13 +78,13 @@ export default function Page() {
         <div className="fig-row">
           {[10, 80].map((n) => (
             <Figure key={n} id={`e8-tracking-${n}`} title={`Tracking against commitment, ${n} agents`} caption={`κ = ${E8.kappa}, T½ = ${f2(E8.tHalf(n))}. Near κ tracking survives noise up to ν = 0.5; toward T½ it falls early.`}>
-              <PlotFigure spec={{ kind: "lines", logX: true, xTicks: E8.temps, data: e8overT(n, "tracking"), x: "T", y: "y", series: "nu", colors: NU_COLORS,
+              <PlotFigure spec={{ kind: "lines", logX: true, xTicks: E8.temps, data: e8overT(n, "tracking"), x: "T", y: "y", series: "nu", ramp: "noise",
                 xLabel: `commitment T (${n} agents)`, yLabel: "tracking" }} />
             </Figure>
           ))}
         </div>
         <Figure id="window-fraction" title="Share of the window left" caption="Noise removes a similar fraction at every size: about 20% at ν = 0.25, half at 0.5 and 80% at 0.75.">
-          <PlotFigure spec={{ kind: "lines", data: windowRows(), x: "nu", y: "w", series: "src", colors: N_COLORS,
+          <PlotFigure spec={{ kind: "lines", data: windowRows(), x: "nu", y: "w", series: "src", ramp: "size",
             xLabel: "false alarms ν", yLabel: "usable window / (T½ − κ)" }} />
         </Figure>
         <Takeaway>At 80 agents and 50% false alarms, commitment must sit within about 0.09 of the lock-in edge. Large, noisy groups gain the most from coordinating and have the least room for error.</Takeaway>

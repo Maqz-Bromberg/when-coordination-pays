@@ -11,7 +11,9 @@ i})$ for a point mass on $s$. Uniform attention pays $\ln(N-1)$. The benefit is
 \begin{equation}
   B=\ln(N-1)-\Big\langle -\ln A_{s_t^{\mathrm{true}} i}\Big\rangle_{i\ne s,\,t},
 \end{equation}
-at most $\ln(N-1)$ and strongly negative for confident bets on the wrong agent. It is the Kelly regret of the attention
+at most $\ln(N-1)$ and strongly negative for confident bets on the wrong agent. Benefits and costs are measured in nats, the unit of information with natural logarithms
+($1$ nat $=1/\ln 2\approx1.44$ bits): putting the share $1/2$ on the right agent costs $0.69$ nats, and for 40 agents
+the most coordination can gain is $\ln 39\approx3.7$ nats per round. It is the Kelly regret of the attention
 bet and the quantity used by \citet{lee2024constructing}.
 
 \paragraph{Information cost and calibration.} The information cost

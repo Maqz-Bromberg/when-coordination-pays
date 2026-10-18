@@ -63,11 +63,13 @@
 .sm-zone-hi { fill: var(--hi); fill-opacity: .12; }
 .sm-zone-di { fill: var(--di); fill-opacity: .14; }
 .sm-line { fill: none; stroke-width: 2.2; }
-.sm-l0 { stroke: var(--hi); fill: var(--hi); } .sm-l1 { stroke: var(--ss); fill: var(--ss); } .sm-l2 { stroke: var(--ob); fill: var(--ob); }
+/* ν = 0, 0.5, 0.75 on the noise ramp */
+.sm-l0 { stroke: var(--noise-1); fill: var(--noise-1); } .sm-l1 { stroke: var(--noise-3); fill: var(--noise-3); } .sm-l2 { stroke: var(--noise-4); fill: var(--noise-4); }
 .sm-line.sm-l0, .sm-line.sm-l1, .sm-line.sm-l2 { fill: none; }
 .sm-dash { fill: none; stroke: var(--muted); stroke-dasharray: 4 4; }
-.sm-w0 { fill: var(--hi); fill-opacity: .22; } .sm-w1 { fill: var(--hi); fill-opacity: .45; }
-.sm-w2 { fill: var(--hi); fill-opacity: .7; } .sm-w3 { fill: var(--hi); fill-opacity: 1; }
+/* ν = 0 … 0.75 on the noise ramp */
+.sm-w0 { fill: var(--noise-1); } .sm-w1 { fill: var(--noise-2); }
+.sm-w2 { fill: var(--noise-3); } .sm-w3 { fill: var(--noise-4); }
 .sm-card-svg { width: 100%; height: auto; display: block; }
 .sm-griddot { fill: var(--muted); }
 .sm-layer .sm-griddot { fill: var(--rule); }

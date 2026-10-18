@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { withBase } from "../../lib/base";
 import { APPENDIX, CHAPTERS, chapterIndex, href } from "../../lib/chapters";
 import { isEnlargedOpen } from "../figure/lightbox-store";
+import GlossarySearch from "./GlossarySearch";
 import ThemeToggle from "./ThemeToggle";
 
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -67,7 +68,7 @@ export default function Chrome() {
         <Link href="/" className="brand">When coordination pays</Link>
         {i > 0 && <span className="crumb"><span className="rail-num">{pad(CHAPTERS[i].num)}</span> {CHAPTERS[i].title}</span>}
         <span className="topbar-gap" />
-        {i >= 0 && <span className="keyhint" aria-hidden>← → chapters</span>}
+        <GlossarySearch />
         <ThemeToggle />
       </header>
       <nav className="rail" aria-label="Contents"><RailLinks path={path} /></nav>

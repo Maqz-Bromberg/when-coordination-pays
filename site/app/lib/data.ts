@@ -14,8 +14,6 @@ import e9 from "@data/e9.json";
 export const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
 export const f2 = (x: number | null | undefined, d = 2) => (x === null || x === undefined || Number.isNaN(x) ? "–" : x.toFixed(d));
 
-export const NU_COLORS: Record<string, string> = { "ν = 0": "#2B7351", "ν = 0.25": "#7FA8C9", "ν = 0.5": "#A3621A", "ν = 0.75": "#B5462E" };
-export const N_COLORS: Record<string, string> = { "N = 10": "#B07CC6", "N = 20": "#7A3E7A", "N = 40": "#3A4BA6", "N = 80": "#5A6660" };
 export const REGIME_COLORS = { distributed: "#7FA8C9", hierarchy: "#2B7351", "over-betting": "#B5462E" };
 
 /* ---------------------------------------------------------------- E8 */
@@ -146,3 +144,11 @@ export const e3table = () => (e3.tau_Es as number[]).flatMap((tau) => Array.from
   .map((a) => { const s = (e3.rows as R3[]).filter((r) => r.a === a && r.tau_E === tau);
     return { tau, a, tenure: mean(s.map((r) => r.mean_tenure)), takeovers: mean(s.map((r) => r.n_takeovers)) }; }));
 export const PATH_GROUPS = paths.groups;
+
+/* ---------------------------------------------------------------- E5 final networks (hover previews) */
+import e5s from "@data/e5_structures.json";
+export type E5Structure = { kappa: number; T: number; source: number; links: number[][] };
+export const E5S = { n: e5s.n as number, minW: e5s.min_w as number };
+export const e5structures = (persistence: string): E5Structure[] =>
+  (e5s.cells as (E5Structure & { persistence: string })[]).filter((c) => c.persistence === persistence)
+    .map(({ kappa, T, source, links }) => ({ kappa, T, source, links }));

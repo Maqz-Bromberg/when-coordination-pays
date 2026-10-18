@@ -4,7 +4,7 @@ import PlotFigure from "../components/diagrams/PlotFigure";
 import { MechanismDiagram } from "../components/diagrams/SummaryDiagrams";
 import Figure from "../components/figure/Figure";
 import T from "../components/ui/T";
-import { A4, A4_COLORS, a4Series, AN, E8, e8overT, f2, NU_COLORS } from "../lib/data";
+import { A4, A4_COLORS, a4Series, AN, E8, e8overT, f2 } from "../lib/data";
 
 export const metadata = { title: "Why the hub survives noise" };
 
@@ -101,7 +101,7 @@ export default function Page() {
           form loops among the rivals.
         </p>
         <Figure id="e8-ff" title="Feedforwardness against commitment, 80 agents" caption="With a perfect signal F sits on the plateau through the window; noise lowers it even where tracking is still near 1.">
-          <PlotFigure spec={{ kind: "lines", logX: true, xTicks: E8.temps, data: e8overT(80, "F"), x: "T", y: "y", series: "nu", colors: NU_COLORS,
+          <PlotFigure spec={{ kind: "lines", logX: true, xTicks: E8.temps, data: e8overT(80, "F"), x: "T", y: "y", series: "nu", ramp: "noise",
             xLabel: "commitment T (80 agents)", yLabel: "feedforwardness F" }} />
         </Figure>
         <Takeaway>The loops that appear under noise are not a malfunction. They are how the group absorbs false alarms; equalize them away and the hub becomes fragile.</Takeaway>

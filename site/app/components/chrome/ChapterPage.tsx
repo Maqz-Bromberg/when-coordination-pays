@@ -7,7 +7,8 @@ const pad = (n: number) => String(n).padStart(2, "0");
 export default function ChapterPage({ slug, children }: { slug: string; children: React.ReactNode }) {
   const c = CHAPTERS.find((x) => x.slug === slug)!;
   return (
-    <main className="chapter">
+    // Figures are numbered "Figure <chapter>.<n>" by CSS counters (site.css), in page order.
+    <main className="chapter" data-chapter={c.num} style={{ counterReset: `fig 0 chap ${c.num}` }}>
       <header className="chapter-head">
         <div className="chapter-num" aria-hidden>{pad(c.num)}</div>
         <div>

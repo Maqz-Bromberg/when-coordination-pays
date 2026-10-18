@@ -34,8 +34,16 @@ export default function Figure({ title, caption, children, live = false, large, 
   wide?: boolean; id?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const outer = useRef<HTMLElement>(null);
+  /** "Figure 3.2: title", matching the CSS counter in the caption. */
+  const numbered = () => {
+    const fig = outer.current, main = fig?.closest("[data-chapter]");
+    if (!fig || !main) return title;
+    const n = Array.from(main.querySelectorAll("figure.fig")).indexOf(fig) + 1;
+    return `Figure ${main.getAttribute("data-chapter")}.${n}: ${title}`;
+  };
   const enlarge = () => {
-    if (live) { openEnlarged({ kind: "node", node: large ?? children, title }); return; }
+    if (live) { openEnlarged({ kind: "node", node: large ?? children, title: numbered() }); return; }
     const body = ref.current;
     if (!body) return;
     const svgs = body.querySelectorAll("svg");
@@ -44,18 +52,18 @@ export default function Figure({ title, caption, children, live = false, large, 
     if (!target) return;
     const r = target.getBoundingClientRect();
     const main = (target.tagName.toLowerCase() === "svg" ? target : target.querySelector("svg:last-of-type")) as SVGSVGElement | null;
-    openEnlarged({ kind: "markup", markup: target.outerHTML, w: r.width, h: r.height, title,
+    openEnlarged({ kind: "markup", markup: target.outerHTML, w: r.width, h: r.height, title: numbered(),
                    download: main ? standaloneSvg(main) : target.outerHTML });
   };
   return (
-    <figure className={wide ? "fig fig-wide" : "fig"} data-figure-id={id}>
+    <figure ref={outer} className={wide ? "fig fig-wide" : "fig"} data-figure-id={id}>
       <div className="fig-frame">
         <button type="button" className="fig-max" onClick={enlarge} aria-label={`Enlarge: ${title}`} title="Enlarge">
           <Maximize2 size={15} />
         </button>
         <div className="fig-content" ref={ref}>{children}</div>
       </div>
-      {caption && <figcaption><b>{title}.</b> {caption}</figcaption>}
+      <figcaption><span className="fig-n" /><b>{title}.</b>{caption && <> {caption}</>}</figcaption>
     </figure>
   );
 }

@@ -2,20 +2,36 @@
 
 import * as Plot from "@observablehq/plot";
 import { useEffect, useRef } from "react";
+import { naturalOrder, rampColors, useThemeKey, type Ramp } from "../../lib/ramp";
 
 type Row = Record<string, number | string>;
 
 /** Small set of chart kinds the result pages need; specs stay serializable so pages can be server components. */
 export type ChartSpec =
-  | { kind: "loglog"; data: Row[]; x: string; y: string; series: string; xLabel: string; yLabel: string; refSlope?: number }
+  | { kind: "loglog"; data: Row[]; x: string; y: string; series: string; xLabel: string; yLabel: string; refSlope?: number;
+      colors?: Record<string, string>; ramp?: Ramp }
   | { kind: "heatmap"; data: Row[]; x: string; y: string; fill: string; label: string; scheme?: string; domain?: [number, number] }
   | { kind: "lines"; data: Row[]; x: string; y: string; series: string; xLabel: string; yLabel: string; logX?: boolean;
-      xTicks?: number[]; colors?: Record<string, string> }
+      xTicks?: number[]; colors?: Record<string, string>; ramp?: Ramp }
   | { kind: "regimes"; data: Row[]; x: string; y: string; fill: string; colors: Record<string, string>; xLabel: string;
       yLabel: string; xTicks?: number[]; lines?: { data: Row[]; label: string; dash?: boolean; dy?: number }[] };
 
+/** Legend order and colours. Explicit colours keep their order; a ramp colours series along a continuous variable
+ *  (noise, group size, κ) from light to deep in the order of the number in their label; otherwise the theme's
+ *  categorical scheme, still in natural order ("N = 16" before "N = 128"). */
+function seriesColor(data: Row[], series: string, colors?: Record<string, string>, ramp?: Ramp) {
+  const labels = naturalOrder(Array.from(new Set(data.map((r) => String(r[series])))));
+  if (colors) {
+    const domain = [...Object.keys(colors).filter((k) => labels.includes(k)), ...labels.filter((l) => !(l in colors))];
+    return { legend: true, domain, range: domain.map((k) => colors[k] ?? "currentColor") };
+  }
+  if (ramp) return { legend: true, domain: labels, range: rampColors(ramp, labels.length) };
+  return { legend: true, domain: labels };
+}
+
 export default function PlotFigure({ spec, caption, wide = false }: { spec: ChartSpec; caption?: string; wide?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
+  const themeKey = useThemeKey();
   useEffect(() => {
     if (!ref.current) return;
     const width = Math.min(ref.current.clientWidth || 640, wide ? 1080 : 720);
@@ -25,7 +41,7 @@ export default function PlotFigure({ spec, caption, wide = false }: { spec: Char
       chart = Plot.plot({
         width, height: 340 * tall, grid: true,
         x: { type: "log", label: spec.xLabel }, y: { type: "log", label: spec.yLabel },
-        color: { legend: true },
+        color: seriesColor(spec.data, spec.series, spec.colors, spec.ramp),
         marks: [
           Plot.line(spec.data, { x: spec.x, y: spec.y, stroke: spec.series }),
           Plot.dot(spec.data, { x: spec.x, y: spec.y, fill: spec.series, r: 2.5 }),
@@ -37,9 +53,7 @@ export default function PlotFigure({ spec, caption, wide = false }: { spec: Char
         x: { type: spec.logX ? "log" : "linear", label: spec.xLabel, ticks: spec.xTicks,
              tickFormat: (d: number) => String(+d.toPrecision(3)) },
         y: { label: spec.yLabel },
-        color: spec.colors
-          ? { legend: true, domain: Object.keys(spec.colors), range: Object.values(spec.colors) }
-          : { legend: true },
+        color: seriesColor(spec.data, spec.series, spec.colors, spec.ramp),
         marks: [
           Plot.line(spec.data, { x: spec.x, y: spec.y, stroke: spec.series }),
           Plot.dot(spec.data, { x: spec.x, y: spec.y, fill: spec.series, r: 2.5, tip: true }),
@@ -73,7 +87,7 @@ export default function PlotFigure({ spec, caption, wide = false }: { spec: Char
     }
     ref.current.replaceChildren(chart);
     return () => chart.remove();
-  }, [spec, wide]);
+  }, [spec, wide, themeKey]);
   return (
     <div ref={ref} className="plot" aria-label={caption ? String(caption) : undefined} />
   );

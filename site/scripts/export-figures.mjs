@@ -36,7 +36,10 @@ for (const ch of CHAPTERS) {
     }
     const size = await page.evaluate((s) => {
       const node = document.querySelector(s);
-      const r = node.getBoundingClientRect();
+      node.querySelectorAll("[data-export-skip]").forEach((e) => e.remove()); // interactive side panels
+      node.querySelectorAll(".rm").forEach((e) => { e.style.display = "block"; });
+      const map = node.querySelector(".rm-map"); // a regime map without its panel: size to the map
+      const r = (map ?? node).getBoundingClientRect();
       const wrap = document.createElement("div");
       wrap.style.cssText = `width:${Math.ceil(r.width)}px;padding:6px;background:var(--surface);`;
       node.style.overflow = "visible";

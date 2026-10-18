@@ -1,11 +1,12 @@
 import Link from "next/link";
 import ChapterPage, { Details, Section, Takeaway } from "../components/chrome/ChapterPage";
 import PlotFigure from "../components/diagrams/PlotFigure";
+import RegimeMap from "../components/diagrams/RegimeMap";
 import { RegimeDiagram } from "../components/diagrams/SummaryDiagrams";
 import Figure from "../components/figure/Figure";
 import Cite from "../components/ui/Cite";
 import T from "../components/ui/T";
-import { AN, e2collapse, e5lines, e5regimes, f2, REGIME_COLORS } from "../lib/data";
+import { AN, E5S, e2collapse, e5lines, e5regimes, e5structures, f2, REGIME_COLORS } from "../lib/data";
 
 export const metadata = { title: "Three regimes" };
 
@@ -43,13 +44,15 @@ export default function Page() {
           The regime map runs the model over 14 commitments, four levels of self-reinforcement and five source
           schedules, from a source that never moves to one that moves every round (30 agents, 3000 rounds, three repeats
           each; <Link href="/appendix/e5/">E5</Link>). Each square is the majority regime. The solid line is T = κ and the
-          dashed line T½, both from the exact formulas below, not fitted.
+          dashed line T½, both from the exact formulas below, not fitted. Hover over or tap a square to see the network
+          that run built: a star around the source in the coordinated regime, a star around some other agent under
+          lock-in, an even web when attention is spread.
         </p>
         {PERS.map(([p, cap]) => (
           <Figure key={p} id={`e5-${p.replace(/\s/g, "")}`} wide title={`Regime map, ${p} source`} caption={cap}>
-            <PlotFigure wide spec={{ kind: "regimes", data: e5regimes(p), x: "T", y: "kappa", fill: "regime", colors: REGIME_COLORS,
-              xLabel: `commitment T (${p} source)`, yLabel: "κ", xTicks: TICKS,
-              lines: [{ data: tc, label: "T = κ", dy: -10 }, { data: th, label: "T½", dash: true, dy: 10 }] }} />
+            <RegimeMap cells={e5regimes(p)} nets={e5structures(p)} colors={REGIME_COLORS} xTicks={TICKS}
+              xLabel={`commitment T (${p} source)`} n={E5S.n} minW={E5S.minW}
+              lines={[{ data: tc, label: "T = κ", dy: -10 }, { data: th, label: "T½", dash: true, dy: 10 }]} />
           </Figure>
         ))}
         <p>
@@ -70,7 +73,7 @@ export default function Page() {
           source for every group size falls on one curve and crosses one half at the same point (<Link href="/appendix/e2/">E2</Link>).
         </p>
         <Figure id="e2-collapse" title="One curve for every group size" caption="Share of attention on a constant source against the rescaled temperature z = T_eff ln(N − 2)/ln ρ, with T_eff = (T − κ)/(1 − κ) and κ = 0. Every group size crosses one half at z = 1, as the formula predicts.">
-          <PlotFigure spec={{ kind: "lines", logX: true, data: e2collapse(), x: "z", y: "attention", series: "N",
+          <PlotFigure spec={{ kind: "lines", logX: true, data: e2collapse(), x: "z", y: "attention", series: "N", ramp: "size",
             xLabel: "z = T_eff · ln(N − 2) / ln ρ", yLabel: "share on the source" }} />
         </Figure>
         <Details title="In detail: why the reduction is exact (A1)">

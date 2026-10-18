@@ -29,7 +29,7 @@ export default function Page() {
           Think of each agent&apos;s attention as a bet on where the next piece of news will appear. When it appears at
           s, the agent is charged −ln(its share on s): the log score, or <T k="logloss">log-loss</T>. A bettor who
           spreads attention evenly pays ln(N − 1) every time. The <T k="benefit">benefit</T> of coordinating is how many
-          nats less than that the agent pays. It is at most ln(N − 1), for a bet entirely on the right agent, and it is
+          <T k="nat">nats</T> less than that the agent pays. It is at most ln(N − 1), for a bet entirely on the right agent, and it is
           strongly negative for a confident bet on the wrong one.
         </p>
         <Figure id="cost-benefit" wide title="Benefit and cost on a 7-agent example" caption="Top: one agent's attention over the six others (s = current source, o = the old source) and what each bet earns. Bottom: the same attention read as pipes (grey width = conductance) carrying a broadcast from s (coloured width = current). All numbers are computed for this example; the hub holds 0.85 of every other agent's attention.">

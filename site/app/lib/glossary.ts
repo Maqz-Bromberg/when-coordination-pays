@@ -132,6 +132,10 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     def: "Mean over nodes of −ln A[s, i] on the true source s: the Kelly price of the attention bet, i.e. KL(δ_s ‖ attention). Uniform attention scores ln(N − 1).",
     see: { label: "E1", href: "/results/#e1-optimal-reinforcement-memory-against-source-persistence" },
   },
+  nat: {
+    group: "ext", term: "nat (unit)",
+    def: "The unit of information when logarithms are natural: 1 nat = 1/ln 2 ≈ 1.44 bits. A bet that puts the share a on what happens costs −ln a nats; putting 1/2 on it costs 0.69 nats, putting 1/(N − 1) on it costs ln(N − 1). For 40 agents the most coordination can gain is ln 39 ≈ 3.7 nats (5.3 bits) per round.",
+  },
   benefit: { group: "ext", term: "Benefit", def: "ln(N − 1) − log-loss: nats gained over uniform attention. At most ln(N − 1); very negative when attention sits on stale nodes." },
   cost: {
     group: "ext", term: "Cost (dissipation)",
