@@ -91,7 +91,7 @@ class FlowNetwork:
 
     # ------------------------------------------------------------------ optimization and adaptation
 
-    def optimize(self, gamma, loads, C0=None, K=1.0, rng=None, iters=5000, tol=1e-10):
+    def optimize(self, gamma, loads, C0=None, K=1.0, rng=None, iters=30000, tol=1e-12):
         """Corson's fixed-point iteration for local minima of <P> at fixed sum C^gamma = K^gamma."""
         rng = np.random.default_rng() if rng is None else rng
         C = rng.uniform(0.5, 1.5, self.n_edges) if C0 is None else np.asarray(C0, float).copy()

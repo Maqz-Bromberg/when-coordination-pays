@@ -30,3 +30,9 @@ web/next-env.d.ts
 .vscode/
 .idea/
 .DS_Store
+web/.pyodide-expected.json
+
+# Python build output
+py/build/
+py/dist/
+*.whl

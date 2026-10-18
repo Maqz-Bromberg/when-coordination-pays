@@ -9,6 +9,11 @@ Checks that must pass before experiments are reported (PLAN.md §3). Each line n
 | — | Corominas-Murtra hierarchy coordinates: trees and stars give (1, 1, 1), inverted tree T = −1, cycle O = 0 | pass | `py/tests/test_hierarchy.py` |
 | B1 | Reward step is w ← (w + ε r)/(1 + ε); thesis code has ε = 1 | pass | `test_ss_model.py`, `tools/legacy_oracle` |
 | B5 | φ = 0, constant source: source attention ρ/(ρ + N − 2), contraction (1+κ)/2, in faithful and clean modes | pass | same |
+| B2 | The SS step W' = (W + εR)/(1+ε) is exactly a forward-Euler step of the logit flow dW/dt = R(W) − W with step ε/(1+ε) | pass (identity) | `test_continuum.py` |
+| B3 | Tempered fixed points are softmax(−ln D / T_eff), T_eff = (T − κ)/(1 − κ); equal to a 600-step simulation to 1e-9; the Sato–Crutchfield replicator with r = −ln D, β = (1−κ)/T, α = 1 − κ/T vanishes there | pass | same |
+| B5 | Symmetric large-δ closed forms: x* = u*/(u* + N − 2), u* = ρ^{(1−κ)/(T−κ)}; contraction (1 + εκ/T)/(1+ε); condensation for T < κ; T_½ = κ + (1−κ) ln ρ / ln(N−2) | pass | `test_large_delta.py` |
+| — | Large-δ distances D = δ − ln T_sj track the full RWED (to 1e-3) under proportional reward, and fail under selective cuts, where weights fall below e^{−δ} and two-hop paths set the distance | pass (limit documented) | same |
+| — | Pyodide (numpy 1.26) runs the nichenet wheel and matches CPython (numpy 2.5) to 4e-16 on an SS run and eigen D(β) | pass | `web/scripts/pyodide-smoke.mjs` |
 | — | JAX kernel equals numpy clean mode (7 configs incl. tempered selection, sparse graphs) | pass | `test_jax_kernel.py` |
 | V-NL0 | nichenet eigenfunction solver equals Lee et al.'s on 6 cases (passive, stabilizer, destabilizer; τ_E = 3–300; 5 values of β), rtol 1e-8 | pass | `py/tests/test_nl.py` |
 | V-NL1 | Fig. 2c–d: τ_m* ∼ τ_E^{1/2}, D* ∼ τ_E^{−1/2} | pass, see below | `python -m nichenet.experiments.v_nl1` → `data/site/v_nl1.json` |
@@ -30,51 +35,28 @@ Fit over 10 ≤ τ_E ≤ 10⁴ (13 values of τ_E from 1 to 10⁵, 40 Lobatto po
 | Agent | d ln τ_m*/d ln τ_E | d ln D*/d ln τ_E | local slopes at large τ_E |
 |-------|-----|-----|-----|
 | passive | 0.464 | −0.313 | τ_m*: 0.50, 0.50, 0.48; D*: −0.47, −0.48, −0.49 |
-| stabilizer (α = −0.95) | 0.520 | −0.477 | τ_m*: 0.50 for τ_E = 10²–10⁴, then 0.62, 0.30, 0.14 |
+| stabilizer (α = −0.95) | 0.520 | −0.477 | eigen: 0.50 for τ_E = 10²–10⁴, then 0.62, 0.30, 0.14 (unconverged); ABS: 0.49, 0.55, 0.48 up to 10⁵ |
 | destabilizer (α = +0.95) | 0.442 | −0.266 | τ_m*: 0.50, 0.50, 0.51; D*: −0.45, −0.47, −0.48 |
 
 - **The exponents approach ½ from below**, because small τ_E sits at the sensing-noise floor (D ≈ 1/(2τ_c)). Range-wide
   fits therefore understate the exponent. Report local slopes, or fit only τ_E ≥ 10³.
-- **Stabilizers above τ_E ≈ 10⁴ are not reliable yet.** A matched stabilizer switches with probability
-  (1 − 0.95)/τ_E, an effective time of about 2·10⁶ steps at τ_E = 10⁵. The iteration's stopping rule (per-step change
-  below 10⁻⁵, at most 1500 steps) can then stop before the density is stationary. The reference code behaves the same
-  way. To be checked with the agent-based simulation.
+- **Stabilizers above τ_E ≈ 10⁴: the eigen method stops early; the scaling holds.** A matched stabilizer switches with
+  probability (1 − 0.95)/τ_E, an effective time of about 2·10⁶ steps at τ_E = 10⁵. The eigen iteration's stopping
+  rule (per-step change below 10⁻⁵, at most 1500 steps) then stops before the density is stationary, in the reference
+  code as in nichenet. Agent-based simulation with run length 10⁴ τ_E (`python -m nichenet.experiments.v_nl1_abs`)
+  gives τ_m* = 11.2, 34.2, 71.2, 113.1 at τ_E = 10³, 10⁴, 3.8·10⁴, 10⁵ (local slopes 0.49, 0.55, 0.48), against
+  eigen values of 63.2 and 72.5 at the two largest τ_E. The τ_E^{1/2} law holds for stabilizers too; the flattening
+  in the eigen results is numerical.
+- **ABS and eigen agree** within 1% for passive agents and destabilizers at τ_E = 30 and 300, and within the sampling
+  error for stabilizers (`test_abs_matches_eigen`).
 
 ## Transport notes
 
 - **The update rule is sourced.** The fixed point C_e ∝ ⟨I_e²⟩^{1/(1+γ)} is Corson (2010) eq. 6. It is also the stationarity
   condition of Katifori et al. (2010) eqs. 1–5. Hu & Cai (2013) is not on arXiv, so the adaptation rule is taken from
   Ronellenfitsch & Katifori (2016) eq. 4, which generalizes it. Its 2g = 1 case is the linear-flux Physarum rule.
-- **Convergence is slow at moderate fluctuations.** For γ < 1 the iteration converges slowly as edges decay towards 0.
-  At σ = 1 the loop counts were not monotone after 3000 iterations (3, 0, 0–19 loops for γ = 0.5, 0.75, 0.9). This
-  needs more iterations or an acceleration before σ ≈ 1 results are reported. Tests use σ = 0 and σ = 3.
-
-## V-SS detail
-
-N = 60, 300 steps, 3 seeds, φ ∈ {0, 0.1, …, 1}, κ ∈ {0, 0.2, 0.4, 0.6, 0.8, 0.95}, faithful mode, plus clean mode on the
-sparse graphs. 990 runs in 42 s on 14 cores.
-
-- **Star formation.** Constant source, complete graph: at φ = 1, source attention is 1.00 (κ = 0), 0.97 (0.2),
-  0.48 (0.6) and 0.04 (0.95).
-- **Local gain, global cost.** The all-to-all effective distance rises by 4–13 for κ ≥ 0.2 and φ ≥ 0.5, matching the
-  thesis Fig. 5.2. At κ = 0 it falls instead (−0.01 to −0.30). This is quirk Q1: at κ = 0 faithful mode rewires to a
-  complete graph with self-loops.
-- **Sparse threshold.** k = 6, κ = 0.2: in faithful mode source attention stays at 0.058 for φ ≤ 0.8 and moves only
-  above φ = 0.9 = 1 − k/N. In clean mode it rises steadily from φ = 0.2 (0.061, 0.063, … 0.107).
-- **Weighted hierarchy coordinates read the backbone, not the attention.** With linear thresholds, every κ = 0
-  network gives T = F = O = 0.88, even at φ = 0 where the source holds only 4% of the attention. The top 7 of 8
-  thresholds keep only the source's edges, which form a perfect star; the lowest threshold gives a complete graph
-  scored 0. So high TFO does not by itself mean attention has condensed; report it alongside source attention.
-- **Lock-in criterion (note §6.4).** The prediction is that an edge stronger than the source edge keeps winning if
-  (w_max/w_s)^κ > ρ^{1−κ}. It gets the trend and the κ → 1 limit right but overestimates lock-in at intermediate κ:
-
-  | κ | measured | predicted from the initial weights | with actual relay distances |
-  |---|---|---|---|
-  | 0.2 | 0.04 | 0.06 | 0.05 |
-  | 0.4 | 0.17 | 0.27 | 0.26 |
-  | 0.6 | 0.39 | 0.56 | 0.53 |
-  | 0.8 | 0.73 | 0.86 | 0.85 |
-  | 0.95 | 0.98 | 0.98 | 0.98 |
-
-  The gap is not the spread of relay distances. It is the dynamics after the first step: as nodes desert the source,
-  the source's out-row changes, and with it every relay's value. The criterion is a one-step bound.
+- **Converged runs at moderate fluctuations are monotone.** At σ = 1 on an 8 × 8 lattice, four seeds give 3, then
+  10–12, then 18–20 loops for γ = 0.5, 0.75, 0.9 (up to 6000 iterations, tolerance 10⁻¹²). Earlier counts that
+  were not monotone came from runs stopped before converging (3000 iterations, tolerance 10⁻⁹). The defaults are now
+  30000 iterations and 10⁻¹². For γ < 1 the local minimum depends on the starting conductances, as Corson notes, which
+  accounts for the seed-to-seed spread of about ±1 loop.

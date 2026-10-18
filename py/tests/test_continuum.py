@@ -56,3 +56,17 @@ def test_symmetric_reduction_is_consistent_with_T_eff():
     """In the symmetric state u* = rho^(1/T_eff), the large-delta closed form."""
     kappa, T = 0.3, 0.8
     assert ld.u_star(kappa, T) == pytest.approx(2.6 ** (1 / dyn.T_eff(kappa, T)))
+
+
+def test_ema_conversions():
+    from nichenet.continuum import ema
+    assert ema.beta_of_eps(1.0) == pytest.approx(0.5)
+    assert ema.tau_m_of_eps(1.0) == pytest.approx(1 / np.log(2))
+    assert ema.tau_m_of_beta(ema.beta_of_eps(0.3)) == pytest.approx(ema.tau_m_of_eps(0.3))
+    assert ema.beta_eff(0.4) == pytest.approx(0.7)
+
+
+def test_one_relay_half_point():
+    from nichenet.continuum import one_relay
+    n, g = 60, 0.5
+    assert one_relay.x_star(n, g, one_relay.T_half(n, g)) == pytest.approx(0.5, abs=1e-9)

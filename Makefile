@@ -4,7 +4,7 @@ LEGACY = conda run --no-capture-output -n nvd-legacy
 LEE    = conda run --no-capture-output -n lee-ref
 export XLA_PYTHON_CLIENT_PREALLOCATE = false
 
-.PHONY: envs test test-slow test-legacy golden bench errata v-nl1 site serve
+.PHONY: envs test test-slow test-legacy test-pyodide golden bench errata v-nl1 wheel site serve
 
 envs:            ## create the three conda envs and install nichenet in editable mode
 	conda env create -f environment.yml
@@ -34,7 +34,16 @@ errata:          ## erratum H1/H2 effect on evolved networks -> data/site/errata
 v-nl1:           ## Lee et al. Fig. 2c-d reproduction -> data/site/v_nl1.json
 	nice -n 10 $(RUN) python -m nichenet.experiments.v_nl1
 
-site:            ## static site export -> web/out
+wheel:           ## pure-Python nichenet wheel for the browser -> web/public/py (+ manifest.json)
+	rm -rf web/public/py && mkdir -p web/public/py
+	$(RUN) pip wheel --no-deps -q -w web/public/py ./py
+	cd web/public/py && printf '{"wheel": "%s"}\n' "$$(ls *.whl)" > manifest.json
+
+test-pyodide: wheel  ## the wheel under Pyodide (Node) matches CPython
+	$(RUN) python web/scripts/pyodide_expected.py > web/.pyodide-expected.json
+	cd web && node scripts/pyodide-smoke.mjs .pyodide-expected.json
+
+site: wheel      ## static site export -> web/out
 	cd web && npm run build
 
 serve: site      ## serve the private build locally
