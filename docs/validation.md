@@ -17,11 +17,11 @@ Checks that must pass before experiments are reported (PLAN.md §3). Each line n
 | — | JAX kernel equals numpy clean mode (7 configs incl. tempered selection, sparse graphs) | pass | `test_jax_kernel.py` |
 | V-NL0 | nichenet eigenfunction solver equals Lee et al.'s on 6 cases (passive, stabilizer, destabilizer; τ_E = 3–300; 5 values of β), rtol 1e-8 | pass | `py/tests/test_nl.py` |
 | V-NL1 | Fig. 2c–d: τ_m* ∼ τ_E^{1/2}, D* ∼ τ_E^{−1/2} | pass, see below | `python -m nichenet.experiments.v_nl1` → `data/site/v_nl1.json` |
-| V-NL2 | Fig. 4 invasion graph | not started | |
+| V-NL2 | Fig. 4 invasion: monopolized niches (4b) reproduced; shared niche (4a) partly reproduced | partial, see below | `python -m nichenet.experiments.v_nl2 [eps]` → `data/site/v_nl2*.json` |
 | V-SS1 | Constant source, complete graph: star at φ = 1 for low κ (source attention 1.00 at κ = 0, 0.97 at 0.2), resisted by κ (0.48 at 0.6, 0.04 at 0.95); global effective distance rises with specialization | pass, see below | `python -m nichenet.experiments.v_ss` → `data/site/v_ss.json` |
 | V-SS2 | Sparse threshold φ > 1 − k/N exists in faithful mode and disappears in clean mode | pass (artifact confirmed) | same |
 | V-SS3 | κ = 0.95, φ = 1: 98% of nodes keep their initially strongest in-edge | pass | same |
-| V-SS4 | Smooth transition on complete graphs; observables scale with log N | not started | |
+| V-SS4 | Complete graphs: the transition sits at a fixed number of kept entries, (1 − φ)N ≈ 2.4–3, not at a fixed φ or log N | not reproduced as stated, see below | `python -m nichenet.experiments.v_ss4` → `data/site/v_ss4.json` |
 | V-TR1 | Linear-flux (Tero et al.) adaptation keeps the shortest of two routes and prunes the other | pass | `py/tests/test_transport.py` |
 | V-TR2 | Fluctuations create loops: Corson σ = 3 loops rise monotonically with γ (0.25 → 0.9); Katifori moving sink is looped where the steady load gives a tree | pass | same |
 | V-TR3 | Steady load: spanning trees for γ < 1 (several γ, seeds); γ > 1 keeps all edges | pass | same |
@@ -60,3 +60,42 @@ Fit over 10 ≤ τ_E ≤ 10⁴ (13 values of τ_E from 1 to 10⁵, 40 Lobatto po
   were not monotone came from runs stopped before converging (3000 iterations, tolerance 10⁻⁹). The defaults are now
   30000 iterations and 10⁻¹². For γ < 1 the local minimum depends on the starting conductances, as Corson notes, which
   accounts for the seed-to-seed spread of about ±1 loop.
+
+## V-NL2 detail (τ_E = 100, |α| = 0.95)
+
+Pure optima from the eigen solver: passive τ_m* = 0.85, D* = 3.46·10⁻⁴; stabilizer 3.42, 1.36·10⁻⁴;
+destabilizer 0.65, 3.94·10⁻⁴.
+
+**Monopolized niches (Fig. 4b), reproduced.** Each type sees only the environment it builds, so invasion compares
+pure optima. Stabilizers invade passive agents and destabilizers, nothing invades stabilizers, and passive agents
+invade destabilizers. A pure stabilizer population results, as in the paper.
+
+**Shared niche (Fig. 4a), partly reproduced.** The paper argues this case verbally. Here it is computed with a mean-field
+population: one representative agent per type, and a switching rate set by the fraction-weighted sum of the types'
+construction terms. That coupling is an extension of the paper. An invader at fraction ε best-responds over seven
+memories. Differences are D_invader − D_incumbent in the same run, averaged over 4 seeds (2·10⁷ steps each), ± 2 SE.
+
+| incumbent ← invader | ε = 0.01 | ε = 0.1 | paper |
+|---|---|---|---|
+| stabilizer ← passive | −1.4·10⁻⁶ ± 1.9·10⁻⁷ (τ_m 2.90): invades | −2.9·10⁻⁵ ± 3·10⁻⁷ (τ_m 2.39): invades | invades |
+| stabilizer ← destabilizer | −3.2·10⁻⁶ ± 2.3·10⁻⁷: invades | −8.6·10⁻⁵ ± 3·10⁻⁷ (τ_m 1.71): invades | invades |
+| stabilizer ← stabilizer | not detected | not detected | invades |
+| passive ← stabilizer | not detected (≈ 10⁻⁸ ± 1.4·10⁻⁷) | not detected | invades (ratchet) |
+| destabilizer ← any | not detected (≈ −1·10⁻⁷ ± 1.9·10⁻⁷) | not detected | invaded by P, S, weaker D |
+| passive ← passive | not detected | not detected | stable |
+
+- **Stabilizers are a public good.** A stabilizer invader with the same memory as a passive invader does worse
+  relative to a stabilizer incumbent (e.g. +3.6·10⁻⁷ against −1.4·10⁻⁶ at τ_m = 2.90, ε = 0.01, every seed). Its
+  stabilization slows the shared environment for the incumbent as well.
+- **Why stabilizers can't invade passive agents here.** With 1000 samples per step, every agent's estimate tracks the
+  shared environment closely. The slowdown a stabilizer causes when it matches therefore arrives when the passive agents
+  match too, so almost none of the benefit is private. The paper's argument has invaders exploit a shift in τ_E. That
+  assumes the slowdown is captured more by the stabilizer, which an explicit shared environment does not produce at
+  these parameters.
+
+## V-SS4 detail
+
+Faithful mode, constant source, κ = 0.2, N ∈ {15, 30, 60, 120}, 300 steps, 3 seeds. The φ at which source attention
+crosses ½ is 0.80, 0.90, 0.96 and 0.98. In every case the cut keeps (1 − φ)N ≈ 2.4–3 entries per column. The maximal
+change in all-to-all effective distance divided by ln N falls from 2.47 to 1.31, so it does not scale with ln N either.
+The transition is set by how many edges the rank cut keeps, which follows from ranking over all N entries.

@@ -40,3 +40,16 @@ def test_jax_matches_numpy_clean_mode():
             np.testing.assert_allclose(np.asarray(A_jax[j]), ref["A"], rtol=1e-9, atol=1e-12, err_msg=str(CONFIGS[i]))
             np.testing.assert_allclose(np.asarray(obs["source_attention"][j]), ref["source_attention"], rtol=1e-9)
             np.testing.assert_allclose(np.asarray(obs["mean_ed"][j]), ref["mean_ed"], rtol=1e-9)
+
+
+def test_true_source_observables_default_to_seeded_source():
+    rng = np.random.default_rng(3)
+    A0 = graphs.uniform_random(10, rng)
+    src = schedules.markov(30, 10, 5.0, rng)
+    args = (A0[None], graphs.edge_mask(A0)[None], src[None], np.array([0.2]), np.array([0.5]), np.array([1.0]),
+            np.array([1.0]))
+    _, obs = jax_kernel.run_batch(*args, record_every=5)
+    np.testing.assert_allclose(np.asarray(obs["true_ed_block"]), np.asarray(obs["mean_ed_block"]), rtol=1e-12)
+    noisy = schedules.noisy(src, 10, 0.5, rng)
+    _, obs2 = jax_kernel.run_batch(*args[:2], noisy[None], *args[3:], true_sources=src[None], record_every=5)
+    assert not np.allclose(np.asarray(obs2["true_ed_block"]), np.asarray(obs2["mean_ed_block"]))

@@ -62,3 +62,12 @@ def power_law(steps, n, a, rng):
     """
     idx = np.rint(rng.power(a, size=steps) * n).astype(np.int64) - 1
     return np.where(idx < 0, n - 1, idx)
+
+
+def noisy(true_sources, n, nu, rng):
+    """Noisy observations of a source schedule: each step the seeded node is the true source with probability
+    1 - nu and a uniformly random node otherwise. Not in the thesis; it gives the SS model the sensing noise of
+    Lee et al.'s agents (E1)."""
+    true_sources = np.asarray(true_sources)
+    flip = rng.random(true_sources.size) < nu
+    return np.where(flip, rng.integers(n, size=true_sources.size), true_sources)

@@ -1,10 +1,11 @@
 """V-NL2: pairwise invasion of pure P, S, D populations (Lee et al. 2024 Fig. 4), tau_E = 100.
 
-    conda run -n nichenet python -m nichenet.experiments.v_nl2
+    conda run -n nichenet python -m nichenet.experiments.v_nl2 [eps]     (default eps = 0.01)
 """
 
 import itertools
 import json
+import sys
 import time
 from pathlib import Path
 
@@ -15,8 +16,10 @@ from nichenet.nl import NLParams
 from nichenet.nl.abs import population_mean_kl
 from nichenet.nl.invasion import TYPES, pure_optimum
 
-OUT = Path(__file__).resolve().parents[3].parent / "data" / "site" / "v_nl2.json"
-TAU_E, EPS, T, SEEDS = 100.0, 0.01, 20_000_000, (0, 1, 2, 3)
+DATA = Path(__file__).resolve().parents[3].parent / "data" / "site"
+TAU_E, T, SEEDS = 100.0, 20_000_000, (0, 1, 2, 3)
+EPS = float(sys.argv[1]) if len(sys.argv) > 1 else 0.01
+OUT = DATA / ("v_nl2.json" if EPS == 0.01 else f"v_nl2_eps{EPS:g}.json")
 SCALES = (0.5, 0.7, 0.85, 1.0, 1.2, 1.4, 2.0)  # invader memory relative to the incumbent's optimal tau_m
 
 
@@ -41,7 +44,7 @@ def main(n_jobs=14):
         return x, y, sc, s, float(d[0]), float(d[1])
 
     raw = Parallel(n_jobs=n_jobs)(delayed(run)(*j) for j in jobs)
-    shared = {}
+    shared, all_scales = {}, {}
     for x, y in itertools.product(TYPES, TYPES):
         best = None
         for sc in SCALES:
@@ -52,11 +55,12 @@ def main(n_jobs=14):
                      "D_inv": float(np.mean([row[5] for row in r]))}
             if best is None or entry["diff"] < best["diff"]:
                 best = entry
+            all_scales.setdefault(f"{x}<-{y}", []).append(entry)
         best["invades"] = bool(best["diff"] + 2 * best["se"] < 0)
         shared[f"{x}<-{y}"] = best
     OUT.write_text(json.dumps({"tau_E": TAU_E, "eps": EPS, "T": T, "seeds": list(SEEDS),
                                "optima": {k: {"beta": b, "tau_m": tau_star[k], "D": d} for k, (b, d) in optima.items()},
-                               "monopolized": mono, "shared": shared}, indent=1))
+                               "monopolized": mono, "shared": shared, "shared_all_scales": all_scales}, indent=1))
     print(f"done in {time.time() - t0:.0f} s -> {OUT}")
     print("\nmonopolized (Fig. 4b): incumbent <- invader")
     for k, v in mono.items():

@@ -15,15 +15,23 @@ import numpy as np
 jax.config.update("jax_enable_x64", True)
 
 
-def _distances(A, s, delta, rho):
+def _fundamental(A, delta):
     n = A.shape[0]
     rs = A.sum(axis=1, keepdims=True)
     T = jnp.where(rs > 0, A / jnp.where(rs > 0, rs, 1.0), 0.0)
-    Z = jnp.linalg.inv(jnp.eye(n) - T * jnp.exp(-delta))
+    return jnp.linalg.inv(jnp.eye(n) - T * jnp.exp(-delta))
+
+
+def _row_distances(Z, s, rho):
+    n = Z.shape[0]
     zd = Z[s] / jnp.diagonal(Z)
     d = -jnp.log(jnp.where(zd == 0, 1e-100, zd))
     others_min = jnp.min(jnp.where(jnp.arange(n) == s, jnp.inf, d))
     return d.at[s].set(others_min / rho)
+
+
+def _distances(A, s, delta, rho):
+    return _row_distances(_fundamental(A, delta), s, rho)
 
 
 def _update(A, mask, X, kappa, phi, eps, temperature, tempered):
@@ -53,38 +61,55 @@ def _update(A, mask, X, kappa, phi, eps, temperature, tempered):
     return jnp.where(cs > 0, A / jnp.where(cs > 0, cs, 1.0), 0.0)
 
 
-def _run_one(A0, mask, sources, kappa, phi, eps, temperature, delta, rho, tempered, record_every):
+def _run_one(A0, mask, sources, true_sources, kappa, phi, eps, temperature, delta, rho, tempered, record_every):
     n = A0.shape[0]
 
-    def step(A, s):
-        d = _distances(A, s, delta, rho)
+    def step(A, st):
+        s, t = st
+        Z = _fundamental(A, delta)
+        d = _row_distances(Z, s, rho)
+        d_true = _row_distances(Z, t, rho)  # distances from the true (persistent) source, before the update
         A_new = _update(A, mask, d / d.sum(), kappa, phi, eps, temperature, tempered)
         attention = (A_new[s].sum() - A_new[s, s]) / (n - 1)
-        return A_new, (d.mean(), attention)
+        true_attention = (A_new[t].sum() - A_new[t, t]) / (n - 1)
+        others = jnp.arange(n) != t
+        # log-loss of attention on the true source (Kelly regret against always betting on it), before the update
+        logloss = jnp.sum(jnp.where(others, -jnp.log(jnp.maximum(A[t], 1e-300)), 0.0)) / (n - 1)
+        return A_new, (d.mean(), attention, d_true.mean(), true_attention, logloss)
 
     T = sources.shape[0]
     blocks = T // record_every
     src = sources[: blocks * record_every].reshape(blocks, record_every)
+    tru = true_sources[: blocks * record_every].reshape(blocks, record_every)
 
-    def block(A, s_block):
-        A, (ed, att) = jax.lax.scan(step, A, s_block)
-        return A, (ed[-1], att[-1], ed.mean(), att.mean())
+    def block(A, st_block):
+        A, (ed, att, ted, tatt, ll) = jax.lax.scan(step, A, st_block)
+        return A, (ed[-1], att[-1], ed.mean(), att.mean(), ted.mean(), tatt.mean(), ll.mean())
 
-    A, (ed_last, att_last, ed_mean, att_mean) = jax.lax.scan(block, A0, src)
+    A, (ed_last, att_last, ed_mean, att_mean, ted_mean, tatt_mean, ll_mean) = jax.lax.scan(block, A0, (src, tru))
     return A, {"mean_ed": ed_last, "source_attention": att_last,
-               "mean_ed_block": ed_mean, "source_attention_block": att_mean}
+               "mean_ed_block": ed_mean, "source_attention_block": att_mean,
+               "true_ed_block": ted_mean, "true_attention_block": tatt_mean, "true_logloss_block": ll_mean}
 
 
 @partial(jax.jit, static_argnames=("record_every", "tempered"))
-def run_batch(A0, mask, sources, kappa, phi, eps, temperature, delta=10.0, rho=2.6, *,
+def _run_batch(A0, mask, sources, true_sources, kappa, phi, eps, temperature, delta, rho, tempered, record_every):
+    fn = jax.vmap(_run_one, in_axes=(0, 0, 0, 0, 0, 0, 0, 0, None, None, None, None))
+    return fn(A0, mask, sources, true_sources, kappa, phi, eps, temperature, delta, rho, tempered, record_every)
+
+
+def run_batch(A0, mask, sources, kappa, phi, eps, temperature, delta=10.0, rho=2.6, *, true_sources=None,
               tempered=False, record_every=1):
     """Run B independent clean-mode simulations (update interval 1).
 
-    Shapes: A0, mask (B, n, n); sources (B, T); kappa, phi, eps, temperature (B,). Observables are recorded at the
-    end of every ``record_every`` steps (plus block means), so outputs have shape (B, T // record_every).
+    Shapes: A0, mask (B, n, n); sources (B, T); kappa, phi, eps, temperature (B,). ``true_sources`` (B, T) defaults
+    to ``sources``; when the seeded source is a noisy observation of a persistent one, the ``true_*`` observables
+    measure distance and attention relative to the true source. Observables are recorded per block of
+    ``record_every`` steps (last value and block mean), so outputs have shape (B, T // record_every).
     """
-    fn = jax.vmap(_run_one, in_axes=(0, 0, 0, 0, 0, 0, 0, None, None, None, None))
-    return fn(A0, mask, sources, kappa, phi, eps, temperature, delta, rho, tempered, record_every)
+    true_sources = sources if true_sources is None else true_sources
+    return _run_batch(A0, mask, sources, true_sources, kappa, phi, eps, temperature, delta, rho, tempered,
+                      record_every)
 
 
 def as_batch(values, B):
