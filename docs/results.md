@@ -90,3 +90,33 @@ several separate trees, a forest. That is a real outcome, and the loop count (E 
    broadcast sources rises at most about 4.5-fold over the uniform lattice. A global budget puts the tree transition
    exactly at Corson's p = 1/2 (γ = 1). At strong concentration it collapses onto a few edges, and averaged
    dissipation grows by many orders of magnitude.
+
+## E5: computed phase diagram
+
+**Question (note §5):** the note sketched three regimes of attention structure, distributed, hierarchy and
+over-betting, against source predictability and commitment. Do they exist, and where are the boundaries?
+
+**Setup:** clean mode, complete graph N = 30, tempered selection over T ∈ [0.05, 2] (14 values), κ ∈ {0, 0.2, 0.4,
+0.6}, ε = 1. Sources: constant, Markov with mean dwell 1000, 100 or 10 steps, or random every step. 3000 steps,
+3 seeds, GPU. Script: `python -m nichenet.experiments.e5`. Data: `data/site/e5.json`.
+
+The regime of a run is set by two quantities:
+
+- **commitment:** the mean over nodes of the largest in-weight in the final network;
+- **tracking:** attention on the current source, averaged over the second half of the run.
+
+A run is distributed if commitment is below ½, hierarchy if it is committed and tracking is at least half the
+commitment, and over-betting if it is committed but tracking falls short of that.
+
+**Results** (majority regime of three seeds):
+
+- **Constant source:** hierarchy below T½ and distributed above, for every κ. The boundary falls exactly at the B5
+  closed form T½ = κ + (1 − κ) ln ρ / ln(N − 2): 0.29, 0.43, 0.57 and 0.71 for κ = 0, 0.2, 0.4 and 0.6.
+- **Any moving source with κ > 0:** below T = κ the network over-bets. The symmetric state is unstable there (B5), so
+  attention condenses onto whichever node is ahead, and after the first switch that is a stale node. Between κ and T½
+  it forms a hierarchy that tracks the source, and above T½ attention is distributed. The hierarchy window has width
+  (1 − κ) ln ρ / ln(N − 2). It narrows as the source becomes less persistent and is gone under a random source.
+- **κ = 0 never over-bets,** because nothing locks in.
+
+The note's schematic has the right topology. Both of its boundaries are analytic: T = κ (commitment through
+self-reinforcement) and T½ (the source's advantage ρ against the number of alternatives).
