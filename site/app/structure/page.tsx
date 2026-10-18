@@ -97,12 +97,21 @@ export default function Page() {
           cube, and an experiment that changes one setting traces a path through it.
         </p>
         <Figure id="hc-primer" wide title="Reading hierarchy coordinates"
-          caption="Six small networks scored with the paper's definitions (this project's implementation) and where they sit in the cube. Arrows run from speaker to listener, the way news travels, so a hub on the source is a pyramid. Attention networks are weighted, so they are scored at 8 weight thresholds and averaged: a perfect hub reads 0.88, not 1 (chapter 2). As commitment is lost, runs slide down the diagonal (dashed), which is what the paths below show.">
+          caption={<>Six small networks scored with the definitions of Corominas-Murtra et al.{" "}
+            <Cite id="corominas2013originsheirarchy" /> (this project&apos;s implementation) and where they sit in the cube.
+            Arrows run from speaker to listener, the way news travels, so a hub on the source is a pyramid. Attention
+            networks are weighted, so they are scored at 8 weight thresholds and averaged: a perfect hub reads 0.88, not 1
+            (chapter 2). As commitment is lost, runs slide down the diagonal (dashed), which is what the paths below
+            show.</>}>
           <HierarchyPrimer />
         </Figure>
-        <Details wide title="How the original paper explains them, figure by figure">
+        <Details wide title="How Corominas-Murtra et al. (2013) explain them, figure by figure">
           <Figure id="hc-paper" wide title="Hierarchy coordinates in the original paper"
-            caption="The figures with which the measure was introduced, step by step: define the three axes, collapse loops, peel layers, count nodes outside loops, compute all three, then the cube and where real networks fall in it.">
+            caption={<>The figures with which Corominas-Murtra, Goñi, Solé and Rodríguez-Caso introduced the measure
+              <Cite id="corominas2013originsheirarchy" />, step by step: define the three axes, collapse loops, peel
+              layers, count nodes outside loops, compute all three, then the cube and where real networks fall in it.
+              Reproduced from the arXiv version (arXiv:1303.2503) of the article in PNAS 110:13316–13321, © 2013 National
+              Academy of Sciences, with credit on every slide.</>}>
             <HierarchyPaperFigures />
           </Figure>
         </Details>
