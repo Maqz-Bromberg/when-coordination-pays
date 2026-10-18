@@ -84,7 +84,8 @@ def main():
                                "persistence": [p for p, _ in PERSISTENCE], "theory": theory, "rows": rows}))
     print(f"done in {time.time() - t0:.0f} s -> {OUT}")
     for kind, _ in PERSISTENCE:
-        print(f"\n{kind}: regime by kappa (rows) and T (cols {TEMPS[0]}..{TEMPS[-1]}); D distributed, H hierarchy, O over-betting")
+        print(f"\n{kind}: regime by kappa (rows) and T (cols {TEMPS[0]}..{TEMPS[-1]}); "
+              "D distributed, H hierarchy, O over-betting")
         for k in KAPPAS:
             line = ""
             for T in TEMPS:

@@ -83,10 +83,10 @@ def main(n_jobs=14):
     t = np.array([s["tau_E"] for s in summary], float)
     ks = np.array([s["k_star"] for s in summary])
     sel = np.array([s["interior"] for s in summary])
-    slope = float(np.polyfit(np.log(t[sel]), np.log(ks[sel]), 1)[0]) if sel.sum() >= 3 else float("nan")
+    slope = float(np.polyfit(np.log(t[sel]), np.log(ks[sel]), 1)[0]) if sel.sum() >= 3 else None  # JSON has no NaN
     OUT.write_text(json.dumps({"mode": MODE, "n": N, "temperature": TEMP, "nu": NU, "windows": WINDOWS,
                                "rows": rows, "summary": summary, "slope_k": slope}))
-    print(f"d ln k* / d ln tau_E = {slope:.3f}  ({time.time() - t0:.0f} s) -> {OUT}")
+    print(f"d ln k* / d ln tau_E = {slope}  ({time.time() - t0:.0f} s) -> {OUT}")
 
 
 if __name__ == "__main__":
