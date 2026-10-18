@@ -1,0 +1,77 @@
+\section{The model}\label{sec:model}
+
+\subsection{Agents and attention}
+There are $N$ agents. The state of the group is an attention matrix $A$ in which $A_{ki}\ge 0$ is the share of agent
+$i$'s attention that goes to agent $k$; every column sums to one and $A_{ii}=0$. Read as a network, $A$ has a link
+$k\to i$ of strength $A_{ki}$: information that reaches $k$ travels on to those who listen to $k$. A group in which
+everyone listens mostly to one agent is a star with that agent as its hub; one in which everyone listens a little to
+everyone is a complete graph with thin links.
+
+\subsection{One round}
+Every round $t$, all agents update at once in four steps (\cref{fig:round}).
+
+\figw{round}{\linewidth}{One round of the model. Bars are one agent's view of the five agents it can listen to; $s$ is
+the one closest to the news. The same steps repeat every round, for every agent at once.}{round}
+
+\paragraph{1. News appears} at the seeded agent $s_t$: the true source with probability $1-\nu$, otherwise a uniformly
+random agent (a false alarm). Agents do not know which.
+
+\paragraph{2. Score the links.} Closeness to the news is the random-walk effective distance \citep{brockmann2013hidden}.
+Row-normalize the attention so that $P_{sk}=A_{sk}/\sum_j A_{sj}$ is the share of $s$'s audience made up by $k$, the
+probability that a walker carrying news from $s$ steps to $k$. With a cost $\delta$ per step,
+\begin{equation}
+  Z=(I-e^{-\delta}P)^{-1},\qquad D_{sk}=-\ln\frac{Z_{sk}}{Z_{kk}} .
+\end{equation}
+$D_{sk}$ is short when many likely walks lead from $s$ to $k$. For $\delta\gg 1$ (we use $\delta=10$) only the direct
+step counts, $D_{sk}\approx\delta-\ln P_{sk}$, a surprisal along the network. The source's own distance is set to the
+smallest relay distance divided by $\rho=2.6$, $D_{ss}=\min_{k\ne s}D_{sk}/\rho$, so first-hand news beats any relay. The
+info score of the link $k\to i$ combines closeness and existing strength:
+\begin{equation}
+  S_{ki}=D_{s_t k}^{\,\kappa-1}\,A_{ki}^{\,\kappa}.
+\end{equation}
+With self-reinforcement $\kappa>0$, strong links score more.
+
+\paragraph{3. Commit.} Scores become rewards by tempered selection,
+\begin{equation}
+  r_{ki}=\frac{S_{ki}^{1/T}}{\sum_j S_{ji}^{1/T}} .
+\end{equation}
+Low commitment temperature $T$ sends almost all reward to the best link; high $T$ spreads it. The original model used a
+hard cut (only the top fraction $1-\varphi$ of each agent's links is rewarded), which tempered selection contains as
+$T\to 0$.
+
+\paragraph{4. Blend with memory.}
+\begin{equation}
+  A_{ki}\leftarrow\frac{A_{ki}+\varepsilon\,r_{ki}}{1+\varepsilon},
+\end{equation}
+an exponential average of rewards with memory $\taum=1/\ln(1+\varepsilon)$; each column remains a distribution. One
+step is exactly a forward-Euler step of the logit flow $\dot A=R(A)-A$ with step $\varepsilon/(1+\varepsilon)$, and the
+fixed points are column softmaxes of $-\ln D$ at the effective temperature $\Teff=(T-\kappa)/(1-\kappa)$, the same family
+as the learning dynamics of \citet{sato2003coupled} (bridges B2, B3; \cref{app:derivations}).
+
+\subsection{The environment}
+The true source stays put for $\tauE$ rounds on average (each round it jumps to a uniformly random other agent with
+probability $1/\tauE$). Agents only see the seeded agent, which is a false alarm with probability $\nu$
+(\cref{fig:environment}). This is the switching, noisily observed environment of \citet{lee2024constructing}.
+
+\figw{environment}{\linewidth}{The environment over 72 rounds. Top: the true source, which stays put for $\tauE$ rounds
+on average. Bottom: where the news lands; outlined cells are false alarms (here $\nu\approx 0.3$).}{environment}
+
+\subsection{Parameters and implementation}
+\Cref{tab:params} lists the parameters. Simulations use a corrected (``clean'') version of the original code: rewards
+only on existing links, selection ranked over each agent's own candidates, consistent column normalization and a free
+$\varepsilon$. A ``faithful'' mode reproduces the original code step for step and was used to validate the
+reimplementation (\cref{app:validation}).
+
+\begin{table}[tbp]\centering\small
+\caption{Parameters.}\label{tab:params}
+\begin{tabular}{lll}\toprule
+parameter & meaning & values used\\\midrule
+$T$ & commitment (selection temperature); low $T$ bets hard & $0.05$--$2$\\
+$\kappa$ & self-reinforcement: strong links earn more & $0$--$0.6$; $0.2$ in the cost studies\\
+$\varepsilon$ & memory, $\taum=1/\ln(1+\varepsilon)$ & $1$ ($\taum\approx1.44$) unless varied\\
+$\rho$ & advantage of first-hand news over the best relay & $2.6$\\
+$\delta$ & cost per walk step in the effective distance & $10$\\
+$\nu$ & probability of a false alarm & $0$--$0.75$\\
+$\tauE$ & mean rounds between moves of the true source & $10$--$3000$; $300$ in the cost studies\\
+$N$ & number of agents & $10$--$80$\\\bottomrule
+\end{tabular}\end{table}

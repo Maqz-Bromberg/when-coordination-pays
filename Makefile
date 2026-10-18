@@ -4,7 +4,7 @@ LEGACY = conda run --no-capture-output -n nvd-legacy
 LEE    = conda run --no-capture-output -n lee-ref
 export XLA_PYTHON_CLIENT_PREALLOCATE = false
 
-.PHONY: envs test test-slow test-legacy test-pyodide golden bench errata v-nl1 wheel site serve
+.PHONY: envs test test-slow test-legacy test-pyodide golden bench errata v-nl1 wheel site serve public figures tables paper release serve-public
 
 envs:            ## create the three conda envs and install nichenet in editable mode
 	conda env create -f environment.yml
@@ -48,3 +48,29 @@ site: wheel      ## static site export -> web/out
 
 serve: site      ## serve the private build locally
 	$(RUN) python -m http.server -d web/out 8000
+
+# ---------------------------------------------------------------- public site and paper
+# The public site (site/) is a static export for GitHub Pages; the paper (paper/) takes its figures from that site and
+# its tables from data/site. CI does the same steps (.github/workflows/pages.yml).
+FIGPORT = 8766
+
+public:          ## public site static export -> site/out
+	cd site && npm run build
+
+figures: public  ## export every site figure as PDF -> paper/figures
+	$(RUN) python -m http.server -d site/out $(FIGPORT) >/dev/null 2>&1 & echo $$! > .figserver.pid; \
+	sleep 1; cd site && node scripts/export-figures.mjs http://127.0.0.1:$(FIGPORT)/ ../paper/figures; \
+	status=$$?; kill $$(cat ../.figserver.pid); rm -f ../.figserver.pid; exit $$status
+
+tables:          ## paper tables and glossary from data/site and the site glossary -> paper/generated
+	$(RUN) python paper/tables.py
+
+paper: tables    ## the consolidated paper -> paper/build/main.pdf (run `make figures` first after site changes)
+	cd paper && latexmk -interaction=nonstopmode -halt-on-error main.tex
+
+release: figures paper  ## site with the paper bundled -> site/out (what CI deploys)
+	cp paper/build/main.pdf site/out/paper.pdf
+	cp paper/build/main.pdf site/public/paper.pdf
+
+serve-public:    ## serve the public build locally
+	$(RUN) python -m http.server -d site/out 8001

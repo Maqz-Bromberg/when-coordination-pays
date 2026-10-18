@@ -1,0 +1,87 @@
+# Build the public site and the paper, and deploy both to GitHub Pages.
+# The site is exported once, served locally so the paper's figures can be printed from it, then the paper is built
+# and bundled into the site as /paper.pdf.
+name: Site and paper
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", "paper/**", "data/site/**", "docs/**", "references.bib", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: pages
+        uses: actions/configure-pages@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install site dependencies
+        working-directory: site
+        run: npm ci
+
+      - name: Build site
+        working-directory: site
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: npm run build && touch out/.nojekyll
+
+      - name: Export figures for the paper
+        working-directory: site
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: |
+          npx playwright install --with-deps chromium
+          # serve out/ under the base path the pages were built for
+          mkdir -p /tmp/srv"$BASE_PATH" && cp -r out/. /tmp/srv"$BASE_PATH"/
+          python3 -m http.server -d /tmp/srv 8766 >/dev/null 2>&1 &
+          sleep 1
+          node scripts/export-figures.mjs "http://127.0.0.1:8766$BASE_PATH/" ../paper/figures
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate tables
+        run: pip install numpy && python paper/tables.py
+
+      - name: Build paper
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          working_directory: paper
+          latexmk_use_lualatex: true
+
+      - name: Bundle paper
+        run: cp paper/build/main.pdf site/out/paper.pdf
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

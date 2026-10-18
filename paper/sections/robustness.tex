@@ -1,0 +1,66 @@
+\section{Why the hub survives noise}\label{sec:robustness}
+
+\subsection{The puzzle}
+Near the lock-in edge, tracking stays at 0.91--0.99 with up to 50\% false alarms at every size. A noisy mean field
+averages the reward on the source over the noise in the symmetric state (A4):
+\begin{equation}
+  \mathbb E[r](x)=\Big(1-\nu+\tfrac{\nu}{N}\Big)f(x)+\nu\,\tfrac{N-1}{N}\,g(x),
+\end{equation}
+where $f$ is the reward when the true source is seeded and $g$ when a rival is (the rival then carries the $\rho$
+advantage). The averaged map $x\mapsto(x+\varepsilon\mathbb E[r])/(1+\varepsilon)$ matches the simulation within 3\%
+for $T\ge0.45$ but falls far short near $\kappa$ (\cref{tab:meanfield}). Keeping the round-to-round fluctuations (a
+Jensen effect) and the relay effect closes part of the gap.
+
+\begin{table}[tbp]\centering\small
+\caption{Tracking: simulation (E8) against the averaged mean field, the fluctuating walk and the relay-aware walk.}\label{tab:meanfield}
+\input{generated/meanfield}
+\end{table}
+
+\subsection{Switching effects off one at a time}
+Every reduction keeps the symmetric state, in which all rivals of the source hold equal attention; the simulation does
+not. A $2\times2$ factorial removes that one difference: after every round, each agent's attention on its rivals is reset
+to their mean, leaving the share on the source unchanged. A second switch removes relays, by rewarding direct evidence
+instead of closeness (\cref{sec:learning}). Against these runs we place four reductions: the symmetric walk, the
+relay-aware walk, and a column walk that keeps one agent's full unequal column with the rest of the network symmetric
+(\cref{tab:a4,fig:a4}).
+
+\figw{mechanism}{\linewidth}{Why the hub keeps its place. Left: uneven rivals pull less in total
+(score $\propto w^{\kappa/T}$, concave). Middle: news from a false alarm passes through the hub. Right: tracking at
+$N=10$, $\nu=0.5$, $T=0.25$, removing one effect at a time.}{mechanism}
+
+\figpair{a4-10}{10 agents}{a4-80}{80 agents}{The A4 test at $\nu=0.5$: tracking against $T$ for each condition and
+reduction.}{a4}
+
+\begin{table}[tbp]\centering\small
+\caption{The A4 test at $T=0.25$. ``Equal'': rivals equalized every round. ``Competition'': total rival pull relative to
+equal rivals in the evidence column walk.}\label{tab:a4}
+\resizebox{\linewidth}{!}{\input{generated/a4}}
+\end{table}
+
+\paragraph{Results.}
+\begin{enumerate}
+  \item With rivals equalized, each simulation matches its reduction: within 0.03 at $N\ge20$, 0.06 at $N=10$.
+  \item Unequal rivals carry the whole excess near the edge: at $N=10$, $\nu=0.5$, $T=0.25$ tracking falls from $0.94$ to
+    $0.75$ when rivals are equalized; at $N=80$ from $0.94$ to $0.82$. Far from the edge nothing changes.
+  \item Relays amplify the effect: unequal rivals add $0.20$ with relays and $0.09$ without.
+\end{enumerate}
+
+\subsection{Mechanism: concavity}
+A link's pull grows like $w^{\kappa/T}$. Above the lock-in edge $\kappa/T<1$ and the pull is concave in weight. Each false
+alarm deposits extra attention on one random rival, which decays over the next few rounds; the leftover attention is
+therefore uneven, and uneven weight has less total pull than the same weight spread evenly. The competition factor
+$\sum_k w_k^{\kappa/T}/[(N-2)\bar w^{\kappa/T}]$ is 0.87--0.94 at $T=0.25$ and approaches one as $T$ grows --- exactly
+where the excess appears and disappears. A single unequal column recovers 40--100\% of the excess (typically two
+thirds); the remainder comes from relay distances, which also become unequal.
+
+\paragraph{Relays.} When a false alarm fires at $j$, closeness is measured from $j$. Everyone listens mostly to the hub,
+so the hub is the closest relay even to $j$'s news and keeps more reward than an ordinary rival would.
+
+\paragraph{The visible trace.} With noise, treeness holds at the plateau while feedforwardness falls (0.88 to
+0.57--0.78 at $T=0.25$): the short-lived side hubs form loops among the rivals (\cref{fig:ff}).
+
+\figw{e8-ff}{0.8\linewidth}{Feedforwardness against commitment, 80 agents. Noise lowers it even where tracking is still
+near one.}{ff}
+
+\takeaway{The loops that appear under noise are how the group absorbs false alarms; equalize them away and the hub
+becomes fragile.}

@@ -1,0 +1,49 @@
+\section{Learning through others against learning alone}\label{sec:learning}
+
+So far each agent rewards a link for its \emph{position}: closeness to the news, counting paths through others. The
+alternative rewards direct \emph{evidence}: the likelihood of the observation if the sender were the source. Experiment
+E9 keeps the explicit factor $A^\kappa$ and replaces the distance factor by $\lambda^{1-\kappa}$ for the seeded agent and
+1 for everyone else,
+\begin{equation}
+  S^{\mathrm{ev}}_{ki}=\lambda_k^{1-\kappa}A_{ki}^\kappa,\qquad \lambda_k=\begin{cases}\lambda & k=s_t\\ 1&\text{otherwise,}\end{cases}
+\end{equation}
+a Kelly or multiplicative-weights reward. With $\lambda=\rho$ the two rules are identical in the symmetric state (A1), so
+any difference comes from relays. A second variant uses the likelihood ratio of the true noise model,
+$\lambda^*=1+N(1-\nu)/\nu$. As a bound, an ideal statistician runs the exact forward (Bayes) filter over the source,
+knowing $\nu$ and $\tauE$. Grid, seeds and environments are those of E8 (\cref{fig:rules,tab:e9}).
+
+\figw{rules}{\linewidth}{Position against evidence after a false alarm (highlighted ring: who gets the credit), and benefit
+at the best commitment for 80 agents.}{rules}
+
+\figpair{e9-benefit-10}{10 agents}{e9-benefit-80}{80 agents}{Benefit against noise at the best commitment, as a share of
+$\ln(N-1)$.}{e9}
+
+\paragraph{Position wins under noise.} At $\nu=0.5$, position recovers 94--98\% of the possible benefit and evidence
+86--91\%; tracking is 0.91--0.95 against 0.72--0.79. At $\nu=0.25$ they are within one point, and without noise
+identical. Position comes within 1--3\% of the ideal statistician up to $\nu=0.5$. Structural cost is set by the structure,
+not the rule: the ideal statistician builds the same hub at the same 1.8--2.0.
+
+\paragraph{Tuning evidence to the noise backfires} (76--82\% at $\nu=0.5$). The update averages rewards; it does not
+multiply beliefs as Bayes' rule does. A sharper likelihood therefore does not accumulate evidence; it makes every round
+copy the latest signal.
+
+\paragraph{Memory is where the ideal pulls ahead.} At $\nu=0.75$ position recovers 67--75\% against 90--97\% for the
+statistician. With $\varepsilon=1$ the group averages over about 1.4 rounds; the statistician uses every signal since the
+source last moved. The calibration gap (\cref{fig:calibration}) is near zero for the statistician and for the model's
+rules at their best $T$, and about $-690$ nats below $\kappa$ (over-betting).
+
+\figpair{e9-tracking}{Tracking, $N=40$, $\nu=0.5$.}{e9-calibration}{Calibration gap $B-I$, $N=40$, $\nu=0.5$.}{Reward rules
+against commitment.}{calibration}
+
+\begin{table}[tbp]\centering\small
+\caption{Each reward rule at its best commitment (E9).}\label{tab:e9}
+\input{generated/e9}
+\end{table}
+
+\paragraph{What each rule stands for.} Position rewards being close to where news appears, directly or through others:
+routing and social learning, as in citation, rumour or supply networks, with collective error correction through relays.
+Evidence rewards the observation's likelihood: individual inference, as by Kelly bettors, experts' weights or Bayesian
+learners, and as by the agents of \citet{lee2024constructing}.
+
+\takeaway{Learning through intermediaries is cheap error correction when memory is short; where memory can be long,
+careful individual inference is the benchmark.}

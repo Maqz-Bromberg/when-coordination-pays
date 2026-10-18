@@ -1,0 +1,49 @@
+\section{Memory, pace and payment}\label{sec:memory}
+
+\subsection{Memory should grow with the pace of change}
+A learner in a changing world trades responsiveness against noise: a short memory follows changes but is thrown about by
+noise; a long memory averages noise out but lags behind changes. For a single learner the optimal memory grows like
+$\tauE^{1/2}$ \citep{lee2024constructing}. The attention network has two candidate memories: the blending weight
+$\varepsilon$, with $\taum=1/\ln(1+\varepsilon)$, and self-reinforcement $\kappa$, which also makes the past persist. With a
+perfect signal the shortest memory always wins, so E1 adds $\nu=0.5$ and scores runs by log-loss on the true source
+(30 agents, $T=0.3$, 15 memories, six paces, four repeats). With $\varepsilon$ as the memory, $\taum^*\propto\tauE^{0.43}$,
+approaching $1/2$ from below; with $\kappa$ it barely moves (\cref{fig:e1,tab:e1}). Self-reinforcement is a commitment
+knob, not a memory --- which is why it sets the lock-in edge.
+
+\figw{e1}{0.8\linewidth}{Best memory against the pace of change (E1), logarithmic axes.}{e1}
+
+\begin{table}[tbp]\centering\small\caption{E1: optimal memory per pace.}\label{tab:e1}\input{generated/e1}\end{table}
+
+\subsection{When memory sets the pace}
+In niche-learning models agents can also change their environment: stabilizers slow the switching they track,
+destabilizers speed it up \citep{lee2024constructing}. If a population's memory sets how fast its own world changes,
+does the optimal memory settle, cycle or drift? E4 uses the binary environment of \citet{lee2024constructing} with a
+mean-field population: for each resident memory, rare invaders of every other memory are tested, and the best response
+is iterated (\cref{fig:e4,tab:e4}). In every case iteration converges to a stable memory from both ends, with no cycles or
+drift. At that point the memory equals a passive agent's optimum for the environment the population creates, so the
+square-root scaling closes on itself. Stabilizers slow their world 15--18-fold. The stable memory is shorter than the one
+best for the group (10.7 against about 14 at $\tauE=1000$): shorter-memory invaders free-ride on the calm residents
+provide, a quantitative version of the commons argument of \citet{lee2024constructing}.
+
+\figw{e4}{0.8\linewidth}{Best response against the residents' memory, $\tauE=1000$ (E4). Crossings of the dashed identity
+are self-consistent memories; all are stable.}{e4}
+
+\begin{table}[tbp]\centering\small\caption{E4: self-consistent memories.}\label{tab:e4}\input{generated/e4}\end{table}
+
+\subsection{Pooling signals}
+The original code could pool several rounds of news before each update by summing distances; this never helps, because
+the source's advantage is the $\rho$ contrast, which summing dilutes. Averaging rewards over a window of $k$ signals does
+help: it acts as a sampling window whose optimum grows like $\tauE^{0.42}$, close to the memory scaling (E7,
+\cref{fig:e7}).
+
+\figw{e7}{0.8\linewidth}{Log-loss against the pooling window at $\tauE=300$ (E7).}{e7}
+
+\subsection{Paying for attention does not entrench hubs}
+If being listened to pays, do hubs use it to stay hubs, as monopoly arguments suggest? In E3 agents earn in proportion to
+the attention they relay, and each epoch the worst earner copies the best earner's $\kappa$. Hubs do not entrench: they
+change every one or two epochs with or without payment; with a slow source, payment if anything shortens their tenure
+(\cref{tab:e3}). The same holds when the next source is drawn in proportion to relayed attention, and on sparse graphs.
+Unlike a stabilizer, a hub cannot make itself more reliable by holding attention: nothing in the model lets it change the
+source's pace.
+
+\begin{table}[tbp]\centering\small\caption{E3: hub tenure and takeovers over 150 epochs.}\label{tab:e3}\input{generated/e3}\end{table}

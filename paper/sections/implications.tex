@@ -1,0 +1,32 @@
+\section{Implications and limits}\label{sec:implications}
+
+The model is abstract, and speaks to any group that must decide whom to listen to while the source of useful information
+moves: teams and organizations, communities of experts, sensor and communication networks, animal groups. The following
+are implications of the model; how far they carry to any real system is untested.
+
+\begin{enumerate}
+  \item \textbf{Set commitment relative to self-reinforcement, not relative to the signal.} The safe setting is just above
+    the lock-in edge. Below it early advantage decides the leader whatever the evidence; the remedies are lowering
+    self-reinforcement or occasionally resetting attention, not better signals.
+  \item \textbf{Larger groups gain more per unit of structure but have less room for error}: coordination has increasing
+    returns to size, and the tolerance for miscalibrated commitment shrinks like $1/\ln N$.
+  \item \textbf{Against noisy signals, invest in signal quality or memory rather than structure.} Noise does not raise the
+    cost of the hub; it lowers what the hub delivers and narrows the safe range.
+  \item \textbf{Judge coordination by function, not shape.} A clear hub looks the same whether it is current or stale;
+    tracking and the calibration gap tell them apart.
+  \item \textbf{Side loops under noise are part of how the system copes}; removing them makes the hub more fragile.
+  \item \textbf{Learning through intermediaries is cheap error correction when memory is short}; with long memory,
+    careful individual inference is the benchmark.
+  \item \textbf{Memory and pace co-adapt with a free-rider problem}: the stable memory is shorter than the group optimum.
+\end{enumerate}
+
+\paragraph{Limits.} Agents can listen to everyone (complete graphs) except in E6. The cost and noise studies fix
+$\kappa=0.2$ and a fast memory ($\varepsilon=1$), and have not been repeated across $\kappa$. Groups have at most 80 agents
+with 2--4 repeats per setting; effects reported are large compared with the spread between repeats, but differences of a
+few percent are not resolved. Agents follow fixed rules. The structural cost is a proxy from transport networks, not
+something the agents pay.
+
+\paragraph{Open questions.} How much noise robustness survives on sparse graphs, where relays matter more? Would groups find
+the narrow window by themselves if commitment and memory could evolve together? A model in which agents pay the
+structural cost would close the loop between attention and transport. A two-class reduction (source, recent rivals, the
+rest) should capture the remaining part of the noise robustness analytically.

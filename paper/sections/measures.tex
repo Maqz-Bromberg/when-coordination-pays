@@ -1,0 +1,50 @@
+\section{Measuring coordination}\label{sec:measures}
+
+\paragraph{Tracking and commitment.} Tracking is the mean share of attention the other agents put on the current true
+source, averaged over the second half of a run: $1$ when everyone listens only to the source, $1/(N-1)$ when attention
+is spread evenly. Commitment is the mean over agents of their largest single share, whoever it goes to. High commitment
+with low tracking is the signature of confident betting on the wrong agent.
+
+\paragraph{Benefit: attention as a bet.} Each agent's attention column is a bet on where the next news will appear.
+When it appears at $s$, agent $i$ is charged the log score $-\ln A_{si}$; this log-loss is $\mathrm{KL}(\delta_s\,\|\,A_{\cdot
+i})$ for a point mass on $s$. Uniform attention pays $\ln(N-1)$. The benefit is
+\begin{equation}
+  B=\ln(N-1)-\Big\langle -\ln A_{s_t^{\mathrm{true}} i}\Big\rangle_{i\ne s,\,t},
+\end{equation}
+at most $\ln(N-1)$ and strongly negative for confident bets on the wrong agent. It is the Kelly regret of the attention
+bet and the quantity used by \citet{lee2024constructing}.
+
+\paragraph{Information cost and calibration.} The information cost
+$I=\langle\mathrm{KL}(A_{\cdot i}\,\|\,\mathrm{uniform})\rangle_i=\ln(N-1)-\langle H(A_{\cdot i})\rangle$ measures how much
+an agent committed, not whether it was right: in the example of \cref{fig:cost-benefit} the right and the wrong bet both
+cost $1.13$ nats. For a calibrated bettor the expected log-loss equals the entropy, so the calibration gap $B-I$ is near
+zero; confident and wrong drives it far below zero.
+
+\paragraph{Structural cost: attention as pipes.} Read the mutual attention $C_{ij}=(A_{ij}+A_{ji})/2$, scaled to sum to
+one, as conductances. When news appears at $s$ it must reach everyone: inject one unit at $s$, withdraw $1/(N-1)$ at
+every other agent, and let Kirchhoff's laws decide the currents $I_e$. The broadcast dissipation $\sum_e I_e^2/C_e$,
+averaged over sources and divided by the same quantity for uniform attention, is the structural cost: $1$ for no
+structure, about $2$ for a strong hub. A hub makes news from the hub cheap (spokes in parallel) but news from anyone else
+expensive, since it must squeeze through one spoke. The measure is borrowed from adaptive transport networks, where it is
+the quantity being minimized \citep{corson2010fluctuations}; the attention model never pays it, and we use it to price
+what the model builds.
+
+\figw{cost-benefit}{\linewidth}{Benefit and structural cost on a 7-agent example. Top: one agent's attention over the
+other six ($s$ current source, $o$ old source) and what each bet earns. Bottom: the attention read as pipes (grey width
+= conductance) carrying a broadcast from $s$ (coloured width = current). The hub holds $0.85$ of every other agent's
+attention.}{cost-benefit}
+
+\paragraph{Why not distance.} The original model judged networks by mean walk distance. Distance from $s$ depends on how
+$s$'s audience is split, not on how much each listener gives to $s$: a network where everyone listens only to $s$ and one
+where everyone listens a little to everyone have the same mean distance from $s$ (13.09 for every setting in E1). The
+all-pairs version behaves erratically under noise (2.4, 6.0, 1.9 and 0.1 for $\nu=0$ to $0.75$ at $N=10$). Log-loss sees
+concentration and is used throughout.
+
+\paragraph{Shape: hierarchy coordinates.} Treeness $T_h\in[-1,1]$ (do paths converge on few top nodes?),
+feedforwardness $F\in[0,1]$ (how much path weight avoids cycles?) and orderability $O\in[0,1]$ (how many nodes lie
+outside cycles?) place a network in the hierarchy morphospace \citep{corominas2013originsheirarchy}. Weighted networks
+are thresholded at 8 levels and the coordinates averaged, so a perfect star reads $7/8=0.88$. We compute treeness with
+matrix powers in the path counts (eq.~14 of the original), correcting two errors in the code used by the 2020 thesis
+(\cref{app:errata}). \Cref{fig:shapes} shows typical values.
+
+\figw{shapes}{\linewidth}{Three shapes and their hierarchy coordinates (typical runs).}{shapes}

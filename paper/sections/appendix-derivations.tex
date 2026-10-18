@@ -1,0 +1,47 @@
+\section{Derivations}\label{app:derivations}
+
+\paragraph{B2: the update as an Euler step.} Writing $R(A)$ for the reward matrix, $A'=(A+\varepsilon R)/(1+\varepsilon)
+=A+\frac{\varepsilon}{1+\varepsilon}(R(A)-A)$, a forward-Euler step of $\dot A=R(A)-A$ with step
+$\varepsilon/(1+\varepsilon)$.
+
+\paragraph{B3: fixed points.} At a fixed point $A=R(A)$, i.e.\ $A_{ki}\propto(D_k^{\kappa-1}A_{ki}^\kappa)^{1/T}$. Taking
+logarithms, $(1-\kappa/T)\ln A_{ki}=-\frac{1-\kappa}{T}\ln D_k+c_i$, so $A_{\cdot i}=\mathrm{softmax}(-\ln D/\Teff)$ with
+$\Teff=(T-\kappa)/(1-\kappa)$. This is the rest point of the Sato--Crutchfield replicator with reward $-\ln D$
+\citep{sato2003coupled}; a 600-step simulation reaches it to $10^{-9}$.
+
+\paragraph{A1: exact symmetric reduction.} With a constant source $s$ on a complete graph and the symmetric state (every
+$i\ne s$ puts $x$ on $s$ and $p=(1-x)/(N-2)$ on each other agent; $s$ spreads its attention evenly), row $s$ of $P$ is
+uniform over $k\ne s$. The permutations of $\{1,\dots,N\}\setminus\{s\}$ map the state to itself, so $D_{sk}=D$ for all
+$k\ne s$ at any $\delta$, and $D_{ss}=D/\rho$. The reward ratio of source to peer is
+$\big[(D/\rho)^{\kappa-1}x^\kappa/(D^{\kappa-1}p^\kappa)\big]^{1/T}=(\rho^{1-\kappa}u^\kappa)^{1/T}$, independent of $D$.
+The reduced map is $x\mapsto\big(x+\varepsilon\,a/(a+(N-2)b)\big)/(1+\varepsilon)$ with $a=(\rho^{1-\kappa}x^\kappa)^{1/T}$,
+$b=(p^\kappa)^{1/T}$; its fixed point is $u^*=\rho^{(1-\kappa)/(T-\kappa)}$ and its slope there
+$(1+\varepsilon\kappa/T)/(1+\varepsilon)$. Setting $x^*=1/2$ gives $u^*=N-2$ and hence $\Thalf$.
+
+\paragraph{A2: stability through the kink.} Because $D_{ss}=\min_kD_{sk}/\rho$ and all $D_{sk}$ tie at the symmetric
+state, the map is piecewise smooth with $N-1$ pieces, each anchored at a relay $k^*$ attaining the minimum; all have the
+same spectrum by symmetry. We linearize the piece anchored at relay 1 in the tangent space of the per-agent budgets
+($N(N-2)$ directions) by central finite differences scaled to the smallest weight. The collective mode contracts at
+exactly $(1+\varepsilon\kappa/T)/(1+\varepsilon)$; most modes sit on this bulk value and a relay group lies 0.01--4\%
+above it (\cref{tab:spectra}). A finite-difference Jacobian taken across the kink mixes pieces and produces a spurious
+eigenvalue (0.75 at $N=10$, $\kappa=0.3$, $T=0.6$).
+
+\paragraph{A3: separatrix.} For two dominant entries $w_s,w_q$ of a column, the reward ratio is
+$(\rho^{1-\kappa}(w_s/w_q)^\kappa)^{1/T}$, so $l=\ln(w_s/w_q)$ evolves toward $\frac{1-\kappa}{T}\ln\rho+\frac{\kappa}{T}l$
+under the reward; its fixed point $l^*=(1-\kappa)\ln\rho/(T-\kappa)$ is repelling for $T<\kappa$. Lock-in onto $q$ happens
+iff $w_q/w_s>\rho^{(1-\kappa)/(\kappa-T)}$ initially; as $T\to0$ this becomes $(w_q/w_s)^\kappa>\rho^{1-\kappa}$, the
+one-step criterion of the hard cut. Columns interact weakly through relay distances, which is why slightly fewer
+listeners lock in than predicted at the lowest $T$ (\cref{tab:separatrix}).
+
+\paragraph{A4: noisy mean field and its refinements.} With noise, the true source is seeded with probability
+$1-\nu+\nu/N$; otherwise a peer $j$ carries the $\rho$ advantage and $s$ competes as a strong peer:
+\begin{align}
+  f(x)&=\frac{a}{a+(N-2)b},\qquad g(x)=\frac{c}{\rho^{(1-\kappa)/T}b+c+(N-3)b},\qquad c=x^{\kappa/T}.
+\end{align}
+Three refinements: (i) the averaged map $x=\mathbb E[r](x)$; (ii) the stochastic walk with the noise drawn each round
+(fluctuations raise the time average by Jensen's inequality); (iii) the relay-aware walk, in which the distances in a
+noise round are measured from $j$: $s$'s own attention is spread ($q=1/(N-1)$), $j$'s audience share toward $s$ is
+$q/(q+(N-2)p)$, the largest, so $D_s=\delta-\ln[q/(q+(N-2)p)]$ is the shortest relay distance and $s$ keeps more reward.
+The remaining gap is closed by peer heterogeneity, tested in \cref{sec:robustness}: the column walk keeps one agent's
+full unequal column, and its competition factor $\sum_kw_k^{\kappa/T}/[(N-2)\bar w^{\kappa/T}]<1$ measures the concavity
+effect.

@@ -1,0 +1,6 @@
+# latexmk settings for the paper: LuaLaTeX, output in build/, and the repository's references.bib on BibTeX's path
+# (bibtex runs inside build/, so a relative \bibliography path would not resolve).
+use Cwd 'abs_path';
+$pdf_mode = 4;
+$out_dir = 'build';
+$ENV{'BIBINPUTS'} = abs_path('..') . ':' . ($ENV{'BIBINPUTS'} // '');

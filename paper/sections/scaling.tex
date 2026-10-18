@@ -1,0 +1,53 @@
+\section{Size and noise}\label{sec:scaling}
+
+Experiment E8 runs groups of $N=10,20,40,80$ agents with a source moving every $\tauE=300$ rounds on average, false-alarm
+rates $\nu=0,0.25,0.5,0.75$, seven commitments $T\in\{0.15,\dots,0.8\}$, $\kappa=0.2$ and $\varepsilon=1$, for 3000 rounds
+and two repeats each. For every $(N,\nu)$ we take the commitment with the highest benefit (\cref{tab:e8}).
+
+\figw{scaling}{\linewidth}{Benefit (nats) and structural cost against group size at the best commitment, for three noise
+levels. The dashed line is the maximum benefit $\ln(N-1)$.}{scaling}
+
+\paragraph{Increasing returns to size.} With the best commitment, coordination recovers 94--99\% of the possible benefit
+up to $\nu=0.5$ at every size, and 67--75\% at $\nu=0.75$. Structural cost stays at 1.8--2.0 times that of uniform
+attention at every size, so benefit per unit of cost rises from 1.2 to 2.3 nats between 10 and 80 agents
+(\cref{fig:scaling,fig:e8pair}). Heavy noise lowers the cost to 1.4--1.7 because the group commits less; at 80 agents the
+return per unit of cost is unchanged.
+
+\figpair{e8-benefit}{Benefit as a share of $\ln(N-1)$.}{e8-per-cost}{Benefit per unit of cost.}{E8 at the best
+commitment.}{e8pair}
+
+\paragraph{Noise lowers what coordination buys.} Over the whole range of commitment, benefit against cost traces a
+frontier; noise moves it down, not to the right (\cref{fig:frontier}). Noise is paid in commitment instead: the best
+$T$ moves from $0.30$ to $0.25$, toward the lock-in edge, as agents must bet harder on the current hub to average out
+false alarms --- the attention counterpart of the longer memory noise selects (\cref{sec:memory}).
+
+\figpair{e8-frontier-10}{10 agents}{e8-frontier-80}{80 agents}{Structural cost against benefit over $T>\kappa$, one curve
+per noise level.}{frontier}
+
+\paragraph{The window narrows.} Tracking falls below one half at an effective $\Thalf(\nu)$ that decreases with noise
+(\cref{tab:thalf}). The usable window $(\kappa,\Thalf(\nu))$ shrinks with group size, since $\Thalf\to\kappa$ like
+$1/\ln N$, and with noise, by a similar fraction at every size: about 20\% at $\nu=0.25$, half at $0.5$ and 80\% at
+$0.75$ (\cref{fig:window}). At 80 agents and $\nu=0.5$ commitment must lie within about $0.09$ of $\kappa$.
+
+\figw{window}{\linewidth}{Usable range of commitment, from $T=\kappa$ to where tracking falls below one half, per group
+size and noise level (lightest: $\nu=0$). At $\nu=0.75$ for 40 and 80 agents the end comes from the relay-aware walk,
+since the runs never reached one half.}{window}
+
+\figpair{e8-tracking-10}{10 agents}{e8-tracking-80}{80 agents}{Tracking against commitment. Near $\kappa$ tracking
+survives noise up to $\nu=0.5$; toward $\Thalf$ it falls early.}{tracking}
+
+\paragraph{Lock-in pays the full price for nothing.} At $T=0.15<\kappa$ the structural cost is the full 1.9--2.0 at every
+noise level, but the hubs are stale and the benefit far below zero: the most expensive structure with the worst return.
+
+\begin{table}[tbp]\centering\small
+\caption{E8 at the best commitment for each group size and noise level.}\label{tab:e8}
+\input{generated/e8}
+\end{table}
+
+\begin{table}[tbp]\centering\small
+\caption{Where tracking falls to one half: closed form without noise, simulation (interpolated), relay-aware walk and
+averaged mean field.}\label{tab:thalf}
+\input{generated/thalf}
+\end{table}
+
+\takeaway{Large, noisy groups gain the most from coordinating and have the least room for error.}

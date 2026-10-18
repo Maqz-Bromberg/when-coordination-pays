@@ -1,0 +1,34 @@
+\section{Validation and errata}\label{app:validation}
+
+\paragraph{Validation.} Before any new experiment the components were checked against the original work:
+\begin{itemize}
+  \item The faithful mode equals the original code step for step on 28 cases (attention matrices after every update and
+    effective distances, relative tolerance $10^{-9}$); the original hierarchy and efficiency coordinates agree on test
+    matrices.
+  \item The niche-learning eigenfunction solver equals the authors' on six cases (relative tolerance $10^{-8}$); the
+    scaling $\taum^*\sim\tauE^{1/2}$ of their Fig.~2 is reproduced; their invasion results are reproduced for monopolized
+    niches and partly for shared niches.
+  \item Transport networks: steady loads give spanning trees for $\gamma<1$ and keep all edges for $\gamma>1$;
+    fluctuations create loops, rising with $\gamma$; adaptation reaches Corson's optimum.
+  \item The GPU kernel equals the reference implementation on seven configurations; closed forms B2, B3, B5 and A1--A4 are
+    tests.
+  \item One thesis claim was not reproduced as stated: on complete graphs the selection transition does not sit at a fixed
+    number of kept entries.
+\end{itemize}
+
+\paragraph{Errata in the original code}\label{app:errata}
+\begin{description}
+  \item[H1. Element-wise instead of matrix powers.] The graph entropies of the hierarchy coordinates sum walk
+    probabilities $P=\sum_k(B^\top)^k$, a sum of matrix powers (eq.~14 of \citealp{corominas2013originsheirarchy}). The code
+    used element-wise powers, whose $k=0$ term is the all-ones matrix, so the entropies reduce to plain sums of
+    log-degrees.
+  \item[H2. Treeness over the wrong set of subgraphs.] Treeness averages over the network once plus the pruned subgraphs
+    that still contain a link; the code counted the network twice and included empty subgraphs.
+  \item[Effect.] On 180 evolved networks the code underestimates treeness by 0.1--0.25 on average (H2 dominates);
+    under a constant source corrected treeness is near 0.7 for every selectivity, where the code showed a flat 0.45 with a
+    jump at full selectivity. Feedforwardness and orderability are unaffected.
+\end{description}
+Implementation behaviours of the original code that change results without contradicting a published definition
+(rewards on non-edges at $\kappa=0$, ranking over all entries rather than in-neighbours, mixed normalizations, fixed
+$\varepsilon=1$, a source index that silently meant random seeding, an unseeded random generator) are kept in faithful mode
+and fixed in clean mode.

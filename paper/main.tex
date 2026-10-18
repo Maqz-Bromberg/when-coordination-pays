@@ -1,0 +1,83 @@
+\documentclass[11pt,a4paper]{article}
+% When coordination pays — the consolidated write-up of the study. Figures are exported from the public site
+% (site/scripts/export-figures.mjs) and tables generated from the run data (paper/tables.py); `make paper` does both.
+% LuaLaTeX: Libertinus text and math cover the Greek and symbols used in the generated glossary.
+\usepackage{amsmath}
+\usepackage{libertinus}
+\usepackage[margin=2.6cm]{geometry}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage[round,authoryear]{natbib}
+\usepackage[colorlinks=true,linkcolor=accent,citecolor=accent,urlcolor=accent]{hyperref}
+\usepackage[capitalise,noabbrev]{cleveref}
+
+\definecolor{accent}{HTML}{8A5216}
+\graphicspath{{figures/}}
+\setlist{itemsep=2pt,topsep=4pt}
+\setlength{\parskip}{3pt}
+
+\newcommand{\Thalf}{T_{1/2}}
+\newcommand{\Teff}{T_{\mathrm{eff}}}
+\newcommand{\tauE}{\tau_E}
+\newcommand{\taum}{\tau_m}
+\newcommand{\figw}[4]{\begin{figure}[tbp]\centering\includegraphics[width=#2]{#1}\caption{#3}\label{fig:#4}\end{figure}}
+\newcommand{\figpair}[6]{\begin{figure}[tbp]\centering
+  \begin{subfigure}{0.49\linewidth}\includegraphics[width=\linewidth]{#1}\caption{#2}\end{subfigure}\hfill
+  \begin{subfigure}{0.49\linewidth}\includegraphics[width=\linewidth]{#3}\caption{#4}\end{subfigure}
+  \caption{#5}\label{fig:#6}\end{figure}}
+\newcommand{\takeaway}[1]{\par\smallskip\noindent\fcolorbox{accent!40}{accent!6}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{\small #1}}\par\smallskip}
+
+\title{\textbf{When coordination pays}\\[4pt]\large Attention networks under a moving, noisy source:\\regimes, costs, mechanisms and implications}
+\author{Max Bromberg}
+\date{\today}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+\noindent
+A group of agents learns whom to listen to while the source of useful news moves and the signal is noisy. Each agent
+splits one unit of attention among the others and strengthens links that bring it the news soonest, with
+self-reinforcement $\kappa$, commitment (selection temperature) $T$ and memory $\varepsilon$. We map the behaviour of
+this model by simulation and solve it where possible. Coordination works in a window of commitment: below $T=\kappa$
+the group locks onto whoever led initially, decided by a separatrix in the starting attention; above
+$\Thalf=\kappa+(1-\kappa)\ln\rho/\ln(N-2)$ attention spreads; in between a single hub forms on the current source and
+follows it. A hub costs about twice as much as no structure, measured by broadcast dissipation, at every group size,
+while its benefit (log-score gain) grows like $\ln(N-1)$, so coordination has increasing returns to size. Noise is paid
+in precision rather than structure: false alarms do not raise the cost but shrink the usable window by a similar fraction
+at every size. Near the lock-in edge, tracking survives noise far better than mean-field theory predicts; switching
+effects off one at a time shows that unequal rivals (a concavity effect) and relays through the hub account for it.
+Rewarding a link for its position in the network beats rewarding direct evidence under noise, and comes within 1--3\%
+of an ideal Bayesian observer up to 50\% false alarms; beyond that, the group's short memory is the limit. We relate
+these results to the three lines of work the model joins: source-to-structure networks, optimal learning in noisy
+niches, and adaptive transport networks.
+\end{abstract}
+
+\tableofcontents
+\clearpage
+
+\input{sections/introduction}
+\input{sections/model}
+\input{sections/measures}
+\input{sections/regimes}
+\input{sections/scaling}
+\input{sections/robustness}
+\input{sections/learning}
+\input{sections/memory}
+\input{sections/structure}
+\input{sections/origins}
+\input{sections/implications}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\appendix
+\input{sections/appendix-methods}
+\input{sections/appendix-derivations}
+\input{sections/appendix-validation}
+\input{sections/appendix-glossary}
+\end{document}

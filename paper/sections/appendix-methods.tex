@@ -1,0 +1,31 @@
+\section{Methods and reproducibility}\label{app:methods}
+
+Every study follows one pipeline (\cref{fig:pipeline}): choose a grid of settings; run every cell from random starting
+attention with a fresh environment draw, batched on a GPU (JAX, \texttt{jit} and \texttt{vmap} over runs,
+\texttt{lax.scan} over time); record tracking, log-loss, information cost and attention snapshots every 300 rounds and
+average the second half; compare with exact formulas, reduced models and switched-off variants.
+
+\figw{pipeline}{\linewidth}{How each study runs.}{pipeline}
+
+\paragraph{Code and data.} The Python package \texttt{nichenet} implements the model (faithful and clean modes), the
+niche-learning model, transport networks, the hierarchy coordinates and the reductions; every closed form and reduction
+has a test. Each experiment is a module \texttt{nichenet.experiments.<id>} that writes a JSON summary to
+\texttt{data/site/}; the tables of this paper are generated from those files (\texttt{paper/tables.py}) and its figures
+are exported from the companion website, which renders the same files (\texttt{site/scripts/export-figures.mjs}).
+\texttt{make paper} rebuilds both.
+
+\begin{table}[htbp]\centering\small
+\caption{Experiments. All use clean mode, complete graphs (except E6), tempered selection, $\delta=10$, $\rho=2.6$.}
+\begin{tabular}{lp{5.2cm}p{5.6cm}r}\toprule
+id & varied & fixed & runs\\\midrule
+E1 & memory ($\varepsilon$ or $\kappa$), $\tauE\in[10,3000]$ & $N=30$, $\nu=0.5$, $T=0.3$, run length $40\tauE$ & 360 per knob\\
+E2 & $N\in\{10,\dots\}$, $T$, $\kappa\in\{0,0.3\}$ & constant source & 320\\
+E3 & payment $a\in\{0,0.5,1,2\}$, $\tauE\in\{200,2000\}$ & $N=30$, $T=0.6$; $\kappa$ copied from best earner & 32 $\times$ 150 epochs\\
+E4 & resident and invader memory, agent type, $\tauE\in\{100,1000\}$ & binary environment, invaders at 1\% & 2 seeds $\times$ $10^7$ steps\\
+E5 & $T$ (14), $\kappa\in\{0,0.2,0.4,0.6\}$, source schedule (5) & $N=30$, 3000 rounds, no noise & 840\\
+E6 & budget, usage, $p\in[0.4,20]$, schedule & $7\times7$ lattice, $\eta=0.05$, 3000 steps & 720\\
+E7 & pooling window $k$, $\tauE$, rule & $N=30$, $\nu=0.5$ & 180 per rule\\
+E8 & $N\in\{10,20,40,80\}$, $\nu\in\{0,\dots,0.75\}$, $T$ (7) & $\kappa=0.2$, $\varepsilon=1$, $\tauE=300$, 3000 rounds & 224\\
+E9 & reward rule (3) + Bayes filter & E8 grid, seeds and environments & 672 + 32\\
+A4 & reward rule $\times$ peers free/equalized & constant source, $N$ (4) $\times$ $\nu$ (3) $\times$ $T$ (4), 4000 rounds & 384\\\bottomrule
+\end{tabular}\end{table}

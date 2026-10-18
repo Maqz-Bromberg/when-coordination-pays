@@ -1,0 +1,27 @@
+\section{Relation to the original work}\label{sec:origins}
+
+\paragraph{Source-to-structure networks.} \citet{bromberg2020hierarchy} asked how hierarchy arises from local adaptation
+to where information appears. Its premise --- that the location of information shapes who listens to whom, producing
+hierarchy --- holds, within a window of commitment $\kappa<T<\Thalf$. Its hard selection cut imposes hierarchy even when
+the signal carries no information (with a random source the cut still climbs toward the same region of the morphospace),
+and its hierarchy measure needed two corrections (\cref{app:errata}).
+
+\paragraph{Optimal learning in noisy niches.} \citet{lee2024constructing} predicted that optimal memory grows like
+$\tauE^{1/2}$ and that agents who stabilize their environment create a shared good that can favour monopolies. The
+attention network reproduces the scaling once signals are noisy (exponent 0.43); with memory and pace coupled, it settles
+at a stable point with free-riding; but paying for attention does not entrench hubs. Their agents correspond to the
+evidence rule of \cref{sec:learning}; the network adds relays, which help under noise.
+
+\paragraph{Adaptive transport networks.} Fluctuating loads keep loops
+\citep{corson2010fluctuations,katifori2010damage}. In the attention model this holds only for a flow-based reward; with
+closeness, a fluctuating source merely delays the transition to some tree. The kind of budget, not the reward, decides
+robustness and cost, and transport dissipation prices the structure that the attention model builds without paying for it.
+
+\paragraph{The synthesis note's predictions.} Three regimes (distributed, hierarchy, over-betting): confirmed, with exact
+boundaries. Memory scaling: confirmed with noise. Paid-attention monopolies: not found. The update interval as a sampling
+window: holds only when rewards are averaged rather than distances summed.
+
+\paragraph{Related learning dynamics.} The update belongs to a family studied in game theory and statistical physics:
+replicator dynamics with memory loss \citep{sato2003coupled}, experience-weighted attraction
+\citep{camerer1999experience}, reinforcement-driven network formation
+\citep{skyrms2000dynamic,bala2000noncooperative}, and adaptive networks more broadly \citep{gross2008adaptive}.

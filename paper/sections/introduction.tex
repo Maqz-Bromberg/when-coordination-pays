@@ -1,0 +1,42 @@
+\section{Introduction}\label{sec:intro}
+
+Groups have to decide whom to listen to. A team follows whoever has the freshest information about a client; a
+community of experts defers to whoever has been right lately; a flock follows the animals that seem to know where the
+food is. In each case the source of useful information moves, and the signals about where it is are noisy. A group that
+commits to a hub gains when the hub is right and pays when it is not; a group that never commits gains little but risks
+little. This paper asks when such coordination pays, what it buys, what it costs, and what breaks it.
+
+We study a minimal model. $N$ agents each split one unit of attention among the others. Every round a piece of news
+appears at one agent, the source; with probability $\nu$ it appears at a random agent instead (a false alarm). Each agent
+then strengthens the links that would have brought it the news soonest, counting paths through the network, with
+self-reinforcement $\kappa$ (strong links earn more), commitment $T$ (how hard it bets on its best link) and memory
+$\varepsilon$ (how fast old attention is replaced). The source stays put for $\tauE$ rounds on average and then moves.
+
+The model joins three lines of work. The source-to-structure model of \citet{bromberg2020hierarchy} asked how the place
+where information appears shapes who listens to whom, measuring closeness by a random-walk effective distance
+\citep{brockmann2013hidden} and shape by hierarchy coordinates \citep{corominas2013originsheirarchy}. Optimal learning
+in noisy niches \citep{lee2024constructing} asked how much memory a learner should keep when its environment switches,
+and what happens when learners change the environment they track. Adaptive transport networks
+\citep{corson2010fluctuations,katifori2010damage,ronellenfitsch2016global} grow the links that carry flow under a
+budget, and form trees or loops depending on how the load fluctuates. No familiarity with any of them is assumed; the
+model is defined from scratch in \cref{sec:model}, and \cref{sec:origins} says how each original premise fared.
+
+\paragraph{Contributions.}
+\begin{enumerate}[label=(\roman*)]
+  \item A computed regime map with exact boundaries: lock-in for $T<\kappa$, coordinated hierarchy for
+    $\kappa<T<\Thalf$, spread attention above $\Thalf$ (\cref{sec:regimes}). The one-variable reduction behind the
+    boundaries is exact at any walk cost (A1), it remains the linear stability of the full network despite a kink at the
+    fixed point (A2), and lock-in below $\kappa$ is decided by a separatrix in the initial weights (A3).
+  \item Benefit and cost of coordination as functions of group size and noise (\cref{sec:scaling}): structural cost is
+    flat in $N$ while benefit grows like $\ln(N-1)$; noise narrows the usable window of commitment instead of raising the
+    cost.
+  \item A mechanism for noise robustness near the lock-in edge, isolated by a factorial test (\cref{sec:robustness}):
+    unequal rivals compete less because the score is concave in weight, and the hub relays even false news.
+  \item A comparison of reward rules (\cref{sec:learning}): position (network closeness) against direct evidence
+    (likelihood) and an ideal Bayesian observer.
+  \item Results on memory, environmental pace and paid attention (\cref{sec:memory}), and on budgets and network shape
+    against transport networks (\cref{sec:structure}).
+\end{enumerate}
+
+A companion website presents the same material as interactive chapters with enlargeable figures. All simulations,
+analyses and checks are reproducible from the repository (\cref{app:methods}).

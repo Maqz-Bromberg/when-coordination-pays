@@ -1,0 +1,74 @@
+\section{Three regimes}\label{sec:regimes}
+
+Along the commitment axis a group falls into one of three regimes (\cref{fig:regimes}):
+\begin{itemize}
+  \item \textbf{Lock-in} ($T<\kappa$): whoever is ahead gets further ahead regardless of where the news is. The group
+    builds a hub and pays its full structural cost, but the hub sits on whoever led early; the benefit is far below
+    zero. Under a moving source this is over-betting.
+  \item \textbf{Coordinated hierarchy} ($\kappa<T<\Thalf$): one hub forms on the current source and follows it when it
+    moves.
+  \item \textbf{Spread out} ($T>\Thalf$): no one commits; little is paid and little is gained.
+\end{itemize}
+
+\figw{regimes}{\linewidth}{The three regimes, measured at $N=40$, $\tauE=300$, $\nu=0.25$, $\kappa=0.2$ and $T=0.15$,
+$0.25$, $0.8$. Benefit as a share of the maximum; cost relative to uniform attention.}{regimes}
+
+\subsection{The regime map}
+Experiment E5 runs 30 agents over 14 commitments, four self-reinforcements and five source schedules (constant; Markov
+with $\tauE=10,100,1000$; a new random source every round), 3000 rounds and three repeats each, and classifies each run
+by commitment and tracking. \Cref{fig:e5} shows the map; the lines are the exact boundaries of \cref{sec:boundaries}, not
+fits. Lock-in on stale hubs needs both $\kappa>0$ and a moving source.
+
+\begin{figure}[tbp]\centering
+\includegraphics[width=\linewidth]{e5-constant}\\[2pt]
+\includegraphics[width=\linewidth]{e5-markov100}\\[2pt]
+\includegraphics[width=\linewidth]{e5-random}
+\caption{Regime map (E5) for a constant source (top), a source moving every 100 rounds on average (middle) and a new
+random source every round (bottom). Solid line $T=\kappa$, dashed $\Thalf$.}\label{fig:e5}
+\end{figure}
+
+\subsection{Exact boundaries}\label{sec:boundaries}
+In the symmetric state every agent puts the share $x$ on the source and $p=(1-x)/(N-2)$ on each other agent. The model
+then reduces to one variable. The source scores $(D/\rho)^{\kappa-1}x^\kappa$ and each peer $D^{\kappa-1}p^\kappa$; the
+common factor $D^{\kappa-1}$ cancels from the reward ratio, which is $(\rho^{1-\kappa}u^\kappa)^{1/T}$ with $u=x/p$.
+Its fixed point and the half-attention temperature are
+\begin{equation}
+  u^*=\rho^{(1-\kappa)/(T-\kappa)},\qquad x^*=\frac{u^*}{u^*+N-2},\qquad
+  \Thalf=\kappa+\frac{(1-\kappa)\ln\rho}{\ln(N-2)},
+\end{equation}
+with contraction $(1+\varepsilon\kappa/T)/(1+\varepsilon)$ per step, below one iff $T>\kappa$. The window
+$(\kappa,\Thalf)$ has width $(1-\kappa)\ln\rho/\ln(N-2)$ and narrows as $N$ grows. Rescaled by it, the share on the
+source for every group size falls on one curve (E2, \cref{fig:e2}).
+
+The reduction is exact at any walk cost $\delta$ (A1): in the symmetric state the source's own column is uniform, so all
+relays are equivalent under permutations fixing $s$. The update has a kink at its fixed point, because all relay
+distances tie in $\min_k D_{sk}$; linearizing one smooth piece at a time, the full network's spectral radius equals the
+reduced contraction up to a relay group 0.01--4\% above it, and crosses one at $T=\kappa$ (A2, \cref{tab:spectra}). No
+instability hides in the full network.
+
+\figw{e2-collapse}{0.8\linewidth}{Share of attention on a constant source against $z=\Teff\ln(N-2)/\ln\rho$
+($\kappa=0$). Every size crosses one half at $z=1$ (E2).}{e2}
+
+\begin{table}[tbp]\centering\small
+\caption{Linearization of the anchored piece at the symmetric state, $N=10$, $\kappa=0.3$, $\varepsilon=1$ (A2). For
+$T<\kappa$ the unstable interior point is used.}\label{tab:spectra}
+\input{generated/spectra}
+\end{table}
+
+\subsection{Lock-in is decided at the start}\label{sec:separatrix}
+Below $T=\kappa$ the symmetric state is unstable. For a column dominated by the source $s$ and the strongest rival $q$,
+the log-ratio $l=\ln(w_s/w_q)$ has the fixed point $l^*=(1-\kappa)\ln\rho/(T-\kappa)$, unstable for $T<\kappa$. A listener
+therefore locks onto its rival iff initially
+\begin{equation}
+  \frac{w_q}{w_s}>\rho^{(1-\kappa)/(\kappa-T)},
+\end{equation}
+which recovers the one-step criterion of the hard cut as $T\to0$ (A3). Listener by listener, this predicts the simulated
+winner 95--100\% of the time (\cref{tab:separatrix}). The signal never gets a say: this is lock-in by historical accident
+\citep{arthur1989competing} in network form.
+
+\begin{table}[tbp]\centering\small
+\caption{Separatrix prediction against simulation, $N=20$, constant source, 3 repeats (A3).}\label{tab:separatrix}
+\input{generated/separatrix}
+\end{table}
+
+\takeaway{The safe setting is just above the lock-in edge: close enough to $\kappa$ to commit, far enough not to freeze.}
