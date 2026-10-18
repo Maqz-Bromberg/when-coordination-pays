@@ -1,6 +1,7 @@
 """E3: paying nodes for in-attention (note §8, Lee et al.'s monopoly prediction transposed to the SS model).
 
-Clean SS on a complete graph (N = 30), tempered selection T = 0.6, eps = 1, Markov source (tau_E = 200 or 2000). Each node i has
+Clean SS on a complete graph (N = 30), tempered selection T = 0.6, eps = 1, Markov source (tau_E = 200 or 2000).
+Each node i has
 its own edge conservation kappa_i in [0, 0.55] (below T, so it never locks in): its info score is
 D_k^(kappa_i - 1) W_ki^kappa_i. kappa_i is the node's relay reliability: higher kappa_i keeps its attention, including
 its attention to the source, more stable, which raises its value as a relay for others.
@@ -115,7 +116,8 @@ def run(a, seed, tau_E=200.0):
 def main(n_jobs=14):
     t0 = time.time()
     rows = Parallel(n_jobs=n_jobs)(delayed(run)(a, s, te) for te in TAU_ES for a in PAYS for s in SEEDS)
-    OUT.write_text(json.dumps({"source_rule": SOURCE_RULE, "graph": GRAPH, "n": N, "temperature": TEMP, "tau_Es": TAU_ES, "epoch": EPOCH, "epochs": EPOCHS,
+    OUT.write_text(json.dumps({"source_rule": SOURCE_RULE, "graph": GRAPH, "n": N, "temperature": TEMP,
+                               "tau_Es": TAU_ES, "epoch": EPOCH, "epochs": EPOCHS,
                                "kappa_max": KMAX, "rows": rows}))
     print(f"{len(rows)} runs in {time.time() - t0:.0f} s -> {OUT}")
     for te, a in [(te, a) for te in TAU_ES for a in PAYS]:
@@ -125,7 +127,8 @@ def main(n_jobs=14):
         ten = np.mean([r["mean_tenure"] for r in sel])
         tko = np.mean([r["n_takeovers"] for r in sel])
         fr = [r["frac_destabilizing"] for r in sel if r["frac_destabilizing"] is not None]
-        print(f"tau_E={te:5.0f} a={a:.1f}: mean kappa {start:.3f} -> {end:.3f}; hub tenure {ten:.1f} epochs; takeovers {tko:.1f}; "
+        print(f"tau_E={te:5.0f} a={a:.1f}: mean kappa {start:.3f} -> {end:.3f}; hub tenure {ten:.1f} epochs; "
+              f"takeovers {tko:.1f}; "
               f"destabilizing share {np.mean(fr) if fr else float('nan'):.2f}")
 
 
