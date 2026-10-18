@@ -17,6 +17,8 @@
  * Keyboard: Esc closes; while open, `isAnyMaximized()` lets page-level shortcuts stand aside. Focus moves to the
  * close button and returns to the opener on close; page scroll is locked.
  *
+ * Ported to remystifying-science as app/components/ui/max-frame.tsx (MUI and token version).
+ *
  * Self-contained apart from lucide-react icons and ./maximize.css, which reads five tokens: --surface, --rule, --ink,
  * --accent and --f-display. Inside the frame, style content with `.mx-on <selector>` to give it more room.
  */
