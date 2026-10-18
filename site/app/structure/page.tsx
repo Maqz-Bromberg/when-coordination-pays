@@ -109,10 +109,11 @@ export default function Page() {
         <p>
           Every line below follows one experimental variable with everything else fixed, through the{" "}
           <T k="morphospace">hierarchy morphospace</T>: seed-averaged treeness, feedforwardness and orderability, from a
-          hollow start marker to a large end marker. Choose any two experiments; the panels share axes and camera.
+          hollow start marker to a large end marker. One graph overlays up to seven experiments; side by side gives two their
+          own panels with shared axes and camera.
         </p>
         <Figure id="paths" wide title="Paths in the hierarchy morphospace"
-          caption="Drag to rotate, scroll to zoom. Full screen keeps the selection and camera.">
+          caption="Marker size grows along each path with the experiment's varied setting: the small hollow marker is its lowest value (for example the lowest temperature T, or the first step in time) and the largest filled marker its highest. Drag to rotate, scroll to zoom; full screen keeps the layout, selection and camera.">
           <MorphPaths3D groups={PATH_GROUPS as PathGroup[]} initial={["e8-T-N80", "e5-markov100"]} />
         </Figure>
         <ul>
