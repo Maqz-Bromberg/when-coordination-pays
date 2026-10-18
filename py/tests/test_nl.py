@@ -30,6 +30,25 @@ def test_eigen_matches_reference(nl_golden, i):
     np.testing.assert_allclose(errs, nl_golden[f"errs_{i}"], rtol=1e-6, atol=1e-12)
 
 
+@pytest.mark.parametrize("alpha", [0.0, 0.95])
+def test_abs_matches_eigen(alpha):
+    """The agent-based simulation and the eigenfunction solver agree on D(beta) (passive and destabilizer)."""
+    from nichenet.nl.abs import mean_kl
+    p = NLParams(tau_E=30.0, alpha=alpha)
+    betas = np.array([0.5, 0.9])
+    d_eig, _ = mean_kl_curve(p, betas)
+    d_abs = np.array([mean_kl(p, b, T=3_000_000, seed=1) for b in betas])
+    np.testing.assert_allclose(d_abs, d_eig, rtol=0.02)
+
+
+def test_population_with_one_type_equals_single_agent():
+    from nichenet.nl.abs import mean_kl, population_mean_kl
+    p = NLParams(tau_E=50.0, alpha=-0.95)
+    single = mean_kl(p, 0.8, T=200_000, seed=3)
+    pop = population_mean_kl(p, [-0.95], [1.0], [0.8], T=200_000, seed=3)[0]
+    assert single == pytest.approx(pop, rel=1e-12)
+
+
 def test_code_parameter_mapping():
     stab = NLParams(tau_E=10, alpha=-0.95, v=0.1)
     assert stab.code_v == pytest.approx(0.01) and stab.code_weight == pytest.approx(0.95)

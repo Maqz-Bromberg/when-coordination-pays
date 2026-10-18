@@ -20,6 +20,7 @@ class SSParams:
     temperature: float = 1.0
     rank_over: str = "all"  # phi quantile over all N entries ("all", thesis) or over in-neighbours ("in")
     mask_to_edges: bool = False  # restrict rewards to the initial edge set, no self-loops (thesis: False)
+    distance: str = "rwed"  # "rwed" (thesis) or "large_delta": D = delta - ln T_sj, exact up to O(e^-delta) (B5)
     update_interval: int = 1  # seeded sources summed per update
     update_on_first_step: bool = True  # thesis updates at t % k == 0 (also after the first source); clean: (t+1) % k
     # Directionality binaries (thesis appendix 7.4.1); defaults are the thesis base case.
@@ -32,6 +33,8 @@ class SSParams:
     def __post_init__(self):
         if self.selection not in ("top_fraction", "tempered"):
             raise ValueError(f"unknown selection {self.selection!r}")
+        if self.distance not in ("rwed", "large_delta"):
+            raise ValueError(f"unknown distance {self.distance!r}")
         if self.rank_over not in ("all", "in"):
             raise ValueError(f"unknown rank_over {self.rank_over!r}")
         if not 0.0 <= self.phi <= 1.0:

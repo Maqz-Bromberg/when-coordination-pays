@@ -24,8 +24,15 @@ def source_distances(A, s, p):
 
     Returns ``(d, errors)`` with d unnormalized (the thesis's ``eff_dist_to_source_history`` entry).
     """
-    D, errors = rwed(row_normalize(A), p.delta)
-    d = (D[:, s] if p.eff_dist_to_source else D[s, :]).copy()
+    T = row_normalize(A)
+    if p.distance == "large_delta":
+        with np.errstate(divide="ignore"):
+            d = p.delta - np.log(T[:, s] if p.eff_dist_to_source else T[s, :])
+        d[s] = 0.0
+        errors = 0
+    else:
+        D, errors = rwed(T, p.delta)
+        d = (D[:, s] if p.eff_dist_to_source else D[s, :]).copy()
     d[s] = np.delete(d, s).min() / p.source_reward
     return d, errors
 
