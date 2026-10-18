@@ -162,3 +162,35 @@ near T ∼ 1/ln N.
 - **The crossover is smooth, and its centre collapses.** In z = T_eff ln(N − 2)/ln ρ, with T_eff = (T − κ)/(1 − κ),
   attention crosses ½ at z = 1.00–1.02 for every N. The prediction T ∼ 1/ln N holds in the exact form
   T_eff = ln ρ / ln(N − 2).
+
+## E3: paying nodes for in-attention
+
+**Question (note §8, Lee et al.'s monopoly prediction):** if being attended to pays, do hubs entrench by keeping their
+followers' signal stable, and do challengers win only by destabilizing?
+
+**Setup:** clean SS, complete graph N = 30, tempered selection T = 0.6, ε = 1, Markov source with τ_E = 200 or 2000.
+Each node has its own κ_i in [0, 0.55], below T, so it never locks in. κ_i is its relay reliability: how stably it
+keeps its attention, including its attention to the source.
+
+- **Payoff per 200-step epoch:** a·(relay in-attention received, counted only when the node is not the source) minus
+  its distance from the source. a = 0 is the control.
+- **Selection:** after each epoch the lowest-payoff node copies the best node's κ, plus N(0, 0.05) noise.
+- **Runs:** 150 epochs, 4 seeds. Script: `python -m nichenet.experiments.e3`. Data: `data/site/e3.json`.
+
+| τ_E | a | mean κ, start → end | hub tenure (epochs) | takeovers by a less reliable node |
+|---|---|---|---|---|
+| 200 | 0 / 0.5 / 1 / 2 | 0.31 → 0.54 in all four | 1.2 | 41–46% |
+| 2000 | 0 / 0.5 / 1 / 2 | 0.31 → 0.55 in all four | 2.3, 2.2, 1.8, 1.8 | 19%, 18%, 12%, 8% |
+
+- **Paying for attention changes nothing.** κ rises to the cap at every payment level, including a = 0. A node that
+  attends to the source stably holds a larger share of the attention paid to it, which shortens its own distance, so
+  reliability is favoured for private reasons.
+- **Hubs do not entrench.** The node with the most relay attention changes every one or two epochs, following the
+  source's recent history. Payment does not lengthen tenure.
+- **The monopoly mechanism has nothing to act on.** In Lee et al. a stabilizer changes the environment's switching rate,
+  so a benefit can be captured or shared. In the SS model the source is exogenous: a node's κ shapes only its own
+  attention and never feeds back on the source, and being attended to is a by-product of attending to the source. A
+  transposition that tests the prediction would need nodes to influence where information appears, for example by
+  letting the next source be drawn in proportion to attention received.
+- **Caveat:** κ reaches the cap of 0.55 (kept below T to avoid lock-in), so the late-epoch trait spread is small. That
+  makes the takeover measure uninformative at the end of the run.
