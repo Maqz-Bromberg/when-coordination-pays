@@ -1,0 +1,92 @@
+"""Batched JAX kernel for clean-mode SS sweeps (jit + vmap over runs, lax.scan over time).
+
+Covers the thesis base case (distances from the source, in-weight conserved, nodes adapt in-edges, directed) with
+clean-mode fixes: rewards masked to the initial edge set, phi quantile over in-neighbours, reward weight epsilon.
+Selection is the phi cut ("top_fraction") or tempered (r ∝ S^(1/T)). Tested against ``ss.model`` in
+``tests/test_jax_kernel.py``; use ``ss.model`` for anything outside this case.
+"""
+
+from functools import partial
+
+import jax
+import jax.numpy as jnp
+import numpy as np
+
+jax.config.update("jax_enable_x64", True)
+
+
+def _distances(A, s, delta, rho):
+    n = A.shape[0]
+    rs = A.sum(axis=1, keepdims=True)
+    T = jnp.where(rs > 0, A / jnp.where(rs > 0, rs, 1.0), 0.0)
+    Z = jnp.linalg.inv(jnp.eye(n) - T * jnp.exp(-delta))
+    zd = Z[s] / jnp.diagonal(Z)
+    d = -jnp.log(jnp.where(zd == 0, 1e-100, zd))
+    others_min = jnp.min(jnp.where(jnp.arange(n) == s, jnp.inf, d))
+    return d.at[s].set(others_min / rho)
+
+
+def _update(A, mask, X, kappa, phi, eps, temperature, tempered):
+    n = A.shape[0]
+    S = jnp.where(mask, jnp.power(X, kappa - 1.0)[:, None] * jnp.power(A, kappa), 0.0)
+    tot = S.sum(axis=0, keepdims=True)
+    S = jnp.where(tot > 0, S / jnp.where(tot > 0, tot, 1.0), 0.0)
+
+    # phi cut over in-neighbours
+    srt = jnp.sort(jnp.where(mask, S, jnp.inf), axis=0)
+    count = mask.sum(axis=0)
+    idx = jnp.where(phi >= 1.0, count - 1, jnp.floor(phi * count).astype(jnp.int64))
+    idx = jnp.clip(idx, 0, n - 1)
+    cutoff = jnp.take_along_axis(srt, idx[None, :], axis=0)[0]
+    cut = jnp.where(mask & (S >= cutoff[None, :]), S, 0.0)
+    best = jnp.argmax(jnp.where(mask, S, -jnp.inf), axis=0)
+    onehot = (jnp.arange(n)[:, None] == best[None, :]) * S
+    cut = jnp.where(cut.sum(axis=0, keepdims=True) > 0, cut, onehot)
+
+    temp = jnp.where(mask, jnp.power(S, 1.0 / temperature), 0.0)
+    red = jnp.where(tempered, temp, cut)
+    rt = red.sum(axis=0, keepdims=True)
+    r = jnp.where(rt > 0, red / jnp.where(rt > 0, rt, 1.0), 0.0)
+
+    A = A + eps * r
+    cs = A.sum(axis=0, keepdims=True)
+    return jnp.where(cs > 0, A / jnp.where(cs > 0, cs, 1.0), 0.0)
+
+
+def _run_one(A0, mask, sources, kappa, phi, eps, temperature, delta, rho, tempered, record_every):
+    n = A0.shape[0]
+
+    def step(A, s):
+        d = _distances(A, s, delta, rho)
+        A_new = _update(A, mask, d / d.sum(), kappa, phi, eps, temperature, tempered)
+        attention = (A_new[s].sum() - A_new[s, s]) / (n - 1)
+        return A_new, (d.mean(), attention)
+
+    T = sources.shape[0]
+    blocks = T // record_every
+    src = sources[: blocks * record_every].reshape(blocks, record_every)
+
+    def block(A, s_block):
+        A, (ed, att) = jax.lax.scan(step, A, s_block)
+        return A, (ed[-1], att[-1], ed.mean(), att.mean())
+
+    A, (ed_last, att_last, ed_mean, att_mean) = jax.lax.scan(block, A0, src)
+    return A, {"mean_ed": ed_last, "source_attention": att_last,
+               "mean_ed_block": ed_mean, "source_attention_block": att_mean}
+
+
+@partial(jax.jit, static_argnames=("record_every", "tempered"))
+def run_batch(A0, mask, sources, kappa, phi, eps, temperature, delta=10.0, rho=2.6, *,
+              tempered=False, record_every=1):
+    """Run B independent clean-mode simulations (update interval 1).
+
+    Shapes: A0, mask (B, n, n); sources (B, T); kappa, phi, eps, temperature (B,). Observables are recorded at the
+    end of every ``record_every`` steps (plus block means), so outputs have shape (B, T // record_every).
+    """
+    fn = jax.vmap(_run_one, in_axes=(0, 0, 0, 0, 0, 0, 0, None, None, None, None))
+    return fn(A0, mask, sources, kappa, phi, eps, temperature, delta, rho, tempered, record_every)
+
+
+def as_batch(values, B):
+    v = np.asarray(values, dtype=float)
+    return np.broadcast_to(v, (B,)).copy() if v.ndim == 0 else v

@@ -1,0 +1,24 @@
+# Main environment for the nichenet package and experiments.
+#   conda env create -f environment.yml && conda run -n nichenet pip install -e py
+name: nichenet
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy>=2.0
+  - scipy>=1.13
+  - networkx>=3.3
+  - pandas>=2.2
+  - pyarrow>=16
+  - pydantic>=2.7
+  - pyyaml
+  - joblib
+  - jax>=0.4.30
+  - jaxlib>=0.4.30
+  - numba>=0.60
+  - matplotlib-base
+  - pytest
+  - pytest-xdist
+  - hypothesis
+  - ruff
+  - pip

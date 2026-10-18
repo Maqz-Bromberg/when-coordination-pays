@@ -1,0 +1,12 @@
+# Environment for running the 2020 thesis code (reference/Networks_Via_Diffusion) as a test oracle.
+# The code targets numpy 1.17 / networkx 2.4; numpy < 1.24 keeps np.int, networkx < 3 keeps from_numpy_matrix.
+name: nvd-legacy
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - numpy=1.23.5
+  - scipy=1.10
+  - networkx=2.8.8
+  - pandas=1.5
+  - pytest

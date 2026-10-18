@@ -1,0 +1,32 @@
+# Papers, theses and archives stay out of git
+papers/
+*.pdf
+*.zip
+
+# Read-only clones of the thesis repos and the extracted thesis source (see reference/README.md)
+reference/*
+!reference/README.md
+
+# Experiment output (summaries for the site live in data/site/)
+data/raw/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+.ipynb_checkpoints/
+
+# Web
+web/node_modules/
+web/.next/
+web/out/
+web/public/py/
+web/next-env.d.ts
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
