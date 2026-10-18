@@ -143,3 +143,22 @@ k = 1 to 64, 3 seeds. Fitness is log-loss on the true source. Script: `python -m
 - **Averaging rewards works as a sampling window.** It has an interior optimum that grows as τ_E^{0.42}, close to Lee
   et al.'s ½, and it lowers the achievable log-loss (1.43 against 1.59 at k = 1 for τ_E = 1000). To act as Lee's τ_c, a
   window has to average what the agent bets on, not the raw distances.
+
+## E2: the tempered crossover across network sizes
+
+**Prediction (note §8):** with a softmax instead of the φ cut, the transition on complete graphs is a smooth crossover
+near T ∼ 1/ln N.
+
+**Setup:** clean SS, complete graphs N = 16 to 256, constant source, tempered selection over 16 temperatures,
+κ ∈ {0, 0.3}, ε = 1, 1500 steps, 2 seeds, GPU. Script: `python -m nichenet.experiments.e2`. Data:
+`data/site/e2.json`.
+
+**Results:**
+
+- **Exact agreement.** Final source attention equals the B5 closed form x* = u*/(u* + N − 2), u* = ρ^{1/T_eff}, to
+  machine precision (largest deviation 8·10⁻¹⁶ over 320 runs). The agreement is exact rather than a large-δ
+  approximation: on a complete graph with a constant source the network settles into the symmetric state, where all
+  relays are equivalent and the RWED takes the same value for every relay at any δ.
+- **The crossover is smooth, and its centre collapses.** In z = T_eff ln(N − 2)/ln ρ, with T_eff = (T − κ)/(1 − κ),
+  attention crosses ½ at z = 1.00–1.02 for every N. The prediction T ∼ 1/ln N holds in the exact form
+  T_eff = ln ρ / ln(N − 2).

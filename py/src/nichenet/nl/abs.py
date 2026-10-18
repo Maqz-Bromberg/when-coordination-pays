@@ -47,6 +47,7 @@ def _population(seed, T, burn, h0, tau_E, tau_c, v, alphas, fracs, betas, monopo
     hE = np.full(n_env, h0)
     h = np.zeros(K)
     dsum = np.zeros(K)
+    flips = np.zeros(n_env)
     v2 = v * v
     for t in range(T):
         if t > 0:
@@ -62,6 +63,8 @@ def _population(seed, T, burn, h0, tau_E, tau_c, v, alphas, fracs, betas, monopo
                 q = min(max(q, 0.0), 1.0)
                 if np.random.rand() <= q:
                     hE[e] = -hE[e]
+                    if t >= burn:
+                        flips[e] += 1
         for k in range(K):
             e = k if monopolized else 0
             p = 0.5 + 0.5 * np.tanh(hE[e])
@@ -74,18 +77,21 @@ def _population(seed, T, burn, h0, tau_E, tau_c, v, alphas, fracs, betas, monopo
             h[k] = (1 - betas[k]) * hhat if t == 0 else betas[k] * h[k] + (1 - betas[k]) * hhat
             if t >= burn:
                 dsum[k] += _kl(hE[e], h[k])
-    return dsum / (T - burn)
+    return dsum / (T - burn), flips
 
 
-def population_mean_kl(params, alphas, fracs, betas, T=2_000_000, burn=1000, seed=0, monopolized=False):
-    """Time-averaged D_KL per agent type (array of length K). ``params`` supplies h0, tau_E, tau_c and v."""
+def population_mean_kl(params, alphas, fracs, betas, T=2_000_000, burn=1000, seed=0, monopolized=False,
+                       return_flips=False):
+    """Time-averaged D_KL per agent type (array of length K). ``params`` supplies h0, tau_E, tau_c and v.
+    With ``return_flips`` also returns the number of environment flips after burn-in (per environment)."""
     a = np.asarray(alphas, dtype=float)
     f = np.asarray(fracs, dtype=float)
     b = np.asarray(betas, dtype=float)
     if not (a.size == f.size == b.size):
         raise ValueError("alphas, fracs and betas must have the same length")
-    return _population(int(seed), int(T), int(burn), float(params.h0), float(params.tau_E), int(params.tau_c),
-                       float(params.v), a, f, b, bool(monopolized))
+    d, flips = _population(int(seed), int(T), int(burn), float(params.h0), float(params.tau_E), int(params.tau_c),
+                           float(params.v), a, f, b, bool(monopolized))
+    return (d, flips) if return_flips else d
 
 
 def mean_kl(params, beta, T=2_000_000, burn=1000, seed=0):
