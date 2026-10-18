@@ -1,6 +1,9 @@
-# Papers, theses and archives stay out of git
-papers/
+# Papers, theses and archives stay out of git, except papers/hosted/: the openly licensed papers and the author's own
+# work that the public site serves (references.bib `file` fields), committed so the GitHub Pages build can copy them
+papers/*
+!papers/hosted/
 *.pdf
+!papers/hosted/*.pdf
 *.zip
 
 # Read-only clones of the thesis repos and the extracted thesis source (see reference/README.md)
