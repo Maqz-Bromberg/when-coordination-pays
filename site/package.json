@@ -3,7 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
+    "predev": "node scripts/copy-data.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/copy-data.mjs",
     "build": "next build",
     "serve": "npx --yes serve@14 out",
     "figures": "node scripts/export-figures.mjs"

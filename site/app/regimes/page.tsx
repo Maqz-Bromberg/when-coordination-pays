@@ -46,12 +46,13 @@ export default function Page() {
           each; <Link href="/appendix/e5/">E5</Link>). Each square is the majority regime. The solid line is T = κ and the
           dashed line T½, both from the exact formulas below, not fitted. Hover over or tap a square to see the network
           that run built: a star around the source in the coordinated regime, a star around some other agent under
-          lock-in, an even web when attention is spread.
+          lock-in, an even web when attention is spread. Click a square to hold it, then play or slide through how
+          that network formed, from the random start to round 3000.
         </p>
         {PERS.map(([p, cap]) => (
           <Figure key={p} id={`e5-${p.replace(/\s/g, "")}`} wide title={`Regime map, ${p} source`} caption={cap}>
             <RegimeMap cells={e5regimes(p)} nets={e5structures(p)} colors={REGIME_COLORS} xTicks={TICKS}
-              xLabel={`commitment T (${p} source)`} n={E5S.n} minW={E5S.minW}
+              xLabel={`commitment T (${p} source)`} n={E5S.n} minW={E5S.minW} evolution={p.replace(/\s/g, "")}
               lines={[{ data: tc, label: "T = κ", dy: -10 }, { data: th, label: "T½", dash: true, dy: 10 }]} />
           </Figure>
         ))}

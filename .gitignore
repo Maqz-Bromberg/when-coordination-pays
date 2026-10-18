@@ -49,3 +49,4 @@ paper/generated/
 paper/build.log
 site/public/paper.pdf
 .figserver.pid
+site/public/data/
