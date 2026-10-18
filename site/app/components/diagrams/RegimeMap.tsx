@@ -9,6 +9,7 @@ import { Pause, Play, RotateCcw } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { withBase } from "../../lib/base";
 import { useThemeKey } from "../../lib/ramp";
+import { useElementSize, useMaximized } from "../figure/maximize";
 
 type Cell = { T: number; kappa: number; regime: string; tracking: number; commitment: number };
 type Net = { kappa: number; T: number; source: number; links: number[][] };
@@ -70,7 +71,8 @@ export default function RegimeMap({ cells, nets, lines, colors, xTicks, xLabel, 
   minW: number; evolution: string;
 }) {
   const root = useRef<HTMLDivElement>(null);
-  const ref = useRef<HTMLDivElement>(null);
+  const { ref, width: mapWidth } = useElementSize<HTMLDivElement>();
+  const maximized = useMaximized();
   const themeKey = useThemeKey();
   const initial = useMemo(() => {
     const h = cells.filter((c) => c.regime === "hierarchy");
@@ -100,21 +102,23 @@ export default function RegimeMap({ cells, nets, lines, colors, xTicks, xLabel, 
   }, [evolution]);
 
   useEffect(() => {
-    if (!ref.current) return;
-    const width = Math.min(ref.current.clientWidth || 640, 820);
+    if (!ref.current || !mapWidth) return;
+    const width = maximized ? mapWidth : Math.min(mapWidth, 820);
+    const height = maximized ? Math.max(280, Math.min(window.innerHeight - 220, width * 0.55)) : 280;
     const lineMarks = lines.flatMap((l) => [
       Plot.line(l.data, { x: "T", y: "kappa", stroke: "currentColor", strokeWidth: 1.6, strokeDasharray: l.dash ? "5 4" : undefined }),
       Plot.text(l.data.slice(-1), { x: "T", y: "kappa", text: () => l.label, dx: 8, dy: l.dy ?? 0, textAnchor: "start", fill: "currentColor", fontSize: 11 }),
     ]);
     const chart = Plot.plot({
-      width, height: 280, marginRight: 60, grid: true,
+      style: maximized ? { fontSize: "13px" } : undefined,
+        width, height, marginRight: 60, grid: true,
       x: { type: "log", label: xLabel, ticks: xTicks, tickFormat: (d: number) => String(+d.toPrecision(2)) },
       y: { label: "κ", domain: [-0.1, 0.7] },
       color: { legend: true, domain: Object.keys(colors), range: Object.values(colors), tickFormat: (d: string) => LABEL[d] ?? d },
       marks: [
-        Plot.dot(cells, { x: "T", y: "kappa", fill: "regime", symbol: "square", r: 8 }),
+        Plot.dot(cells, { x: "T", y: "kappa", fill: "regime", symbol: "square", r: maximized ? 12 : 8 }),
         // Plot's pointer: hover selects, a click holds the selection until the next click
-        Plot.dot(cells, Plot.pointer({ x: "T", y: "kappa", symbol: "square", r: 10, stroke: "currentColor", strokeWidth: 2, fill: "none" })),
+        Plot.dot(cells, Plot.pointer({ x: "T", y: "kappa", symbol: "square", r: maximized ? 15 : 10, stroke: "currentColor", strokeWidth: 2, fill: "none" })),
         ...lineMarks,
       ],
     });
@@ -125,7 +129,7 @@ export default function RegimeMap({ cells, nets, lines, colors, xTicks, xLabel, 
     chart.addEventListener("input", onInput);
     ref.current.replaceChildren(chart);
     return () => { chart.removeEventListener("input", onInput); chart.remove(); };
-  }, [cells, lines, colors, xTicks, xLabel, themeKey]);
+  }, [cells, lines, colors, xTicks, xLabel, themeKey, mapWidth, maximized, ref]);
 
   // playback: step through the frames, then stop on the last one
   useEffect(() => {

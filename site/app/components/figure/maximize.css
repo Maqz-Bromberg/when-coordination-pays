@@ -1,0 +1,11 @@
+/* MaxFrame (maximize.tsx): the frame goes fixed over a backdrop; tokens: --surface --rule --ink --accent --f-display */
+.mx-frame.mx-on { position: fixed; inset: max(12px, 2.5vh) max(12px, 2.5vw); z-index: 950; display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; box-shadow: 0 24px 80px rgba(0,0,0,.45);
+  padding: 0 16px 16px; overflow: hidden; }
+.mx-backdrop { position: fixed; inset: 0; z-index: 940; background: rgba(8, 10, 9, .72); }
+.mx-bar { display: flex; align-items: center; gap: 6px; padding: 10px 0; border-bottom: 1px solid var(--rule); margin-bottom: 12px; flex-shrink: 0; }
+.mx-title { font-family: var(--f-display); font-weight: 700; font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.mx-gap { flex: 1; }
+.mx-btn { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); cursor: pointer; }
+.mx-btn:hover { border-color: var(--accent); }
+.mx-on .mx-body { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; }

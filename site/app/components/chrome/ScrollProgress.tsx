@@ -4,11 +4,13 @@
 // compositor: no React re-renders and no width-based layout work per scroll frame.
 import { motion, useScroll } from "motion/react";
 import { useEnlarged } from "../figure/lightbox-store";
+import { useAnyMaximized } from "../figure/maximize";
 
 export default function ScrollProgress() {
   const { scrollYProgress } = useScroll();
   const enlarged = useEnlarged();
-  if (enlarged) return null;
+  const maximized = useAnyMaximized();
+  if (enlarged || maximized) return null;
   return (
     <div className="progress" aria-hidden>
       <motion.div style={{ height: "100%", background: "var(--accent)", scaleX: scrollYProgress, transformOrigin: "0% 50%" }} />

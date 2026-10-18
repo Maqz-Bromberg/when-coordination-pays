@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { rampColors, useThemeKey, type Ramp } from "../../lib/ramp";
+import { useMaximized } from "../figure/maximize";
 
 export type PathPoint = { v: number; T: number; F: number; O: number; n: number };
 export type PathGroup = {
@@ -30,6 +31,7 @@ export default function MorphPaths3D({ groups, initial, height = 560 }: { groups
   const [sel, setSel] = useState<[string, string]>(initial);
   const refs = useRef<(HTMLDivElement | null)[]>([]);
   const themeKey = useThemeKey();
+  const maximized = useMaximized();
   const camera = useRef<unknown>({ eye: { x: 2.1, y: 2.0, z: 1.15 }, center: { x: 0, y: 0, z: -0.08 } });
 
   useEffect(() => {
@@ -72,7 +74,7 @@ export default function MorphPaths3D({ groups, initial, height = 560 }: { groups
           };
         });
         const layout = {
-          paper_bgcolor: "rgba(0,0,0,0)", margin: { l: 0, r: 0, t: 10, b: 60 }, height,
+          paper_bgcolor: "rgba(0,0,0,0)", margin: { l: 0, r: 0, t: 10, b: 60 }, height: maximized ? Math.max(height, window.innerHeight - 230) : height,
           legend: { font: { color: ink }, orientation: "h", x: 0, y: 0, yanchor: "top",
                     title: { text: g.by + ": ", font: { color: muted } } },
           hoverlabel: { bgcolor: surface, bordercolor: rule, font: { color: ink } },
@@ -100,7 +102,7 @@ export default function MorphPaths3D({ groups, initial, height = 560 }: { groups
       });
     });
     return () => { cancelled = true; };
-  }, [groups, sel, height, themeKey]);
+  }, [groups, sel, height, themeKey, maximized]);
 
   useEffect(() => {
     const nodes = refs.current;

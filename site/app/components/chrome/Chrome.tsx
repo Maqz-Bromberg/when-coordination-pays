@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { withBase } from "../../lib/base";
 import { APPENDIX, CHAPTERS, chapterIndex, href } from "../../lib/chapters";
 import { isEnlargedOpen } from "../figure/lightbox-store";
+import { isAnyMaximized } from "../figure/maximize";
 import GlossarySearch from "./GlossarySearch";
 import ThemeToggle from "./ThemeToggle";
 
@@ -46,7 +47,7 @@ export default function Chrome() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || isEnlargedOpen()) return;
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || isEnlargedOpen() || isAnyMaximized()) return;
       const t = e.target as HTMLElement;
       if (t.closest("input, textarea, select, [contenteditable], .js-plotly-plot")) return;
       if (i < 0) return;

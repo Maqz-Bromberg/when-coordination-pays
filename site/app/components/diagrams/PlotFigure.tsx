@@ -1,8 +1,9 @@
 "use client";
 
 import * as Plot from "@observablehq/plot";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { naturalOrder, rampColors, useThemeKey, type Ramp } from "../../lib/ramp";
+import { useElementSize, useMaximized } from "../figure/maximize";
 
 type Row = Record<string, number | string>;
 
@@ -30,15 +31,18 @@ function seriesColor(data: Row[], series: string, colors?: Record<string, string
 }
 
 export default function PlotFigure({ spec, caption, wide = false }: { spec: ChartSpec; caption?: string; wide?: boolean }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const { ref, width: boxWidth } = useElementSize<HTMLDivElement>();
+  const maximized = useMaximized();
   const themeKey = useThemeKey();
   useEffect(() => {
-    if (!ref.current) return;
-    const width = Math.min(ref.current.clientWidth || 640, wide ? 1080 : 720);
-    const tall = wide ? 1.35 : 1;
+    if (!ref.current || !boxWidth) return;
+    // inline: capped to a readable size; full screen: the frame's width, and a height that fits the screen
+    const width = maximized ? boxWidth : Math.min(boxWidth, wide ? 1080 : 720);
+    const tall = maximized ? Math.max(1, Math.min((window.innerHeight - 200) / 320, (width * 0.6) / 320)) : wide ? 1.35 : 1;
     let chart: ReturnType<typeof Plot.plot>;
     if (spec.kind === "loglog") {
       chart = Plot.plot({
+        style: maximized ? { fontSize: "13px" } : undefined,
         width, height: 340 * tall, grid: true,
         x: { type: "log", label: spec.xLabel }, y: { type: "log", label: spec.yLabel },
         color: seriesColor(spec.data, spec.series, spec.colors, spec.ramp),
@@ -49,6 +53,7 @@ export default function PlotFigure({ spec, caption, wide = false }: { spec: Char
       });
     } else if (spec.kind === "lines") {
       chart = Plot.plot({
+        style: maximized ? { fontSize: "13px" } : undefined,
         width, height: 320 * tall, grid: true, marginRight: 24,
         x: { type: spec.logX ? "log" : "linear", label: spec.xLabel, ticks: spec.xTicks,
              tickFormat: (d: number) => String(+d.toPrecision(3)) },
@@ -67,6 +72,7 @@ export default function PlotFigure({ spec, caption, wide = false }: { spec: Char
                                       fill: "currentColor", fontSize: 11 }),
       ]);
       chart = Plot.plot({
+        style: maximized ? { fontSize: "13px" } : undefined,
         width, height: 230 * tall, marginRight: 70, grid: true,
         x: { type: "log", label: spec.xLabel, ticks: spec.xTicks, tickFormat: (d: number) => String(+d.toPrecision(2)) },
         y: { label: spec.yLabel, domain: [-0.1, 0.7] },
@@ -78,6 +84,7 @@ export default function PlotFigure({ spec, caption, wide = false }: { spec: Char
       });
     } else {
       chart = Plot.plot({
+        style: maximized ? { fontSize: "13px" } : undefined,
         width, height: 300, padding: 0,
         x: { label: spec.x, tickFormat: (d: number) => d.toFixed(1) },
         y: { label: spec.y, tickFormat: (d: number) => d.toFixed(2) },
@@ -87,7 +94,7 @@ export default function PlotFigure({ spec, caption, wide = false }: { spec: Char
     }
     ref.current.replaceChildren(chart);
     return () => chart.remove();
-  }, [spec, wide, themeKey]);
+  }, [spec, wide, themeKey, boxWidth, maximized, ref]);
   return (
     <div ref={ref} className="plot" aria-label={caption ? String(caption) : undefined} />
   );

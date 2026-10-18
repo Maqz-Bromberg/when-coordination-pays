@@ -92,9 +92,8 @@ export default function Page() {
           <T k="morphospace">hierarchy morphospace</T>: seed-averaged treeness, feedforwardness and orderability, from a
           hollow start marker to a large end marker. Choose any two experiments; the panels share axes and camera.
         </p>
-        <Figure id="paths" live wide title="Paths in the hierarchy morphospace"
-          caption="Drag to rotate, scroll to zoom. Enlarge for a full-screen view."
-          large={<MorphPaths3D groups={PATH_GROUPS as PathGroup[]} initial={["e8-T-N80", "e5-markov100"]} height={720} />}>
+        <Figure id="paths" wide title="Paths in the hierarchy morphospace"
+          caption="Drag to rotate, scroll to zoom. Full screen keeps the selection and camera.">
           <MorphPaths3D groups={PATH_GROUPS as PathGroup[]} initial={["e8-T-N80", "e5-markov100"]} />
         </Figure>
         <ul>

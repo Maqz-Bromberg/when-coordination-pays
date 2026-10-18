@@ -351,3 +351,18 @@ text.rx-label { stroke-opacity: 1; }
 .rx-node-src + .rx-name { fill: var(--surface); }
 .rx-note { font-family: var(--f-mono); font-size: 9.5px; fill: var(--muted); }
 @media (max-width: 720px) { .rx-slide { grid-template-columns: 1fr; } .rx-pic { max-width: 300px; margin: 0 auto; } }
+/* figure content while full screen (frame chrome: components/figure/maximize.css) */
+.mx-on .fig-content { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; }
+/* centred with auto margins, not justify-content: a flex item taller than its container and centred by
+   justify-content has its top clipped and unreachable; auto margins centre when it fits and collapse when not */
+.mx-on .fig-content > * { margin-block: auto; flex-shrink: 0; }
+/* static diagrams scale to the screen, keeping their aspect */
+.mx-on .sm-svg, .mx-on .cb-svg, .mx-on .flowchart { min-width: 0; max-height: calc(100vh - 150px); width: 100%; }
+.mx-on .cb-svg { max-height: calc((100vh - 170px) / 2); }
+.mx-on .sm-scroll { overflow: visible; }
+@media (min-width: 721px) { .mx-on .rx-slide { grid-template-columns: minmax(0, 520px) minmax(0, 1fr); font-size: 1.05rem; } }
+.mx-on .rx-net { max-height: calc(100vh - 220px); }
+@media (min-width: 761px) { .mx-on .rm { grid-template-columns: minmax(0, 1fr) 380px; } }
+.mx-on .rm-net { max-width: min(360px, 100%); }
+.lb-root { z-index: 1000; }
+.hovercard { z-index: 1100; }
