@@ -381,3 +381,23 @@ text.rx-label { stroke-opacity: 1; }
 .ap-fold .doc h2:first-child, .ap-fold .detail-body > h2:first-child { border-top: 0; margin-top: 8px; padding-top: 0; }
 .hc-links { display: flex; flex-wrap: wrap; gap: 4px 12px; }
 .refs .ref-pdf { font-family: var(--f-mono); font-size: .8em; font-weight: 600; }
+
+/* Derivation steps in the appendix: each step folds on its own; its title is the one-line claim. */
+.steps-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 18px 0 6px;
+  font-family: var(--f-mono); font-size: .74rem; color: var(--muted); }
+.steps-toggle { appearance: none; font: inherit; color: var(--accent); background: transparent; border: 1px solid var(--rule);
+  border-radius: 6px; padding: 6px 10px; min-height: 32px; cursor: pointer; }
+.steps-toggle:hover { border-color: var(--accent); }
+.doc ol.steps { list-style: none; padding: 0; margin: 0 0 16px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+.doc ol.steps > li { margin: 0; min-width: 0; }
+.doc details.step { margin: 0; border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: 6px; padding: 0 12px; background: var(--bg); }
+.doc details.step > summary { cursor: pointer; padding: 9px 0; display: flex; gap: 10px; align-items: baseline; list-style: none; line-height: 1.45; }
+.doc details.step > summary::-webkit-details-marker { display: none; }
+.doc details.step[open] > summary { border-bottom: 1px dashed var(--rule); margin-bottom: 6px; }
+.step-n { flex: none; font-family: var(--f-mono); font-size: .72rem; color: var(--surface); background: var(--accent); border-radius: 999px;
+  min-width: 1.6em; height: 1.6em; display: inline-flex; align-items: center; justify-content: center; transform: translateY(-1px); }
+.step-body { padding-bottom: 6px; overflow-x: auto; } /* a long inline formula scrolls in its step, not the page */
+.step-body > :first-child { margin-top: 4px; }
+.doc .tex-block { overflow-x: auto; overflow-y: hidden; margin: 10px 0; padding: 2px 0; }
+.ap-fold > summary .katex { font-size: 1em; }
+.doc code { overflow-wrap: anywhere; } /* long file paths wrap instead of widening the page */
