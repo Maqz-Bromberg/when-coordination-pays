@@ -245,3 +245,114 @@ Script: `python -m nichenet.experiments.e4`. Data: `data/site/e4.json`.
 - **A tragedy of the commons.** The stable memory is shorter than the memory that minimizes the residents' own
   divergence (10.7 against about 14 at τ_E = 1000). Shorter-memory invaders free-ride on the slowdown the residents
   provide, which is Lee et al.'s argument about shared stabilization, now as a quantitative fixed point.
+
+## E8 and A1–A4: the price of coordination
+
+Interactive version with 3D paths, charts, per-section keys and the derivations:
+[Coordination](/results/coordination/).
+
+### Paths in the hierarchy morphospace
+
+`python -m nichenet.experiments.paths` assembles seed-averaged corrected (T, F, O) along each experimental variable
+from existing data: [V-SS](/results/source-structure/) φ, [E5](/results/e5/) T, [E6](/results/e6/) p and E8 (T, ν, N
+and time). Data: `data/site/paths.json`.
+
+- **Temperature is a one-dimensional descent** from the hierarchy corner down the diagonal to about (0.25, 0.25, 0.25)
+  past T½.
+- **The morphospace cannot tell hierarchy from over-betting.** A stale hub is as tree-like as a hub on the source; read
+  position together with tracking.
+- **Under a moving source, structure is kept by a per-node budget with κ > 0** (E6 distance cells stay at about
+  (0.7–0.88, 0.8, 0.93–0.96)). The φ cut imposes structure whatever the signal (V-SS).
+- **Noise erodes feedforwardness first.** In E8 the hub survives (T = 0.88), but peers rewire into cycles
+  (F 0.88 → 0.57–0.78).
+
+### E8: cost of coordination against niche size under a noisy signal
+
+**Setup:** clean SS, complete graphs N ∈ {10, 20, 40, 80}, tempered selection T ∈ {0.15, …, 0.8}, κ = 0.2, ε = 1, Markov
+source (τ_E = 300) seen through noisy seeding ν ∈ {0, 0.25, 0.5, 0.75} as in E1. 3000 steps, 10 snapshots, 2 seeds,
+GPU. Benefit is ln(N − 1) − log-loss (E1). Cost is broadcast dissipation relative to the uniform network (as in E6).
+Script: `python -m nichenet.experiments.e8`. Data: `data/site/e8.json`.
+
+| N | benefit / ln(N−1), ν = 0 / 0.5 / 0.75 | cost, ν = 0 / 0.75 | benefit per cost, ν = 0 / 0.75 |
+|---|---|---|---|
+| 10 | 0.99 / 0.94 / 0.67 | 1.79 / 1.47 | 1.21 / 1.00 |
+| 20 | 0.98 / 0.95 / 0.69 | 1.88 / 1.69 | 1.54 / 1.20 |
+| 40 | 0.99 / 0.98 / 0.74 | 1.92 / 1.42 | 1.90 / 1.91 |
+| 80 | 0.98 / 0.96 / 0.75 | 1.91 / 1.42 | 2.26 / 2.30 |
+
+- **A hub costs about 2× the uniform network, almost independent of N.** Benefit grows as ln(N − 1), so nats per unit
+  cost nearly double from N = 10 to 80.
+- **Noise does not raise the cost; it lowers what is bought.** Up to ν = 0.5 at most 6% of the benefit is lost. At
+  ν = 0.75 a quarter to a third is lost and the cost drops with commitment.
+- **Noise is paid for in commitment.** The best T moves from 0.30 to 0.25, toward κ. This is the attention counterpart
+  of the longer memory noise selects in E1.
+- **Below T = κ the full price buys nothing:** stale hubs cost 1.9–2.0 at every ν (over-betting, E5).
+- The thesis's all-to-all RWED cost is non-monotone in ν (2.4, 6.0, 1.9, 0.1 at N = 10), for the reason given in E1.
+
+### Variation below T½ by signal
+
+| N | T½ closed form | effective T½ at ν = 0.25 / 0.5 / 0.75 (E8) | relay-aware walk (A4) |
+|---|---|---|---|
+| 10 | 0.568 | 0.494 / 0.389 / 0.274 | 0.477 / 0.367 / – |
+| 20 | 0.464 | 0.409 / 0.337 / 0.251 | 0.403 / 0.325 / – |
+| 40 | 0.410 | 0.374 / 0.313 / < 0.25 | 0.363 / 0.305 / 0.225 |
+| 80 | 0.375 | 0.339 / 0.294 / < 0.25 | 0.338 / 0.291 / 0.234 |
+
+- **The window splits.** Just above κ there is a noise-robust band. At T = 0.25, tracking stays at 0.91–0.99 up to
+  ν = 0.5 for every N. Strong reinforcement filters false seeds, and the true hub is the best relay for them (A4).
+  Toward T½ is a noise-sensitive band, where tracking follows the noisy mean field and the effective T½ falls.
+- **Noise removes a similar fraction of the window at every N:** about 20% at ν = 0.25, half at 0.5 and 80% at 0.75.
+  Since the window already narrows as 1/ln N ([E2](#e2-the-tempered-crossover-across-network-sizes)), a large noisy
+  niche needs a precisely tuned commitment. At N = 80 and ν = 0.5, T must lie within about 0.09 of κ.
+- **Below κ the signal does not matter:** lock-in is set by the initial weights (A3).
+
+### A1–A4: finer analysis of the tempered SS map
+
+Code: `nichenet/continuum/analysis.py`. Tests: `py/tests/test_analysis.py`. Numbers:
+`python -m nichenet.experiments.analysis` (`data/site/analysis.json`).
+
+<details>
+<summary><b>A1</b> · the symmetric reduction of B5 is exact at every δ</summary>
+
+In the symmetric state the source's column is uniform, so every relay is equivalent under permutations fixing s. D_sk
+is then the same for all k at any δ, and the common factor D^{κ−1} cancels in the reward ratio. The closed forms u*,
+x* and T½ hold exactly; large δ is needed only off the symmetric state. Check: the simulated fixed point equals x* to
+10⁻⁹ at δ = 1 and δ = 10.
+
+</details>
+
+<details>
+<summary><b>A2</b> · linear stability through the kink: the spectral radius crosses 1 at T = κ</summary>
+
+min_k D_k / ρ puts a kink at the symmetric fixed point (all relays tie). Linearize one smooth piece, anchored at one
+relay, in the tangent space of the per-node budgets (N(N − 2) modes). At N = 10 and κ = 0.3, 72 of 80 modes sit at the
+bulk rate (1 + εκ/T)/(1 + ε). A relay group sits 0.01–4% above it, so the spectral radius crosses 1 at T = κ, as in the
+reduced map. An unanchored finite-difference Jacobian mixes the pieces and gives a spurious 0.75.
+
+</details>
+
+<details>
+<summary><b>A3</b> · separatrix below T = κ: lock-in iff w_q / w_s > ρ^{(1−κ)/(κ−T)} initially</summary>
+
+For source s and strongest peer q in a column, l = ln(w_s/w_q) has the fixed point l* = (1 − κ) ln ρ / (T − κ), which is
+unstable for T < κ. Node-level agreement with simulation is 95–100% (κ = 0.4, 0.6, 0.8; tempered and hard cut).
+Slightly fewer nodes lock in than predicted, because columns interact through the relay distances. As T → 0 this
+recovers the one-step φ = 1 criterion (w_q/w_s)^κ > ρ^{1−κ}.
+
+</details>
+
+<details>
+<summary><b>A4</b> · noisy mean field, fluctuations and the relay effect</summary>
+
+E[r](x) = (1 − ν + ν/N) f(x) + ν (N − 1)/N g(x), where f is the reward with the true source seeded and g the reward
+when a peer is seeded. Three levels of description:
+
+1. The averaged map matches E8 within 3% for T ≥ 0.45.
+2. Near κ the stochastic walk adds the Jensen gain from step-to-step fluctuations.
+3. The relay-aware walk adds that the true source is the closest relay to a noise seed.
+
+At T = 0.25, ν = 0.5 the three levels give 0.65 / 0.69 / 0.80 at N = 80, against 0.91 in E8, and 0.62 / 0.67 / 0.69
+at N = 10, against 0.93. **Open:** the rest of the gap is attributed to peer heterogeneity, frequently seeded peers
+becoming cyclic sub-hubs, which is the F drop. A two-class reduction would test this.
+
+</details>
