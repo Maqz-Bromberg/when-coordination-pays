@@ -1,5 +1,7 @@
 import Link from "next/link";
-import ChapterPage, { Section, Takeaway } from "../components/chrome/ChapterPage";
+import ChapterPage, { Details, Section, Takeaway } from "../components/chrome/ChapterPage";
+import HierarchyPaperFigures from "../components/diagrams/HierarchyPaperFigures";
+import HierarchyPrimer from "../components/diagrams/HierarchyPrimer";
 import MorphPaths3D, { type PathGroup } from "../components/diagrams/MorphPaths3D";
 import NetworkPicture from "../components/diagrams/NetworkPicture";
 import PlotFigure from "../components/diagrams/PlotFigure";
@@ -87,6 +89,23 @@ export default function Page() {
       </Section>
 
       <Section n="8.3" id="paths" title="Where each experiment moves the shape">
+        <p>
+          Shape is read with the three hierarchy coordinates of Corominas-Murtra and colleagues
+          <Cite id="corominas2013originsheirarchy" />. <T k="treeness">Treeness</T> asks whether paths fan out from a few
+          tops or converge on a few bottoms; <T k="ff">feedforwardness</T> asks how much of the path weight avoids loops;{" "}
+          <T k="order">orderability</T> asks how many agents sit outside any loop. Each network becomes one point in a
+          cube, and an experiment that changes one setting traces a path through it.
+        </p>
+        <Figure id="hc-primer" wide title="Reading hierarchy coordinates"
+          caption="Six small networks scored with the paper's definitions (this project's implementation) and where they sit in the cube. Arrows run from speaker to listener, the way news travels, so a hub on the source is a pyramid. Attention networks are weighted, so they are scored at 8 weight thresholds and averaged: a perfect hub reads 0.88, not 1 (chapter 2). As commitment is lost, runs slide down the diagonal (dashed), which is what the paths below show.">
+          <HierarchyPrimer />
+        </Figure>
+        <Details wide title="How the original paper explains them, figure by figure">
+          <Figure id="hc-paper" wide title="Hierarchy coordinates in the original paper"
+            caption="The figures with which the measure was introduced, step by step: define the three axes, collapse loops, peel layers, count nodes outside loops, compute all three, then the cube and where real networks fall in it.">
+            <HierarchyPaperFigures />
+          </Figure>
+        </Details>
         <p>
           Every line below follows one experimental variable with everything else fixed, through the{" "}
           <T k="morphospace">hierarchy morphospace</T>: seed-averaged treeness, feedforwardness and orderability, from a

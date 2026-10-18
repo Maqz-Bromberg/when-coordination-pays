@@ -401,3 +401,15 @@ text.rx-label { stroke-opacity: 1; }
 .doc .tex-block { overflow-x: auto; overflow-y: hidden; margin: 10px 0; padding: 2px 0; }
 .ap-fold > summary .katex { font-size: 1em; }
 .doc code { overflow-wrap: anywhere; } /* long file paths wrap instead of widening the page */
+
+/* Figures from the hierarchy-coordinates paper, one per carousel slide (HierarchyPaperFigures) */
+.hpf { margin: 0; display: grid; gap: 10px; }
+.hpf-img { display: block; max-width: 100%; height: auto; margin: 0 auto; background: #fff; border-radius: 6px; padding: 8px;
+  border: 1px solid var(--rule); max-height: 520px; object-fit: contain; }
+.hpf-img.hpf-tall { max-height: 620px; }
+.mx-on .hpf-img, .mx-on .hpf-img.hpf-tall { max-height: calc(100vh - 300px); }
+.hpf figcaption { font-size: .92rem; max-width: 72ch; margin: 0 auto; }
+.hpf figcaption p { margin: 0 0 6px; }
+.hpf-credit { font-family: var(--f-mono); font-size: .7rem; color: var(--muted); }
+.sec-body > .detail.detail-wide { max-width: none; } /* a dropdown holding a wide figure */
+.detail-wide > .detail-body > .fig { margin: 12px 0 4px; }

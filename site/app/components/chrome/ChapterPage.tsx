@@ -35,9 +35,9 @@ export function Section({ n, title, id, children }: { n: string; title: string; 
 }
 
 /** Expandable granular detail inside a section. */
-export function Details({ title, children, open = false }: { title: React.ReactNode; children: React.ReactNode; open?: boolean }) {
+export function Details({ title, children, open = false, wide = false }: { title: React.ReactNode; children: React.ReactNode; open?: boolean; wide?: boolean }) {
   return (
-    <details className="detail" open={open}>
+    <details className={wide ? "detail detail-wide" : "detail"} open={open}>
       <summary>{title}</summary>
       <div className="detail-body">{children}</div>
     </details>

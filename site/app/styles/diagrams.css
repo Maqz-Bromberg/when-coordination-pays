@@ -85,3 +85,14 @@
 .keylist-group dl { margin: 6px 0 4px; display: grid; gap: 8px; }
 .keylist-group dt { font-weight: 600; }
 .keylist-group dd { margin: 0; color: var(--muted); font-size: .92rem; }
+
+/* hierarchy primer (HierarchyPrimer) */
+.hp-edge line { stroke: var(--muted); stroke-width: 1.6; }
+.hp-edge path { fill: var(--muted); }
+.hp-loop line { stroke: var(--an); stroke-width: 2; }
+.hp-loop path { fill: var(--an); }
+.hp-node { fill: var(--muted); }
+.hp-node-loop { fill: var(--an); }
+.hp-descent { stroke: var(--ss); stroke-width: 1.8; stroke-dasharray: 5 4; }
+.hp-end { fill: var(--surface); stroke: var(--ss); stroke-width: 2; }
+.hp-ours { fill: var(--ss); }
