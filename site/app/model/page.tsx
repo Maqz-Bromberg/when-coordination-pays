@@ -71,12 +71,6 @@ export default function Page() {
             the learning dynamics of <Cite id="sato2003coupled" />. One update step is exactly a forward-Euler step of
             that flow.
           </p>
-          <p>
-            The simulations here use a corrected (&ldquo;clean&rdquo;) version of the thesis code: rewards only on existing
-            links, the selection ranked over each agent&apos;s own candidates, and a free ε. The appendix on{" "}
-            <Link href="/appendix/validation/">validation</Link> lists each change and checks the faithful version against
-            the thesis&apos;s published results.
-          </p>
         </Details>
       </Section>
 

@@ -44,8 +44,8 @@ export default function Page() {
         </p>
         <Details title="Why not use distance as the benefit?">
           <p>
-            The original thesis judged networks by how far, on average, news has to travel. That measure cannot see
-            whether attention is concentrated on the source. The walk distance from s depends on how s&apos;s audience is
+            A natural alternative is how far, on average, news has to travel. That measure cannot see whether
+            attention is concentrated on the source. The walk distance from s depends on how s&apos;s audience is
             split, not on how much each listener gives to s, so a network in which everyone listens only to the source
             and one in which everyone listens a little to everyone have the same mean distance from s. In the memory
             experiment (<Link href="/appendix/e1/">E1</Link>) it was 13.09 for every setting. Log-loss is the measure
@@ -90,16 +90,11 @@ export default function Page() {
           The coordinates say whether a network looks like a pyramid. They do not say whether its top is the right agent.
           A hub on a stale source scores exactly like a hub on the current one (<Link href="/structure/#paths">chapter 8</Link>).
         </p>
-        <Details title="In detail: weighted networks and a correction to the original measure">
+        <Details title="In detail: weighted networks">
           <p>
             The coordinates are defined for unweighted graphs. Attention networks are weighted, so each network is
             thresholded at 8 evenly spaced weight levels and the coordinates are averaged. A perfect star keeps its
             shape at 7 of the levels and vanishes at the lowest, so full hierarchy reads <T k="plateau">7/8 = 0.88</T>.
-          </p>
-          <p>
-            The thesis computed treeness with element-wise instead of matrix powers in the path counts, and averaged over
-            the wrong set of subgraphs. Both are corrected here (eq. 14 of <Cite id="corominas2013originsheirarchy" bare />);
-            the appendix on <Link href="/appendix/errata/">errata</Link> shows how much they changed the thesis&apos;s results.
           </p>
         </Details>
       </Section>

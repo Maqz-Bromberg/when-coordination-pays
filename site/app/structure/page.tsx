@@ -101,8 +101,8 @@ export default function Page() {
           <li><b>Commitment is a one-dimensional descent.</b> From the hierarchy corner every line runs down the diagonal
             to about (0.25, 0.25, 0.25) as T passes T½.</li>
           <li><b>Noise erodes feedforwardness first.</b> Treeness holds while loops appear among rivals (<Link href="/robustness/#trace">chapter 5</Link>).</li>
-          <li><b>The thesis&apos;s cut imposes shape regardless of signal.</b> With a random source the cut still climbs
-            toward the same region, so that structure comes from selection alone.</li>
+          <li><b>Hard selection builds shape regardless of the signal.</b> With a random source a selection cut still
+            climbs toward the same region, so that structure comes from selection alone.</li>
         </ul>
       </Section>
 

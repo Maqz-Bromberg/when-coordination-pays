@@ -44,7 +44,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   phi: { group: "ss", term: "φ (cut)", def: "Thesis selection: only in-edges scoring in the top fraction (1 − φ) are rewarded. φ = 1 rewards a single edge per node." },
   selectivity: {
     group: "ss", term: "Selectivity",
-    def: "How few in-edges a node rewards each step. With the φ cut the thesis code ranks over all N entries, so node i's effective selectivity is (φN − (N − k_i))/k_i, which produces the thesis's threshold φ > 1 − ⟨k⟩/N. Clean mode ranks over in-neighbours only; tempered selection replaces the cut by a temperature.",
+    def: "How few in-links an agent rewards each round. With the φ cut it rewards only its top fraction (1 − φ); tempered selection replaces the cut by a temperature.",
     see: { label: "Validation, quirks", href: "/validation/" },
   },
   seeding: { group: "ss", term: "Seeding", def: "Which node receives the information each step: constant (one node), random (a new node every step), or, in the extensions, Markov with dwell time τ_E and noisy." },
@@ -146,7 +146,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     group: "ext", term: "Calibration gap",
     def: "Benefit − information cost. About 0 for a calibrated bettor (the Bayes filter). Strongly negative when confident on the wrong node (over-betting), positive when attention is more spread than its accuracy warrants.",
   },
-  edcost: { group: "ext", term: "ED cost", def: "Increase of the mean all-to-all RWED over the uniform network: the thesis's global measure. Blind to concentration and non-monotone." },
+  edcost: { group: "ext", term: "ED cost", def: "Increase of the mean all-to-all RWED over the uniform network. It does not see how concentrated attention is, so it is not used as the main cost." },
   likelihood: {
     group: "ext", term: "Likelihood (KL) reward",
     def: "Replaces D_k^(κ−1) by λ^(1−κ) on the seeded node and 1 elsewhere, keeping A^κ: a Kelly / multiplicative-weights reward for direct evidence. With λ = ρ it equals the RWED reward in the symmetric state but has no relays.",

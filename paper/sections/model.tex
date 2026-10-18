@@ -57,10 +57,8 @@ probability $1/\tauE$). Agents only see the seeded agent, which is a false alarm
 on average. Bottom: where the news lands; outlined cells are false alarms (here $\nu\approx 0.3$).}{environment}
 
 \subsection{Parameters and implementation}
-\Cref{tab:params} lists the parameters. Simulations use a corrected (``clean'') version of the original code: rewards
-only on existing links, selection ranked over each agent's own candidates, consistent column normalization and a free
-$\varepsilon$. A ``faithful'' mode reproduces the original code step for step and was used to validate the
-reimplementation (\cref{app:validation}).
+\Cref{tab:params} lists the parameters. Rewards go only to existing links, each agent ranks its own candidates, and
+$\varepsilon$ is free. The implementation was checked step by step against the original code (\cref{app:validation}).
 
 \begin{table}[tbp]\centering\small
 \caption{Parameters.}\label{tab:params}

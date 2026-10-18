@@ -116,13 +116,6 @@ export default function Page() {
           sit on stale agents and the benefit is far below zero. It is the most expensive structure with the worst return.
           Spreading out is the cheap failure: little is paid and little is gained.
         </p>
-        <Details title="Why the thesis's distance-based cost is not used here">
-          <p>
-            The thesis&apos;s global measure, the increase in mean walk distance between all pairs, behaves erratically here:
-            at 10 agents it is 2.4, 6.0, 1.9 and 0.1 for ν = 0 to 0.75, unrelated to the structure. It sees how attention
-            is shared, not how concentrated it is (<Link href="/measures/#benefit">chapter 2</Link>).
-          </p>
-        </Details>
       </Section>
     </ChapterPage>
   );

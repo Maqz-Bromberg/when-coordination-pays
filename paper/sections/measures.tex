@@ -34,17 +34,15 @@ other six ($s$ current source, $o$ old source) and what each bet earns. Bottom: 
 = conductance) carrying a broadcast from $s$ (coloured width = current). The hub holds $0.85$ of every other agent's
 attention.}{cost-benefit}
 
-\paragraph{Why not distance.} The original model judged networks by mean walk distance. Distance from $s$ depends on how
+\paragraph{Why not distance.} A natural alternative is mean walk distance. Distance from $s$ depends on how
 $s$'s audience is split, not on how much each listener gives to $s$: a network where everyone listens only to $s$ and one
-where everyone listens a little to everyone have the same mean distance from $s$ (13.09 for every setting in E1). The
-all-pairs version behaves erratically under noise (2.4, 6.0, 1.9 and 0.1 for $\nu=0$ to $0.75$ at $N=10$). Log-loss sees
+where everyone listens a little to everyone have the same mean distance from $s$ (13.09 for every setting in E1). Log-loss sees
 concentration and is used throughout.
 
 \paragraph{Shape: hierarchy coordinates.} Treeness $T_h\in[-1,1]$ (do paths converge on few top nodes?),
 feedforwardness $F\in[0,1]$ (how much path weight avoids cycles?) and orderability $O\in[0,1]$ (how many nodes lie
 outside cycles?) place a network in the hierarchy morphospace \citep{corominas2013originsheirarchy}. Weighted networks
-are thresholded at 8 levels and the coordinates averaged, so a perfect star reads $7/8=0.88$. We compute treeness with
-matrix powers in the path counts (eq.~14 of the original), correcting two errors in the code used by the 2020 thesis
-(\cref{app:errata}). \Cref{fig:shapes} shows typical values.
+are thresholded at 8 levels and the coordinates averaged, so a perfect star reads $7/8=0.88$. \Cref{fig:shapes} shows
+typical values.
 
 \figw{shapes}{\linewidth}{Three shapes and their hierarchy coordinates (typical runs).}{shapes}

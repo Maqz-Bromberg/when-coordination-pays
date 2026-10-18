@@ -31,7 +31,7 @@ are self-consistent memories; all are stable.}{e4}
 \begin{table}[tbp]\centering\small\caption{E4: self-consistent memories.}\label{tab:e4}\input{generated/e4}\end{table}
 
 \subsection{Pooling signals}
-The original code could pool several rounds of news before each update by summing distances; this never helps, because
+Agents could pool several rounds of news before each update. Summing distances over the window never helps, because
 the source's advantage is the $\rho$ contrast, which summing dilutes. Averaging rewards over a window of $k$ signals does
 help: it acts as a sampling window whose optimum grows like $\tauE^{0.42}$, close to the memory scaling (E7,
 \cref{fig:e7}).

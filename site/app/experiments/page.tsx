@@ -85,11 +85,11 @@ export default function Page() {
       </Section>
       <Section n="10.3" id="checks" title="Checks against the original work">
         <p>
-          Before any new experiment, the model was rebuilt and checked against what the original papers report: the thesis
-          model in a faithful mode that reproduces its code&apos;s behaviour, the niche-learning model against its authors&apos;
-          code, and the transport networks against their known optima. The <Link href="/appendix/validation/">validation</Link>{" "}
-          and <Link href="/appendix/errata/">errata</Link> appendices list what was reproduced, what was not, and what was
-          corrected.
+          Before any new experiment, the model was rebuilt and checked against what the original papers report: the
+          source-to-structure model step by step against its original code, the niche-learning model against its
+          authors&apos; code, and the transport networks against their known optima. The{" "}
+          <Link href="/appendix/validation/">validation</Link> and <Link href="/appendix/errata/">errata</Link> appendices
+          give the details.
         </p>
       </Section>
     </ChapterPage>

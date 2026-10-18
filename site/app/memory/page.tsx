@@ -61,11 +61,11 @@ export default function Page() {
 
       <Section n="7.3" id="window" title="Pooling several signals before updating">
         <p>
-          The thesis could also pool several rounds of news before each update. Summing distances, as its code does, never
+          Agents could also pool several rounds of news before each update. Summing distances over the window never
           helps. Averaging rewards does: it acts as a sampling window whose best length grows like τ_E<sup>0.42</sup>,
           close to the memory scaling above (<Link href="/appendix/e7/">E7</Link>).
         </p>
-        <Figure id="e7" title="Log-loss against the pooling window (τ_E = 300)" caption="Summing distances (the thesis rule) only gets worse with a longer window; averaging rewards has an optimum.">
+        <Figure id="e7" title="Log-loss against the pooling window (τ_E = 300)" caption="Summing distances only gets worse with a longer window; averaging rewards has an optimum.">
           <PlotFigure spec={{ kind: "lines", logX: true, data: e7curves(300), x: "k", y: "loss", series: "rule", xLabel: "window k (signals per update)", yLabel: "log-loss on the true source" }} />
         </Figure>
       </Section>

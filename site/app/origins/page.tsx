@@ -40,9 +40,9 @@ export default function Page() {
           <thead><tr><th>premise</th><th>what was found</th><th>where</th></tr></thead>
           <tbody>
             <tr><td>Where information appears shapes who listens to whom, producing hierarchy.</td>
-              <td>Holds within a window of commitment (κ &lt; T &lt; T½). The thesis&apos;s selection rule imposes hierarchy
-                even when the signal carries nothing, and its hierarchy measure needed two corrections.</td>
-              <td><Link href="/regimes/">3</Link>, <Link href="/appendix/errata/">errata</Link></td></tr>
+              <td>Holds within a window of commitment (κ &lt; T &lt; T½): below it the group locks onto early leaders,
+                above it attention stays spread.</td>
+              <td><Link href="/regimes/">3</Link></td></tr>
             <tr><td>The best memory grows like (pace)<sup>1/2</sup>.</td>
               <td>Reproduced in the attention network once signals are noisy (exponent 0.43). Self-reinforcement does not act
                 as memory.</td><td><Link href="/memory/">7.1</Link></td></tr>
