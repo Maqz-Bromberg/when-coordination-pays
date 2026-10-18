@@ -37,3 +37,56 @@ on the GPU. Script: `python -m nichenet.experiments.e1 [eps|kappa]`.
   two-hop paths set the distance.
 
 Tests: `py/tests/test_continuum.py`, `py/tests/test_large_delta.py`.
+
+## E6: what keeps loops, the budget or the reward?
+
+**Question (note §6.4, PLAN.md §3):** the source-to-structure model and adaptive transport networks both reinforce
+edges by use. Which ingredient decides tree versus loops?
+
+**Design:** a 2 × 2 factorial (`nichenet/compare.py`). Every cell runs W ← (1 − η)W + η·N[U^p] on the same 7 × 7
+lattice with the same source schedule. They differ only in two factors:
+
+- **Budget N:** per-node in-weight (SS) or one global sum (transport).
+- **Usage U of edge k → i:** the SS info score D_k^{κ−1} W_ki^κ (RWED), or the squared Kirchhoff current I_e² when the
+  source broadcasts to all nodes (flux).
+
+The per-node/RWED corner equals clean SS with tempered selection (T = 1/p). The global/flux corner has Corson's
+optimum as its constant-source fixed point (γ = 1/p − 1). Both are tested in `py/tests/test_compare.py`.
+
+**Setup:** p from 0.4 to 20, η = 0.05, 3000 steps, 3 seeds; sources constant at a corner, Markov (τ_E = 50) or random.
+Loops count the independent cycles of the backbone, the edges carrying at least 0.1 of the receiving node's strongest
+in-weight. Script: `python -m nichenet.experiments.e6`. Data: `data/site/e6.json`.
+
+Mean loops (maximum 36) under a constant / random source:
+
+| cell | p = 0.5 | 0.67 | 1 | 2 | 3 | 5 | 10 |
+|---|---|---|---|---|---|---|---|
+| node, flux | 36 / 36 | 5.7 / 36 | 0 / 32.7 | 0 / 18.7 | 0 / 18.0 | 0 / 17.3 | 0 / 16.3 |
+| global, flux | 36 / 36 | 0 / 14.3 | 0 / 3.3 | 0 / 0.7 | collapsed / 0 | collapsed / 0 | collapsed |
+| node, RWED, κ = 0 | 36 / 36 | 36 / 36 | 36 / 36 | 36 / 36 | 36 / 36 | 36 / 36 | 36 / 36 |
+| node, RWED, κ = 0.25 | 36 / 36 | 36 / 36 | 36 / 36 | 36 / 36 | 36 / 36 | 0 / 25 | 0 / 1 |
+| node, RWED, κ = 0.5 | 36 / 36 | 36 / 36 | 36 / 36 | 36 / 35.3 | 0 / 0 | 0 / 0 | 0 / 0 |
+
+"Collapsed" means that in most seeds the edges carrying at least 10⁻¹⁰ of the largest weight no longer connect all
+nodes. The global budget has concentrated onto part of the graph, so loop counts are not meaningful. For flux this is
+partly numerical: leaf conductances fall below the solver's 10⁻¹² relative floor. A per-node budget never collapses,
+because every node keeps an in-edge. Under a moving source with κ > 0 it can fragment instead: some seeds lock into
+several separate trees, a forest. That is a real outcome, and the loop count (E − V + components) handles it.
+
+**Findings:**
+
+1. **Trees need self-reinforcement.** The flux reward reinforces itself: a stronger edge carries more current. The
+   RWED reward at κ = 0 does not. It depends only on the sender's distance, so two equally distant parents tie
+   forever, and the lattice keeps every loop at any concentration. The thesis's κ (the W^κ factor) supplies the
+   missing self-reinforcement. Trees appear past p ≈ 1/κ, where B5 predicts the symmetric state loses stability
+   (T = κ): between p = 3 and 5 for κ = 0.25, and at p = 3 for κ = 0.5.
+2. **Fluctuating sources keep loops only with the flux reward.** With flux, a random source keeps 15–36 loops under
+   the per-node budget. Under the global budget loops survive only near the transition (14 at p = 0.67). With the RWED
+   reward, a random source only delays the transition (κ = 0.25: trees from p = 10 instead of 5), and past it the
+   network locks into some tree whatever the source does. The note's analogy, that load fluctuation plays the role of
+   1/τ_E, holds for the transport reward and not for the thesis reward.
+3. **The budget sets robustness and cost, not the tree/loop distinction.** A per-node budget forces every node to keep
+   an in-edge. Strong concentration gives trees or forests, never a collapse, and dissipation averaged over all
+   broadcast sources rises at most about 4.5-fold over the uniform lattice. A global budget puts the tree transition
+   exactly at Corson's p = 1/2 (γ = 1). At strong concentration it collapses onto a few edges, and averaged
+   dissipation grows by many orders of magnitude.
