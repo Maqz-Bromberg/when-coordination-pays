@@ -104,7 +104,7 @@ export default function RegimeMap({ cells, nets, lines, colors, xTicks, xLabel, 
   useEffect(() => {
     if (!ref.current || !mapWidth) return;
     const width = maximized ? mapWidth : Math.min(mapWidth, 820);
-    const height = maximized ? Math.max(280, Math.min(window.innerHeight - 220, width * 0.55)) : 280;
+    const height = maximized ? Math.max(280, Math.min(window.innerHeight - 240, width * 0.75)) : 280;
     const lineMarks = lines.flatMap((l) => [
       Plot.line(l.data, { x: "T", y: "kappa", stroke: "currentColor", strokeWidth: 1.6, strokeDasharray: l.dash ? "5 4" : undefined }),
       Plot.text(l.data.slice(-1), { x: "T", y: "kappa", text: () => l.label, dx: 8, dy: l.dy ?? 0, textAnchor: "start", fill: "currentColor", fontSize: 11 }),

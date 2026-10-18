@@ -50,3 +50,4 @@ paper/build.log
 site/public/paper.pdf
 .figserver.pid
 site/public/data/
+site/public/papers/

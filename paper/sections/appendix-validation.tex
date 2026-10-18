@@ -1,4 +1,21 @@
-\section{Validation and errata}\label{app:validation}
+\section{Derivation, validation and errata}\label{app:validation}
+
+\paragraph{Derivation: from the 2020 model to this one.} The model keeps the original's agents, random-walk effective
+distance with $\delta=10$, source substitution with $\rho=2.6$, info score $D_k^{\kappa-1}A_{ki}^\kappa$ and blended update.
+It changes:
+\begin{enumerate}
+  \item \textbf{Selection:} tempered rewards $r\propto S^{1/T}$ instead of rewarding the top fraction $1-\varphi$ of links
+    (the cut is the limit $T\to0$); this makes the dynamics solvable (B2--B5, A1--A3).
+  \item \textbf{Memory:} a free reward weight $\varepsilon$ instead of the fixed $\varepsilon=1$.
+  \item \textbf{Implementation:} rewards only on existing links, ranking over each agent's own candidates, consistent
+    per-listener normalization, explicit schedules and a seeded generator (a faithful mode keeps the original behaviour).
+  \item \textbf{Environment:} a moving source with mean dwell $\tauE$ observed through false alarms $\nu$, instead of
+    constant or random seeding.
+  \item \textbf{Measures:} tracking, log-loss benefit, information cost and dissipation instead of mean effective
+    distance, which depends on audience shares and cannot see concentration.
+  \item \textbf{Pooling:} averaging rewards over a window instead of summing distances, which never helps.
+  \item \textbf{Hierarchy coordinates:} the corrections H1 and H2 below.
+\end{enumerate}
 
 \paragraph{Validation.} Before any new experiment the components were checked against the original work:
 \begin{itemize}

@@ -3,7 +3,11 @@ import path from "node:path";
 
 /** A minimal BibTeX reader for ../references.bib: enough for author, title, venue, year, doi. Build time only. */
 export type BibEntry = { id: string; type: string; author: string; title: string; venue: string; year: string; doi?: string;
-                         short: string };
+                         short: string; arxiv?: string; pdf?: string };
+
+/** Papers the site hosts: the bib entry's `file` field (relative to the repository root). Only openly licensed work
+ *  and the author's own belong here; scripts/copy-data.mjs copies each into public/papers/<key>.pdf at build time. */
+export const hostedPdf = (id: string) => `/papers/${id}.pdf`;
 
 function delatex(s: string): string {
   const acc: Record<string, Record<string, string>> = {
@@ -36,16 +40,21 @@ export function bibliography(): Map<string, BibEntry> {
     const authors = field(body, "author").split(/\s+and\s+/).filter(Boolean);
     const family = (a: string) => (a.includes(",") ? a.split(",")[0] : a.split(" ").slice(-1)[0]).trim();
     const year = field(body, "year");
+    // "and others" in BibTeX means et al.
+    const etal = authors.some((a) => a.trim().toLowerCase() === "others");
     const short = authors.length === 0 ? s.id
+      : etal ? `${family(authors[0])} et al. ${year}`
       : authors.length === 1 ? `${family(authors[0])} ${year}`
       : authors.length === 2 ? `${family(authors[0])} & ${family(authors[1])} ${year}`
       : `${family(authors[0])} et al. ${year}`;
-    const names = authors.map((a) => (a.includes(",") ? `${a.split(",")[1].trim()} ${a.split(",")[0].trim()}` : a));
-    const author = names.length > 3 ? `${names.slice(0, 3).join(", ")} et al.` : names.join(", ").replace(/, ([^,]*)$/, " and $1");
+    const names = authors.filter((a) => a.trim().toLowerCase() !== "others").map((a) => (a.includes(",") ? `${a.split(",")[1].trim()} ${a.split(",")[0].trim()}` : a));
+    const author = names.length > 3 || etal ? `${names.slice(0, 3).join(", ")} et al.` : names.join(", ").replace(/, ([^,]*)$/, " and $1");
     map.set(s.id, {
       id: s.id, type: s.type, author, title: field(body, "title"), year, short,
       venue: field(body, "journal") || field(body, "booktitle") || field(body, "school") || field(body, "publisher") || field(body, "howpublished"),
       doi: field(body, "doi") || undefined,
+      arxiv: field(body, "eprint") || undefined,
+      pdf: (() => { const f = field(body, "file"); return f && fs.existsSync(path.join(process.cwd(), "..", f)) ? hostedPdf(s.id) : undefined; })(),
     });
   });
   cache = map;

@@ -66,5 +66,8 @@ export function whole(file: string): string {
 export function render(markdown: string): string {
   // inline links to the research site that only make sense there ("Interactive version ...") are dropped
   const cleaned = markdown.replace(/^Interactive version[^\n]*\n(?:[^\n]+\n)*?\n/m, "");
-  return md.parse(cleaned, { async: false }) as string;
+  // the research text writes exponents as ^{…}; outside code spans, show them as superscripts
+  const html = md.parse(cleaned, { async: false }) as string;
+  return html.split(/(<code>[\s\S]*?<\/code>)/).map((part) => (part.startsWith("<code>") ? part
+    : part.replace(/\^\{([^{}<]+)\}/g, "<sup>$1</sup>"))).join("");
 }

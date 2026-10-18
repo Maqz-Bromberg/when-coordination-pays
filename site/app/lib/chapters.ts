@@ -41,7 +41,7 @@ export const APPENDIX: { slug: string; title: string }[] = [
   { slug: "appendix/e8", title: "E8 Cost against size and noise" },
   { slug: "appendix/e9", title: "E9 Position against evidence" },
   { slug: "appendix/validation", title: "Validation" },
-  { slug: "appendix/errata", title: "Errata" },
+  { slug: "appendix/errata", title: "Errata and derivation" },
   { slug: "glossary", title: "Glossary" },
   { slug: "references", title: "References" },
 ];
