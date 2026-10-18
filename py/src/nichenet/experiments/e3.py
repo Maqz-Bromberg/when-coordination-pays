@@ -15,10 +15,15 @@ death-birth). a = 0 is the control (no payoff for attention). 150 epochs, 4 seed
 Measured: mean kappa over epochs; hub (node with the largest in-attention) tenure; at each hub change, whether the
 new hub's kappa is below the old hub's (a "destabilizing" takeover).
 
-    conda run -n nichenet python -m nichenet.experiments.e3
+Variant "endogenous" (E3b): the source still switches with probability 1/tau_E per step, but the new source is drawn
+in proportion to the relay in-attention each node currently receives, so attention buys future source status (the
+thesis's "diversity of connections" seeding points the same way). Writes e3_endogenous.json.
+
+    conda run -n nichenet python -m nichenet.experiments.e3 [exogenous|endogenous] [complete|sparse]
 """
 
 import json
+import sys
 import time
 from pathlib import Path
 
@@ -29,7 +34,11 @@ from nichenet.core import graphs
 from nichenet.core.linalg import col_normalize, row_normalize, rwed
 from nichenet.ss import schedules
 
-OUT = Path(__file__).resolve().parents[3].parent / "data" / "site" / "e3.json"
+SOURCE_RULE = sys.argv[1] if len(sys.argv) > 1 else "exogenous"
+GRAPH = sys.argv[2] if len(sys.argv) > 2 else "complete"  # "complete" or "sparse" (k = 4 out-edges per node)
+DATA = Path(__file__).resolve().parents[3].parent / "data" / "site"
+OUT = DATA / ("e3" + ("" if SOURCE_RULE == "exogenous" else "_endogenous") + ("" if GRAPH == "complete" else "_sparse")
+              + ".json")
 N, TEMP, EPS, DELTA, RHO = 30, 0.6, 1.0, 10.0, 2.6
 TAU_ES = (200.0, 2000.0)
 KMAX, EPOCH, EPOCHS, MUT = 0.55, 200, 150, 0.05
@@ -49,10 +58,12 @@ def step(A, mask, kappa, s):
 
 def run(a, seed, tau_E=200.0):
     rng = np.random.default_rng(seed)
-    A = graphs.uniform_random(N, rng)
+    A = graphs.uniform_random(N, rng) if GRAPH == "complete" else graphs.sparse_random(N, 4, rng)
     mask = graphs.edge_mask(A)
     kappa = rng.uniform(0.0, KMAX, N)
     src = schedules.markov(EPOCH * EPOCHS, N, tau_E, rng)
+    switch = rng.random(EPOCH * EPOCHS) < 1.0 / tau_E
+    current = int(src[0])
     mean_kappa, hubs, takeovers = [], [], []
     t = 0
     for _ in range(EPOCHS):
@@ -60,7 +71,14 @@ def run(a, seed, tau_E=200.0):
         counted = np.zeros(N)
         dist = np.zeros(N)
         for _ in range(EPOCH):
-            s = int(src[t])
+            if SOURCE_RULE == "exogenous":
+                s = int(src[t])
+            else:
+                if t > 0 and switch[t]:
+                    relay = A.sum(axis=1) - np.diagonal(A)
+                    relay[current] = 0.0
+                    current = int(rng.choice(N, p=relay / relay.sum()))
+                s = current
             A, d = step(A, mask, kappa, s)
             contrib = A.sum(axis=1) - np.diagonal(A)
             contrib[s] = 0.0  # attention paid to the source is not relay attention
@@ -97,7 +115,7 @@ def run(a, seed, tau_E=200.0):
 def main(n_jobs=14):
     t0 = time.time()
     rows = Parallel(n_jobs=n_jobs)(delayed(run)(a, s, te) for te in TAU_ES for a in PAYS for s in SEEDS)
-    OUT.write_text(json.dumps({"n": N, "temperature": TEMP, "tau_Es": TAU_ES, "epoch": EPOCH, "epochs": EPOCHS,
+    OUT.write_text(json.dumps({"source_rule": SOURCE_RULE, "graph": GRAPH, "n": N, "temperature": TEMP, "tau_Es": TAU_ES, "epoch": EPOCH, "epochs": EPOCHS,
                                "kappa_max": KMAX, "rows": rows}))
     print(f"{len(rows)} runs in {time.time() - t0:.0f} s -> {OUT}")
     for te, a in [(te, a) for te in TAU_ES for a in PAYS]:

@@ -194,3 +194,54 @@ keeps its attention, including its attention to the source.
   letting the next source be drawn in proportion to attention received.
 - **Caveat:** κ reaches the cap of 0.55 (kept below T to avoid lock-in), so the late-epoch trait spread is small. That
   makes the takeover measure uninformative at the end of the run.
+
+**Two follow-ups.** Both stay null: a = 0 to 2 makes no difference in any of them.
+
+| variant | τ_E = 200: hub tenure / mean κ at end | τ_E = 2000: hub tenure / mean κ at end |
+|---|---|---|
+| complete graph, source drawn by attention (E3b) | 1.3–1.4 / 0.54 | 1.9–2.1 / 0.55 |
+| sparse graph (k = 4), exogenous source | 1.6 / 0.26–0.29 | 8.1–8.4 / 0.26–0.28 |
+| sparse graph, source drawn by attention | 1.6–1.7 / 0.28–0.29 | 8.7–9.4 / 0.26–0.29 |
+
+- **Endogenous source (E3b).** The new source is drawn in proportion to the relay attention each node receives, so
+  attention buys future source status. On complete graphs the outcome is the same as E3.
+- **Sparse graphs.** Here relays matter, and relay hubs do persist much longer (8–9 epochs at τ_E = 2000). But payment
+  still does not lengthen tenure, κ no longer rises, and takeovers by a less reliable node run at chance (≈ 50%).
+- **Conclusion.** The monopoly prediction has no purchase in the SS model as it stands, even when attention feeds back
+  on where information appears. Data: `data/site/e3_endogenous.json`, `e3_sparse.json`, `e3_endogenous_sparse.json`.
+
+## E4: closing the loop between memory and environmental pace
+
+**Question (note §3.9, §8):** if a population's own memory sets how fast its environment switches, does the optimal
+memory settle at a fixed point of τ_m* ≃ c τ_E(τ_m*)^{1/2}, cycle, or drift?
+
+**Setup:** Lee et al.'s binary model (h₀ = 0.2, τ_c = 1000, v = 0.1, |α| = 0.95) with the mean-field population ABS,
+for passive agents (control), stabilizers and destabilizers, at baseline τ_E = 100 and 1000.
+
+1. **Residents:** for each of 12 memories τ_m from 0.3 to 60, a pure resident population gives the effective
+   switching time τ_eff(τ_m), measured from the flip count.
+2. **Best response:** a rare invader of the same type (fraction 0.01) best-responds over the same grid, paired against
+   the residents over 2 seeds of 10⁷ steps. BR(τ_m) is the memory with the lowest invader-minus-resident divergence.
+3. **Iteration:** the map τ_m → BR(τ_m) is iterated from both ends of the grid.
+
+Script: `python -m nichenet.experiments.e4`. Data: `data/site/e4.json`.
+
+| type, τ_E | τ_eff range over residents | fixed point τ_m^ (BR slope) | τ_eff at τ_m^ | passive τ_m* at that τ_eff (V-NL1) | pure-population optimum |
+|---|---|---|---|---|---|
+| passive, 100 | 100 | 0.70 (0) | 100 | 0.61–0.93 | 0.79 |
+| passive, 1000 | 1004 | 2.50 (0) | 1004 | 2.3–3.7 | 2.06 |
+| stabilizer, 100 | 812–1631 | 3.12 (+0.12) | 1482 | 3.10 | 3.33 |
+| stabilizer, 1000 | 8196–18831 | 10.73 (+0.05) | 18194 | 10.80 | 14.1 |
+| destabilizer, 100 | 53–69 | 0.55 (0) | 53 | 0.65 | 0.79 |
+| destabilizer, 1000 | 519–550 | 1.77 (−0.01) | 521 | 1.86 | 2.06 |
+
+- **A stable fixed point in every case.** Iterating the best response converges from both ends of the grid to the
+  same τ_m^, with |BR slope| ≤ 0.12: no cycles and no drift.
+- **The note's self-consistency relation holds.** At the fixed point, the memory equals a passive agent's optimum for
+  the environment the population creates: within 1% for stabilizers and 5–15% for destabilizers. Lee et al.'s scaling
+  therefore closes on itself, τ_m^ = c τ_eff(τ_m^)^{1/2} with the passive c.
+- **Stabilizers slow their environment 15–18-fold** and settle at memories several times longer than passive agents.
+  Destabilizers halve τ_eff and settle at shorter memories.
+- **A tragedy of the commons.** The stable memory is shorter than the memory that minimizes the residents' own
+  divergence (10.7 against about 14 at τ_E = 1000). Shorter-memory invaders free-ride on the slowdown the residents
+  provide, which is Lee et al.'s argument about shared stabilization, now as a quantitative fixed point.
