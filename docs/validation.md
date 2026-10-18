@@ -14,7 +14,10 @@ Checks that must pass before experiments are reported (PLAN.md §3). Each line n
 | V-NL1 | Fig. 2c–d: τ_m* ∼ τ_E^{1/2}, D* ∼ τ_E^{−1/2} | pass, see below | `python -m nichenet.experiments.v_nl1` → `data/site/v_nl1.json` |
 | V-NL2 | Fig. 4 invasion graph | not started | |
 | V-SS1–4 | Thesis results: star at constant source, sparse threshold, κ lock-in, log N scaling | not started (golden traces cover the dynamics, not the phase diagram) | |
-| V-TR1–3 | Tero shortest path, Katifori tree → loops, Hu–Cai γ transition | not started | |
+| V-TR1 | Linear-flux (Tero et al.) adaptation keeps the shortest of two routes and prunes the other | pass | `py/tests/test_transport.py` |
+| V-TR2 | Fluctuations create loops: Corson σ = 3 loops rise monotonically with γ (0.25 → 0.9); Katifori moving sink is looped where the steady load gives a tree | pass | same |
+| V-TR3 | Steady load: spanning trees for γ < 1 (several γ, seeds); γ > 1 keeps all edges | pass | same |
+| — | Adaptation (Ronellenfitsch & Katifori eq. 4, c = 0) reaches the Corson optimum for g = 1/(1+γ); Kirchhoff conservation | pass | same |
 
 ## V-NL1 detail
 
@@ -33,3 +36,12 @@ Fit over 10 ≤ τ_E ≤ 10⁴ (13 values of τ_E from 1 to 10⁵, 40 Lobatto po
   (1 − 0.95)/τ_E, an effective time of about 2·10⁶ steps at τ_E = 10⁵. The iteration's stopping rule (per-step change
   below 10⁻⁵, at most 1500 steps) can then stop before the density is stationary. The reference code behaves the same
   way. To be checked with the agent-based simulation.
+
+## Transport notes
+
+- **The update rule is sourced.** The fixed point C_e ∝ ⟨I_e²⟩^{1/(1+γ)} is Corson (2010) eq. 6. It is also the stationarity
+  condition of Katifori et al. (2010) eqs. 1–5. Hu & Cai (2013) is not on arXiv, so the adaptation rule is taken from
+  Ronellenfitsch & Katifori (2016) eq. 4, which generalizes it. Its 2g = 1 case is the linear-flux Physarum rule.
+- **Convergence is slow at moderate fluctuations.** For γ < 1 the iteration converges slowly as edges decay towards 0.
+  At σ = 1 the loop counts were not monotone after 3000 iterations (3, 0, 0–19 loops for γ = 0.5, 0.75, 0.9). This
+  needs more iterations or an acceleration before σ ≈ 1 results are reported. Tests use σ = 0 and σ = 3.
