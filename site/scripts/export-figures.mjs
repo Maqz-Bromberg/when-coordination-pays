@@ -15,7 +15,10 @@ fs.mkdirSync(outDir, { recursive: true });
 
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 1180, height: 1000 }, deviceScaleFactor: 2, reducedMotion: "reduce" });
-await ctx.addInitScript(() => { try { localStorage.setItem("theme", "light"); } catch {} });
+await ctx.addInitScript(() => {
+  try { localStorage.setItem("theme", "light"); } catch {}
+  window.__EXPORT_ALL__ = true; // step carousels render every step, stacked
+});
 const page = await ctx.newPage();
 const manifest = {};
 
@@ -27,6 +30,30 @@ for (const ch of CHAPTERS) {
     await page.goto(base + ch + "/", { waitUntil: "networkidle" });
     await page.waitForTimeout(id === "paths" ? 2500 : 900);
     const sel = `[data-figure-id="${id}"] .fig-content`;
+    // a step carousel (rendered stacked for export): one PDF per step, <id>-<step>.pdf
+    const steps = await page.$$eval(`${sel} .sc-all > .sc-slide`, (els) => els.length);
+    if (steps) {
+      for (let j = 0; j < steps; j++) {
+        if (j) { await page.goto(base + ch + "/", { waitUntil: "networkidle" }); await page.waitForTimeout(600); }
+        const size = await page.evaluate(([s, j]) => {
+          const slide = document.querySelectorAll(`${s} .sc-all > .sc-slide`)[j];
+          const r = slide.getBoundingClientRect();
+          const wrap = document.createElement("div");
+          wrap.style.cssText = `width:${Math.ceil(r.width)}px;padding:6px;background:var(--surface);`;
+          slide.querySelector(".sc-step")?.remove();
+          wrap.appendChild(slide);
+          document.body.replaceChildren(wrap);
+          document.body.style.cssText = "margin:0;padding:0;background:var(--surface);";
+          const b = wrap.getBoundingClientRect();
+          return { w: Math.ceil(b.width), h: Math.ceil(b.height) };
+        }, [sel, j]);
+        const file = `${id}-${j}.pdf`;
+        await page.pdf({ path: path.join(outDir, file), width: `${size.w}px`, height: `${size.h + 2}px`, printBackground: true,
+                         margin: { top: 0, right: 0, bottom: 0, left: 0 }, pageRanges: "1" });
+        manifest[`${id}-${j}`] = { chapter: ch, file, ...size };
+      }
+      continue;
+    }
     const live = await page.$(`${sel} .js-plotly-plot`);
     if (live) {
       const file = `${id}.png`;

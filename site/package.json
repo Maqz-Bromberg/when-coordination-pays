@@ -13,6 +13,7 @@
   "dependencies": {
     "@observablehq/plot": "^0.6.17",
     "d3-interpolate": "^3.0.1",
+    "katex": "^0.16.47",
     "lucide-react": "^0.460.0",
     "marked": "^14.1.4",
     "motion": "^12.43.0",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@types/d3-interpolate": "^3.0.4",
+    "@types/katex": "^0.16.8",
     "@types/node": "^22.20.5",
     "@types/react": "19.1",
     "@types/react-dom": "19.1",

@@ -1,0 +1,26 @@
+\section{A round, step by step}\label{app:round}
+
+\Cref{fig:round-a,fig:round-b,fig:round-c} work one round of the model through on six agents A--F, with the numbers the
+equations of \cref{sec:model} produce ($\kappa=0.2$, $T=0.3$, $\varepsilon=1$, $\rho=2.6$, $\delta=10$). Arrows run from
+speaker to listener, the direction news travels, with width proportional to attention. A is the seeded agent this
+round; E is the listener followed in detail. The companion website shows the same steps as a carousel.
+
+\begin{figure}[p]\centering
+\includegraphics[width=0.92\linewidth]{round-example-0}\par\medskip
+\includegraphics[width=0.92\linewidth]{round-example-1}\par\medskip
+\includegraphics[width=0.92\linewidth]{round-example-2}
+\caption{Steps 0--2: the state, where the news appears, and how close everyone is to it.}\label{fig:round-a}
+\end{figure}
+
+\begin{figure}[p]\centering
+\includegraphics[width=0.92\linewidth]{round-example-3}\par\medskip
+\includegraphics[width=0.92\linewidth]{round-example-4}
+\caption{Steps 3--4: E scores its incoming links and commits its reward.}\label{fig:round-b}
+\end{figure}
+
+\begin{figure}[p]\centering
+\includegraphics[width=0.92\linewidth]{round-example-5}\par\medskip
+\includegraphics[width=0.92\linewidth]{round-example-6}
+\caption{Steps 5--6: E blends the reward into its attention (shown for the whole network after one round), and the hub
+that thirty rounds with the same source produce.}\label{fig:round-c}
+\end{figure}

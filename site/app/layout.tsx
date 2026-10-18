@@ -4,6 +4,7 @@ import Chrome from "./components/chrome/Chrome";
 import ScrollProgress from "./components/chrome/ScrollProgress";
 import { themeScript } from "./components/chrome/ThemeToggle";
 import LightboxHost from "./components/figure/Lightbox";
+import "katex/dist/katex.min.css";
 import "./styles/tokens.css";
 import "./styles/site.css";
 

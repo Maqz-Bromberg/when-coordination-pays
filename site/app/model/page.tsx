@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ChapterPage, { Details, Section, Takeaway } from "../components/chrome/ChapterPage";
+import RoundExample from "../components/diagrams/RoundExample";
 import { EnvironmentDiagram, RoundDiagram } from "../components/diagrams/SummaryDiagrams";
 import Figure from "../components/figure/Figure";
 import Cite from "../components/ui/Cite";
@@ -45,6 +46,13 @@ export default function Page() {
           <li><b>Blend with memory.</b> The new attention is a weighted average of the old attention and the reward,
             (old + ε·reward)/(1 + ε). The <T k="eps">memory parameter ε</T> sets how fast old attention is replaced.</li>
         </ol>
+        <p>
+          The same round, worked through on six agents with the numbers the equations produce. Step through it: each
+          step highlights what flows where, with the mathematics underneath.
+        </p>
+        <Figure id="round-example" title="One round on six agents, step by step" caption="Arrows run from speaker to listener, the direction news travels; width is attention. A is the source this round; E is the listener followed in detail. Parameters: κ = 0.2, T = 0.3, ε = 1, ρ = 2.6, δ = 10.">
+          <RoundExample />
+        </Figure>
         <Details title="In detail: closeness as a random-walk effective distance">
           <p>
             Closeness is the <T k="rwed">random-walk effective distance</T> of <Cite id="brockmann2013hidden" />, as used

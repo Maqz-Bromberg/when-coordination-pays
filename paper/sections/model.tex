@@ -13,6 +13,8 @@ Every round $t$, all agents update at once in four steps (\cref{fig:round}).
 \figw{round}{\linewidth}{One round of the model. Bars are one agent's view of the five agents it can listen to; $s$ is
 the one closest to the news. The same steps repeat every round, for every agent at once.}{round}
 
+\noindent \Cref{app:round} works one round through on six agents, step by step, with the numbers each equation produces.
+
 \paragraph{1. News appears} at the seeded agent $s_t$: the true source with probability $1-\nu$, otherwise a uniformly
 random agent (a false alarm). Agents do not know which.
 
