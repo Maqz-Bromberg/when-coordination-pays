@@ -80,5 +80,5 @@ def test_flow_conservation():
     net = tn.triangular(4, 5)
     C = np.random.default_rng(2).uniform(0.1, 1.0, net.n_edges)
     _, Q = tn.moving_sink_loads(net.n)
-    I = net.currents(C, Q)
-    np.testing.assert_allclose(net.incidence().T @ I, Q, atol=1e-10)
+    currents = net.currents(C, Q)
+    np.testing.assert_allclose(net.incidence().T @ currents, Q, atol=1e-10)

@@ -96,15 +96,17 @@ class FlowNetwork:
         rng = np.random.default_rng() if rng is None else rng
         C = rng.uniform(0.5, 1.5, self.n_edges) if C0 is None else np.asarray(C0, float).copy()
         C = C / np.sum(C ** gamma) ** (1 / gamma) * K
-        for it in range(iters):
+        done = 0
+        while done < iters:
             I2 = self.mean_square_currents(C, loads)
             new = I2 ** (1 / (1 + gamma))
             new = new / np.sum(new ** gamma) ** (1 / gamma) * K
             change = np.max(np.abs(new - C)) / np.max(new)
             C = new
+            done += 1
             if change < tol:
                 break
-        return C, it + 1
+        return C, done
 
     def adapt(self, loads, g=0.5, a=1.0, b=1.0, c=0.0, F_hat=1.0, C0=None, dt=0.05, steps=4000, rng=None):
         """Explicit-Euler integration of dC/dt = a (<I^2>/F_hat^2)^g - b C + c."""
