@@ -81,3 +81,20 @@ def test_noisy_mean_field_reduces_to_closed_form():
     n, kappa, T = 20, 0.2, 0.45
     roots = [x for x, stable in an.noisy_fixed_points(n, kappa, T, 0.0) if stable]
     assert roots == [pytest.approx(ld.x_star(n, kappa, T), rel=1e-6)]
+
+
+def test_column_walk_equal_peers_without_noise_tracks_closed_form():
+    """A4 test: with no noise the column walk's peers stay equal, so it reproduces the symmetric fixed point."""
+    n, kappa, T = 12, 0.2, 0.45
+    x, comp = an.column_walk(n, kappa, T, 0.0, steps=3000, burn=1000, reward="likelihood")
+    assert x == pytest.approx(ld.x_star(n, kappa, T), rel=1e-6)
+    assert comp == pytest.approx(1.0, abs=1e-9)
+
+
+def test_heterogeneous_peers_compete_less():
+    """A4 test: with noise near kappa the peers become unequal (competition < 1) and the source keeps more weight
+    than in the symmetric walk."""
+    n, kappa, T, nu = 20, 0.2, 0.25, 0.5
+    x, comp = an.column_walk(n, kappa, T, nu, reward="likelihood", steps=8000)
+    assert comp < 0.95
+    assert x > an.noisy_symmetric_walk(n, kappa, T, nu, steps=8000) + 0.03

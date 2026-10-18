@@ -53,3 +53,29 @@ def test_true_source_observables_default_to_seeded_source():
     noisy = schedules.noisy(src, 10, 0.5, rng)
     _, obs2 = jax_kernel.run_batch(*args[:2], noisy[None], *args[3:], true_sources=src[None], record_every=5)
     assert not np.allclose(np.asarray(obs2["true_ed_block"]), np.asarray(obs2["mean_ed_block"]))
+
+
+def test_likelihood_reward_matches_rwed_in_the_symmetric_state():
+    """E9: with lambda = rho and peers equalized, the likelihood reward reproduces the RWED reward without noise
+    (both reduce to the closed form of B5)."""
+    import numpy as np
+
+    from nichenet.continuum import large_delta as ld
+    from nichenet.core import graphs
+    from nichenet.ss import jax_kernel
+
+    n, B, steps = 12, 2, 400
+    rng = np.random.default_rng(3)
+    A0 = np.stack([graphs.uniform_random(n, rng) for _ in range(B)])
+    mask = np.stack([graphs.edge_mask(a) for a in A0])
+    src = np.zeros((B, steps), dtype=np.int64)
+    par = (np.full(B, 0.2), np.zeros(B), np.ones(B), np.full(B, 0.45))
+    out = {}
+    for reward in ("rwed", "likelihood"):
+        _, o = jax_kernel.run_batch(A0, mask, src, *par, tempered=True, record_every=100, reward=reward,
+                                    symmetrize=True)
+        out[reward] = np.asarray(o["source_attention"])[:, -1]
+        info = np.asarray(o["info_cost_block"])[:, -1]
+        assert np.all(info > 0) and np.all(info < np.log(n - 1))
+    np.testing.assert_allclose(out["likelihood"], ld.x_star(n, 0.2, 0.45), rtol=1e-6)
+    np.testing.assert_allclose(out["rwed"], ld.x_star(n, 0.2, 0.45), rtol=1e-6)

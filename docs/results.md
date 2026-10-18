@@ -306,6 +306,45 @@ Script: `python -m nichenet.experiments.e8`. Data: `data/site/e8.json`.
   niche needs a precisely tuned commitment. At N = 80 and ν = 0.5, T must lie within about 0.09 of κ.
 - **Below κ the signal does not matter:** lock-in is set by the initial weights (A3).
 
+### What the measures stand for
+
+- **Benefit** (log score): each node's attention is a bet on where news appears, charged −ln(share on the source). It
+  stands for prediction quality, like a Kelly bettor's growth rate or Lee et al.'s divergence.
+- **Information cost**, KL(attention ‖ uniform) = ln(N − 1) − H: how far attention departs from indifference, in
+  the same nats. It is the same for a right and a wrong bet of equal confidence. Benefit − information cost reads
+  calibration: about 0 for a calibrated bettor, very negative for over-betting.
+- **Dissipation cost**: attention read as pipes carrying a broadcast from wherever news appears. A hub makes news from
+  the hub cheap and news from anywhere else expensive. It stands for congestion, latency and lost lateral redundancy:
+  what transport networks pay and the SS model never sees.
+
+### E9: a KL (likelihood) reward against the RWED reward
+
+**Design.** E9 keeps the E8 grid, seeds and A^κ, and swaps the distance factor D_k^{κ−1} for λ^{1−κ} on the seeded
+node (1 elsewhere). This is a Kelly / multiplicative-weights reward for direct evidence. With λ = ρ it equals the RWED
+reward in the symmetric state, so the difference is relays. A second variant uses the calibrated λ* = 1 + N(1 − ν)/ν.
+The bound is the exact Bayes filter. The kernel switches are `reward="likelihood"`, `lam` and `symmetrize`; the run
+also records an `info_cost_block` observable. Script: `python -m nichenet.experiments.e9`. Data: `data/site/e9.json`.
+
+| N, ν | benefit / ln(N−1): RWED / likelihood λ=ρ / likelihood λ* / Bayes | tracking: RWED / λ=ρ / Bayes |
+|---|---|---|
+| 10, 0.5 | 0.94 / 0.86 / 0.76 / 0.97 | 0.93 / 0.79 / 0.97 |
+| 10, 0.75 | 0.67 / 0.57 / 0.50 / 0.92 | 0.58 / 0.49 / 0.92 |
+| 80, 0.5 | 0.96 / 0.90 / 0.81 / 0.98 | 0.91 / 0.72 / 0.97 |
+| 80, 0.75 | 0.75 / 0.70 / 0.59 / 0.97 | 0.43 / 0.36 / 0.96 |
+
+- **Relays are worth 5–10 points of benefit under strong noise.** At ν = 0.25 the rules are within 1 point; at
+  ν = 0 they are identical (A1).
+- **Calibrating λ makes it worse.** The SS update averages rewards instead of multiplying beliefs, so a sharper
+  likelihood copies the latest seed.
+- **RWED SS is within 1–3% of the Bayes bound up to ν = 0.5 and far from it at ν = 0.75.** The shortfall is memory
+  (ε = 1 averages over about 1.4 steps), as in E1.
+- **Dissipation is set by structure:** the Bayes filter builds the same hub at the same cost (1.8–2.0).
+- **RWED vs KL.** RWED rewards position: being close to where news appears, including through intermediaries. That
+  is routing or social learning, with collective error correction through relays. KL rewards evidence: the
+  observation's likelihood under "k is the source". That is betting or inference (Kelly, multiplicative weights,
+  Bayes), and each agent learns alone, as Lee et al.'s agents do. As measures, RWED captures latency through shares
+  and misses concentration (E1); log-loss captures prediction.
+
 ### A1–A4: finer analysis of the tempered SS map
 
 Code: `nichenet/continuum/analysis.py`. Tests: `py/tests/test_analysis.py`. Numbers:
@@ -342,7 +381,7 @@ recovers the one-step φ = 1 criterion (w_q/w_s)^κ > ρ^{1−κ}.
 </details>
 
 <details>
-<summary><b>A4</b> · noisy mean field, fluctuations and the relay effect</summary>
+<summary><b>A4</b> · noisy mean field, fluctuations, relays and peer heterogeneity (tested)</summary>
 
 E[r](x) = (1 − ν + ν/N) f(x) + ν (N − 1)/N g(x), where f is the reward with the true source seeded and g the reward
 when a peer is seeded. Three levels of description:
@@ -352,7 +391,23 @@ when a peer is seeded. Three levels of description:
 3. The relay-aware walk adds that the true source is the closest relay to a noise seed.
 
 At T = 0.25, ν = 0.5 the three levels give 0.65 / 0.69 / 0.80 at N = 80, against 0.91 in E8, and 0.62 / 0.67 / 0.69
-at N = 10, against 0.93. **Open:** the rest of the gap is attributed to peer heterogeneity, frequently seeded peers
-becoming cyclic sub-hubs, which is the F drop. A two-class reduction would test this.
+at N = 10, against 0.93.
+
+**Test (`python -m nichenet.experiments.a4_test`, data `data/site/a4_test.json`).** A 2 × 2 factorial in the
+simulation: reward RWED or likelihood (λ = ρ, no relays; see E9), crossed with peers free or equalized after every
+update. Against it, a column walk (`column_walk`) keeps one node's full unequal peer vector.
+
+- **With peers equalized, each simulation matches its walk:** RWED matches the relay walk, likelihood the symmetric
+  walk, within 0.03 at N ≥ 20 and 0.06 at N = 10. The reductions are right about the symmetric state.
+- **Peer heterogeneity carries the whole excess near κ.** At N = 10, ν = 0.5, T = 0.25, tracking falls from 0.941 to
+  0.746 when peers are equalized; at N = 80 it falls from 0.944 to 0.823. At T = 0.45 the change is within 0.01.
+- **Mechanism: concavity.** For T > κ the score w^{κ/T} is concave. Noise seeds leave the residual weight on a few
+  recent peers, and uneven weight has less total score than even weight. The competition factor
+  Σ w^{κ/T} / ((N − 2) w̄^{κ/T}) is 0.87–0.94 at T = 0.25 and tends to 1 with T. A single unequal column recovers
+  40–100% of the excess (typically about two thirds).
+- **Relays amplify it:** the heterogeneity gain is 0.20 for RWED against 0.09 for likelihood (N = 10, ν = 0.5). The
+  remainder the column walk misses comes from relay distances, which it still computes from the mean peer weight.
+- The F drop under noise and the robustness of tracking near κ are the same phenomenon: short-lived cyclic sub-hubs
+  that reduce the competition the source faces.
 
 </details>

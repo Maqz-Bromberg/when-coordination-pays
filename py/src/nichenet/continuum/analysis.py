@@ -173,3 +173,43 @@ def relay_walk(n, kappa, T, nu, rho=2.6, eps=1.0, steps=20000, seed=0, burn=1000
         if t >= burn:
             total += x
     return total / (steps - burn)
+
+
+def column_walk(n, kappa, T, nu, rho=2.6, eps=1.0, steps=20000, seed=0, burn=1000, delta=10.0, reward="rwed"):
+    """A4 with peer heterogeneity: one node's full in-weight column (source + N - 2 peers) under the noisy seeds,
+    the rest of the network in the symmetric state. Distances as in ``noise_step_reward`` (relay-aware, from the mean
+    peer weight) for ``reward="rwed"``; ``reward="likelihood"`` gives the seed a factor rho and everyone else 1.
+    Returns the time-averaged weight on the source and the mean peer competition factor
+    sum_k w_k^(kappa/T) / ((N - 2) mean(w)^(kappa/T)) (1 in the symmetric state, < 1 when peers are unequal)."""
+    rng = np.random.default_rng(seed)
+    m = n - 2
+    w = np.full(m + 1, 1.0 / (m + 1))  # index 0: source
+    p_true = 1 - nu + nu / n
+    a = kappa / T
+    total, comp = 0.0, 0.0
+    for t in range(steps):
+        x = w[0]
+        if rng.random() < p_true:
+            lam = np.ones(m + 1)
+            lam[0] = rho ** (1 - kappa)
+        else:
+            j = 1 + int(rng.integers(m))
+            lam = np.ones(m + 1)
+            if reward == "rwed":
+                q, pbar = 1.0 / (n - 1), (1 - x) / m
+                tot = q + m * pbar
+                D_s, D_k = delta - np.log(q / tot), delta - np.log(pbar / tot)
+                D = np.full(m + 1, D_k)
+                D[0] = D_s
+                D[j] = min(D_s, D_k) / rho
+                lam = D ** (kappa - 1)
+            else:
+                lam[j] = rho ** (1 - kappa)
+        s = (lam * w ** kappa) ** (1 / T)
+        w = (w + eps * s / s.sum()) / (1 + eps)
+        if t >= burn:
+            total += w[0]
+            peers = w[1:]
+            comp += np.sum(peers ** a) / (m * peers.mean() ** a)
+    k = steps - burn
+    return total / k, comp / k
