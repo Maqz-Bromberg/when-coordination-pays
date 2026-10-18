@@ -120,3 +120,26 @@ commitment, and over-betting if it is committed but tracking falls short of that
 
 The note's schematic has the right topology. Both of its boundaries are analytic: T = κ (commitment through
 self-reinforcement) and T½ (the source's advantage ρ against the number of alternatives).
+
+## E7: the update interval as a sampling window
+
+**Question:** the thesis code can sum distances from k seeded sources before each update (`update_interval`, k = 1 in
+every thesis result). Is that a sampling window like Lee et al.'s τ_c, with an optimum that grows with source
+persistence?
+
+**Setup:** noisy seeding as in E1 (ν = 0.5, Markov true source with mean dwell τ_E), clean mode, N = 30, tempered
+selection T = 0.3, κ = 0. The thesis increment ε = 1 keeps memory short, so the window does the averaging. Windows
+k = 1 to 64, 3 seeds. Fitness is log-loss on the true source. Script: `python -m nichenet.experiments.e7
+[distances|rewards]`. Data: `data/site/e7.json`, `data/site/e7_rewards.json`.
+
+| τ_E | 10 | 30 | 100 | 300 | 1000 | slope |
+|---|---|---|---|---|---|---|
+| k*, thesis rule (sum distances) | 1 | 1 | 1 | 1 | 1 | none (k = 1 always best) |
+| k*, average rewards | 1 | 1.6 | 2.7 | 4.1 | 7.1 | 0.42 (local 0.39–0.46) |
+
+- **The thesis rule never helps.** The true source's advantage is the ρ contrast from the source substitution, which
+  appears only in steps where it is seeded. Summing distances over noisy seeds dilutes that contrast, and updating
+  every k steps also stretches the memory k-fold.
+- **Averaging rewards works as a sampling window.** It has an interior optimum that grows as τ_E^{0.42}, close to Lee
+  et al.'s ½, and it lowers the achievable log-loss (1.43 against 1.59 at k = 1 for τ_E = 1000). To act as Lee's τ_c, a
+  window has to average what the agent bets on, not the raw distances.
