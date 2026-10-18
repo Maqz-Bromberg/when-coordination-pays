@@ -1,0 +1,85 @@
+/* Diagram and chart styles, from the research site. */
+.plot { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 8px; overflow-x: auto;
+  color: var(--ink); --plot-background: var(--surface); }
+/* Plot tooltips: theme surface behind theme ink, so the text reads in both light and dark mode */
+.plot [aria-label="tip"] path { fill: var(--surface); stroke: var(--muted); }
+.plot [aria-label="tip"] text, .plot [aria-label="tip"] tspan { fill: var(--ink); }
+.plot svg { max-width: 100%; height: auto; color: var(--ink); background: transparent; }
+/* cost / benefit diagram */
+.cb-wrap { display: grid; gap: 4px; }
+.cb-svg { width: 100%; height: auto; display: block; min-width: 560px; }
+.cb-row { font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; fill: var(--muted); writing-mode: vertical-rl; }
+.cb-title { font-family: var(--f-display); font-size: 13px; font-weight: 700; fill: var(--ink); }
+.cb-num { font-family: var(--f-mono); font-size: 10.5px; fill: var(--ink); }
+.cb-small { font-family: var(--f-body); font-size: 11px; fill: var(--muted); font-style: italic; }
+.cb-bar { fill: var(--rule); }
+.cb-bar-src { fill: var(--ss); }
+.cb-bar-old { fill: var(--muted); }
+.cb-axis { stroke: var(--muted); stroke-width: 1; }
+.cb-pipe { stroke: var(--rule); stroke-linecap: round; }
+.cb-flow { stroke: var(--tr); stroke-opacity: .75; stroke-linecap: round; }
+.cb-node { fill: var(--muted); }
+.cb-hub { fill: var(--ink); }
+.cb-src { fill: var(--ss); stroke: var(--ink); stroke-width: 1.2; }
+.cb-in { font-family: var(--f-mono); font-size: 9px; fill: var(--bg); font-weight: 700; }
+/* summary diagrams */
+.sm-figure { margin: 22px 0; }
+.sm-scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 10px; }
+.sm-svg { width: 100%; height: auto; display: block; min-width: 600px; }
+.sm-h { font-family: var(--f-display); font-size: 14px; font-weight: 700; fill: var(--ink); }
+.sm-step { fill: var(--ss); font-family: var(--f-mono); font-size: 12px; }
+.sm-small { font-family: var(--f-body); font-size: 12px; fill: var(--muted); }
+.sm-tiny { font-family: var(--f-mono); font-size: 9.5px; fill: var(--muted); }
+.sm-num { font-family: var(--f-mono); font-size: 11px; fill: var(--ink); }
+.sm-strongnum { font-weight: 600; }
+.sm-sup { font-size: 9px; }
+.sm-panel { fill: var(--bg); stroke: var(--rule); }
+.sm-arrow line, .sm-loop { stroke: var(--muted); stroke-width: 1.4; fill: none; }
+.sm-head { fill: var(--muted); }
+.sm-arrow-acc line { stroke: var(--ss); stroke-width: 2.2; }
+.sm-arrow-acc .sm-head { fill: var(--ss); }
+.sm-loop { stroke-dasharray: 4 4; }
+.sm-axis { stroke: var(--muted); stroke-width: 1; }
+.sm-mark { stroke: var(--ink); stroke-width: 1.4; stroke-dasharray: 3 3; }
+.sm-grid { stroke: var(--rule); stroke-width: .8; }
+.sm-faint { stroke: var(--rule); stroke-width: 1; }
+.sm-mid { stroke: var(--muted); stroke-opacity: .45; stroke-width: 1; }
+.sm-strong { stroke: var(--muted); stroke-width: 2.4; }
+.sm-cycle { fill: none; stroke: var(--an); stroke-width: 2.2; }
+.sm-node { fill: var(--muted); }
+.sm-source { fill: var(--ss); stroke: var(--ink); stroke-width: 1.2; }
+.sm-stale { fill: var(--ink); }
+.sm-false { fill: var(--surface); stroke: var(--ob); stroke-width: 2; stroke-dasharray: 2.5 2; }
+.sm-credit { fill: var(--surface); stroke: var(--ss); stroke-width: 3.5; }
+.sm-bar { fill: var(--rule); }
+.sm-bar-ss { fill: var(--ss); }
+.sm-bar-nl { fill: var(--nl); }
+.sm-bar-ink { fill: var(--ink); }
+.sm-bracket { fill: none; stroke: var(--muted); }
+.sm-n0 { fill: var(--ss); } .sm-n1 { fill: var(--nl); } .sm-n2 { fill: var(--tr); }
+.sm-n3 { fill: var(--hc); } .sm-n4 { fill: var(--an); } .sm-n5 { fill: var(--mg); }
+.sm-wrong { stroke: var(--ink); stroke-width: 2; }
+.sm-zone-ob { fill: var(--ob); fill-opacity: .10; }
+.sm-zone-hi { fill: var(--hi); fill-opacity: .12; }
+.sm-zone-di { fill: var(--di); fill-opacity: .14; }
+.sm-line { fill: none; stroke-width: 2.2; }
+.sm-l0 { stroke: var(--hi); fill: var(--hi); } .sm-l1 { stroke: var(--ss); fill: var(--ss); } .sm-l2 { stroke: var(--ob); fill: var(--ob); }
+.sm-line.sm-l0, .sm-line.sm-l1, .sm-line.sm-l2 { fill: none; }
+.sm-dash { fill: none; stroke: var(--muted); stroke-dasharray: 4 4; }
+.sm-w0 { fill: var(--hi); fill-opacity: .22; } .sm-w1 { fill: var(--hi); fill-opacity: .45; }
+.sm-w2 { fill: var(--hi); fill-opacity: .7; } .sm-w3 { fill: var(--hi); fill-opacity: 1; }
+.sm-card-svg { width: 100%; height: auto; display: block; }
+.sm-griddot { fill: var(--muted); }
+.sm-layer .sm-griddot { fill: var(--rule); }
+.sm-cell { fill: var(--bg); stroke: var(--rule); }
+.sm-cell-hi { fill: var(--bg); stroke: var(--ss); stroke-width: 1.6; }
+/* glossary list */
+.keylist { display: grid; gap: 8px; margin: 16px 0; }
+.keylist-group { border-left: 3px solid var(--c); background: var(--surface); border-radius: 4px; padding: 6px 12px; }
+.keylist-group > summary { cursor: pointer; padding: 4px 0; }
+.keylist-group > summary .keygroup-label { font-family: var(--f-display); font-weight: 700; color: var(--c); }
+.keylist-group > summary .keygroup-source { font-size: .8rem; color: var(--muted); font-style: italic; }
+.keylist-group > summary:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
+.keylist-group dl { margin: 6px 0 4px; display: grid; gap: 8px; }
+.keylist-group dt { font-weight: 600; }
+.keylist-group dd { margin: 0; color: var(--muted); font-size: .92rem; }

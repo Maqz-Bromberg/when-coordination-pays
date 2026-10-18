@@ -1,0 +1,28 @@
+/* Colour and type tokens, shared with the research site (web/app/globals.css). One palette; tints mix a token. */
+/* Tokens follow the synthesis note: one hue per model (MG, NL, SS) plus TR for transport networks. */
+:root {
+  --bg: #F2F5F3; --surface: #FFFFFF; --ink: #17201C; --muted: #55625B; --rule: #D3DBD6;
+  --mg: #3A4BA6; --nl: #2B7351; --ss: #A3621A; --tr: #7A3E7A;
+  --hc: #1F7A85; --ext: #3A4BA6; --an: #A23B5A; --rail-w: 248px; --top-h: 52px;
+  --ob: #B5462E; --hi: #2B7351; --di: #6F9BBF;
+  --accent: #A3621A; --bg-elev: #E9EEEB; --glass: rgba(242,245,243,.82); --shadow: 0 10px 30px rgba(23,32,28,.12);
+  --f-display: var(--font-display), "Avenir Next", "Segoe UI", sans-serif;
+  --f-body: var(--font-serif), "Iowan Old Style", Georgia, serif;
+  --f-mono: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1412; --surface: #161D1A; --ink: #E1E8E4; --muted: #9AA9A1; --rule: #2B3631;
+    --mg: #9AA6EE; --nl: #6CC497; --ss: #E2A65C; --tr: #D69AD6; color-scheme: dark;
+    --hc: #6CC8D2; --ext: #9AA6EE; --an: #E48AA4;
+    --ob: #E07A62; --hi: #6CC497; --di: #8FB8DA;
+    --accent: #E2A65C; --bg-elev: #131917; --glass: rgba(15,20,18,.8); --shadow: 0 10px 30px rgba(0,0,0,.45);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1412; --surface: #161D1A; --ink: #E1E8E4; --muted: #9AA9A1; --rule: #2B3631;
+  --mg: #9AA6EE; --nl: #6CC497; --ss: #E2A65C; --tr: #D69AD6; color-scheme: dark;
+  --hc: #6CC8D2; --ext: #9AA6EE; --an: #E48AA4;
+  --ob: #E07A62; --hi: #6CC497; --di: #8FB8DA;
+  --accent: #E2A65C; --bg-elev: #131917; --glass: rgba(15,20,18,.8); --shadow: 0 10px 30px rgba(0,0,0,.45);
+}

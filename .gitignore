@@ -36,3 +36,10 @@ web/.pyodide-expected.json
 py/build/
 py/dist/
 *.whl
+site/node_modules/
+site/.next/
+site/out/
+site/next-env.d.ts
+site/tsconfig.tsbuildinfo
+web/tsconfig.tsbuildinfo
+paper/build/
