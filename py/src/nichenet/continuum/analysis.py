@@ -15,7 +15,7 @@ A2  Linear stability. The thesis sets the source's own distance to min_k D_k / r
 A3  Separatrix below T = kappa. For two dominant entries in a column, the source s and the strongest peer q, the reward
     ratio is (rho^(1-kappa) (w_s/w_q)^kappa)^(1/T). Its fixed point l* = (1 - kappa) ln rho / (T - kappa) for
     l = ln(w_s/w_q) is unstable for T < kappa, so the peer wins (lock-in) iff w_q / w_s > rho^((1-kappa)/(kappa-T)).
-    As T -> 0 this is the one-step criterion (w_q/w_s)^kappa > rho^(1-kappa) of the phi = 1 cut (note §6.4).
+    As T -> 0 this is the one-step criterion (w_q/w_s)^kappa > rho^(1-kappa) of the phi = 1 cut.
 
 A4  Noisy-signal mean field (``noisy_fixed_points``; ``noisy_symmetric_walk`` keeps the step-to-step reward noise).
     The true source is seeded with probability 1 - nu, otherwise a uniformly random node.

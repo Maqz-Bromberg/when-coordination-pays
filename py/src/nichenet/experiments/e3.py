@@ -1,4 +1,4 @@
-"""E3: paying nodes for in-attention (note §8, Lee et al.'s monopoly prediction transposed to the SS model).
+"""E3: paying nodes for in-attention (Lee et al.'s monopoly prediction transposed to the SS model).
 
 Clean SS on a complete graph (N = 30), tempered selection T = 0.6, eps = 1, Markov source (tau_E = 200 or 2000).
 Each node i has

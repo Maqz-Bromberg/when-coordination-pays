@@ -1,4 +1,4 @@
-"""E4: closing the loop of note §3.9. Memory sets the environment's pace, the pace sets the optimal memory.
+"""E4: closing the loop. Memory sets the environment's pace, the pace sets the optimal memory.
 
 For a pure population of one type (passive, stabilizer or destabilizer) with memory tau_m, the environment's effective
 switching time tau_eff(tau_m) is measured from the flip count (population ABS, nichenet.nl.abs). A rare invader of the

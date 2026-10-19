@@ -4,7 +4,7 @@ Each section names its script and data file. "Extension" marks assumptions beyon
 
 ## E1: optimal reinforcement memory against source persistence
 
-**Prediction (note §6.1, §8):** ε* ∝ τ_E^{−1/2}, i.e. τ_m* = 1/ln(1+ε*) ∝ τ_E^{1/2}.
+**Prediction:** ε* ∝ τ_E^{−1/2}, i.e. τ_m* = 1/ln(1+ε*) ∝ τ_E^{1/2}.
 
 **Two prerequisites the thesis model lacks:**
 
@@ -13,7 +13,7 @@ Each section names its script and data file. "Extension" marks assumptions beyon
    (ν = 0.5). The true source jumps with mean dwell time τ_E.
 2. **A fitness that sees attention.** Mean effective distance from the source is flat (13.09 for every ε and τ_E).
    The RWED depends on T_sk = A_sk / Σ_j A_sj, a share, so uniform attention to the source leaves every distance at
-   δ + ln(N − 1). The fitness used is log-loss on the true source, mean_i −ln A[s, i]: the Kelly regret of note §5.
+   δ + ln(N − 1). The fitness used is log-loss on the true source, mean_i −ln A[s, i]: the Kelly regret.
 
 **Setup:** clean mode, N = 30, complete graph, tempered selection T = 0.3, 15 memories, 4 seeds, run length 40 τ_E,
 on the GPU. Script: `python -m nichenet.experiments.e1 [eps|kappa]`.
@@ -40,7 +40,7 @@ Tests: `py/tests/test_continuum.py`, `py/tests/test_large_delta.py`.
 
 ## E6: what keeps loops, the budget or the reward?
 
-**Question (note §6.4):** the source-to-structure model and adaptive transport networks both reinforce
+**Question:** the source-to-structure model and adaptive transport networks both reinforce
 edges by use. Which ingredient decides tree versus loops?
 
 **Design:** a 2 × 2 factorial (`nichenet/compare.py`). Every cell runs W ← (1 − η)W + η·N[U^p] on the same 7 × 7
@@ -83,7 +83,7 @@ several separate trees, a forest. That is a real outcome, and the loop count (E 
 2. **Fluctuating sources keep loops only with the flux reward.** With flux, a random source keeps 15–36 loops under
    the per-node budget. Under the global budget loops survive only near the transition (14 at p = 0.67). With the RWED
    reward, a random source only delays the transition (κ = 0.25: trees from p = 10 instead of 5), and past it the
-   network locks into some tree whatever the source does. The note's analogy, that load fluctuation plays the role of
+   network locks into some tree whatever the source does. The proposed analogy, that load fluctuation plays the role of
    1/τ_E, holds for the transport reward and not for the thesis reward.
 3. **The budget sets robustness and cost, not the tree/loop distinction.** A per-node budget forces every node to keep
    an in-edge. Strong concentration gives trees or forests, never a collapse, and dissipation averaged over all
@@ -93,8 +93,8 @@ several separate trees, a forest. That is a real outcome, and the loop count (E 
 
 ## E5: computed phase diagram
 
-**Question (note §5):** the note sketched three regimes of attention structure, distributed, hierarchy and
-over-betting, against source predictability and commitment. Do they exist, and where are the boundaries?
+**Question:** are there three regimes of attention structure, distributed, hierarchy and over-betting, against
+source predictability and commitment? If so, where are the boundaries?
 
 **Setup:** clean mode, complete graph N = 30, tempered selection over T ∈ [0.05, 2] (14 values), κ ∈ {0, 0.2, 0.4,
 0.6}, ε = 1. Sources: constant, Markov with mean dwell 1000, 100 or 10 steps, or random every step. 3000 steps,
@@ -118,7 +118,7 @@ commitment, and over-betting if it is committed but tracking falls short of that
   (1 − κ) ln ρ / ln(N − 2). It narrows as the source becomes less persistent and is gone under a random source.
 - **κ = 0 never over-bets,** because nothing locks in.
 
-The note's schematic has the right topology. Both of its boundaries are analytic: T = κ (commitment through
+The proposed schematic has the right topology. Both of its boundaries are analytic: T = κ (commitment through
 self-reinforcement) and T½ (the source's advantage ρ against the number of alternatives).
 
 ## E7: the update interval as a sampling window
@@ -146,7 +146,7 @@ k = 1 to 64, 3 seeds. Fitness is log-loss on the true source. Script: `python -m
 
 ## E2: the tempered crossover across network sizes
 
-**Prediction (note §8):** with a softmax instead of the φ cut, the transition on complete graphs is a smooth crossover
+**Prediction:** with a softmax instead of the φ cut, the transition on complete graphs is a smooth crossover
 near T ∼ 1/ln N.
 
 **Setup:** clean SS, complete graphs N = 16 to 256, constant source, tempered selection over 16 temperatures,
@@ -165,7 +165,7 @@ near T ∼ 1/ln N.
 
 ## E3: paying nodes for in-attention
 
-**Question (note §8, Lee et al.'s monopoly prediction):** if being attended to pays, do hubs entrench by keeping their
+**Question (Lee et al.'s monopoly prediction):** if being attended to pays, do hubs entrench by keeping their
 followers' signal stable, and do challengers win only by destabilizing?
 
 **Setup:** clean SS, complete graph N = 30, tempered selection T = 0.6, ε = 1, Markov source with τ_E = 200 or 2000.
@@ -212,7 +212,7 @@ keeps its attention, including its attention to the source.
 
 ## E4: closing the loop between memory and environmental pace
 
-**Question (note §3.9, §8):** if a population's own memory sets how fast its environment switches, does the optimal
+**Question:** if a population's own memory sets how fast its environment switches, does the optimal
 memory settle at a fixed point of τ_m* ≃ c τ_E(τ_m*)^{1/2}, cycle, or drift?
 
 **Setup:** Lee et al.'s binary model (h₀ = 0.2, τ_c = 1000, v = 0.1, |α| = 0.95) with the mean-field population ABS,
@@ -237,7 +237,7 @@ Script: `python -m nichenet.experiments.e4`. Data: `data/site/e4.json`.
 
 - **A stable fixed point in every case.** Iterating the best response converges from both ends of the grid to the
   same τ_m^, with |BR slope| ≤ 0.12: no cycles and no drift.
-- **The note's self-consistency relation holds.** At the fixed point, the memory equals a passive agent's optimum for
+- **The proposed self-consistency relation holds.** At the fixed point, the memory equals a passive agent's optimum for
   the environment the population creates: within 1% for stabilizers and 5–15% for destabilizers. Lee et al.'s scaling
   therefore closes on itself, τ_m^ = c τ_eff(τ_m^)^{1/2} with the passive c.
 - **Stabilizers slow their environment 15–18-fold** and settle at memories several times longer than passive agents.
@@ -248,13 +248,10 @@ Script: `python -m nichenet.experiments.e4`. Data: `data/site/e4.json`.
 
 ## E8 and A1–A4: the price of coordination
 
-Interactive version with 3D paths, charts, per-section keys and the derivations:
-[Coordination](/results/coordination/).
-
 ### Paths in the hierarchy morphospace
 
 `python -m nichenet.experiments.paths` assembles seed-averaged corrected (T, F, O) along each experimental variable
-from existing data: [V-SS](/results/source-structure/) φ, [E5](/results/e5/) T, [E6](/results/e6/) p and E8 (T, ν, N
+from existing data: V-SS φ, E5 T, E6 p and E8 (T, ν, N
 and time). Data: `data/site/paths.json`.
 
 - **Temperature is a one-dimensional descent** from the hierarchy corner down the diagonal to about (0.25, 0.25, 0.25)

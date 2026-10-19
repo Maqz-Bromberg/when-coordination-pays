@@ -1,4 +1,4 @@
-"""Check the note's references in references.bib against Crossref and add DOIs.
+"""Check the references in references.bib against Crossref and add DOIs.
 
 Only entries marked note={unverified} are queried (by title). An entry counts as verified when Crossref's best match has
 a near-identical title, the same year and the same first-author surname; its DOI is then added and the note becomes

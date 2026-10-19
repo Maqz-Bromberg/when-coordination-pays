@@ -168,8 +168,8 @@ $\alpha/\beta = T_{\text{eff}}$ these are the fixed points above. The two flows 
 
 **Check.** A 600-step simulation reaches the softmax to $10^{-9}$ (`py/tests/test_continuum.py`).
 
-<!-- fold: B4 · The note's one-relay reduction (proposed; not the model at δ = 10) -->
-**Claim.** The synthesis note proposed a reduction in which relays carry weight: attending to a peer pays $\gamma$
+<!-- fold: B4 · A one-relay reduction (proposed; not the model at δ = 10) -->
+**Claim.** A proposed reduction in which relays carry weight: attending to a peer pays $\gamma$
 times that peer's attention to the source, as if the news passed through it. Its fixed point is unique, with
 $T_{1/2} = (1-\gamma/2)/\ln(N-2)$. It is kept for comparison. At $\delta = 10$ the model has no such relay gain, and its
 $T_{1/2}$ is the one in B5.

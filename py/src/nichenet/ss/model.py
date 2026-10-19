@@ -9,7 +9,7 @@ One step for a seeded source s (thesis §3.3, ``graph.py``):
      kept scores to a reward r with column sums 1.
   5. A <- A + eps * r, then the conserved side (columns by default) is renormalized to 1.
 
-This module is the reference for faithful/clean behaviour and runs under Pyodide; ``ss.jax_kernel`` is the
+This module is the reference for faithful/clean behaviour; ``ss.jax_kernel`` is the
 batched fast path for sweeps and is tested against it.
 """
 

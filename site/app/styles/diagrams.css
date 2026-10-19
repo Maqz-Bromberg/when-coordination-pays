@@ -1,4 +1,4 @@
-/* Diagram and chart styles, from the research site. */
+/* Diagram and chart styles. */
 .plot { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 8px; overflow-x: auto;
   color: var(--ink); --plot-background: var(--surface); }
 /* Plot tooltips: theme surface behind theme ink, so the text reads in both light and dark mode */

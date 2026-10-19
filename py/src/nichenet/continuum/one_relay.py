@@ -1,4 +1,4 @@
-"""B4: the one-relay reduction proposed in the synthesis note (§6.3), kept as written for comparison with B5.
+"""B4: a proposed one-relay reduction, kept as written for comparison with B5.
 
 Every non-source node puts weight x on a constant source and spreads 1 - x over N - 2 peers. Attending to the source
 pays 1, attending to a peer pays gamma x. The softmax fixed point at temperature T is

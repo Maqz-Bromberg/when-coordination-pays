@@ -1,4 +1,4 @@
-"""E5: computed phase diagram of the SS model (replaces the schematic regime figure in note §5).
+"""E5: computed phase diagram of the SS model (replaces a schematic regime figure).
 
 Clean mode, complete graph N = 30, tempered selection (temperature T), eps = 1, kappa in {0, 0.2, 0.4, 0.6}, source
 persistence from constant through Markov tau_E = 1000, 100, 10 to random each step. 3000 steps, 3 seeds, GPU kernel.

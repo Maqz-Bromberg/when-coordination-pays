@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Source-to-structure networks, optimal learning in noisy niches, and adaptive transport networks"
 authors = [{ name = "Max Bromberg" }]
 requires-python = ">=3.10"
-# Core stays pure numpy/scipy/networkx so the same wheel runs in Pyodide; jax and numba are optional accelerators.
+# Core stays pure numpy/scipy/networkx; jax and numba are optional accelerators.
 dependencies = ["numpy>=1.23", "scipy>=1.10", "networkx>=2.8"]
 
 [project.optional-dependencies]

@@ -72,7 +72,6 @@ By Claude (Opus 5.5) and Max Bromberg.
 make envs          # conda envs: nichenet (main) and nvd-legacy (runs the thesis code as an oracle)
 make test          # nichenet tests, incl. golden traces recorded from the thesis code
 make test-legacy   # checks of the thesis code's own behaviour
-make site serve    # build and serve the private research site on localhost:8000
 make release       # public site + figures exported from it + tables + paper, bundled -> site/out
 make serve-public  # serve the public build on localhost:8001
 ```
@@ -86,10 +85,14 @@ make serve-public  # serve the public build on localhost:8001
 - `site/`: the public Next.js site, a static export for GitHub Pages (`BASE_PATH` sets the repository path at build
   time). Hover cards, the figure lightbox and the scroll bar are adapted from remystifying-science (provenance lines at
   the top of each file).
-- `web/`: the private research site, with a Pyodide lab that runs the model in the browser.
 - `paper/`: LuaLaTeX sources. Figures come from `site/scripts/export-figures.mjs`, tables from `data/site/` via
   `paper/tables.py`; neither is in git.
 - `tools/legacy_oracle/`: the environment and recorder for the 2020 thesis code. `reference/` (not in git) holds the
   clones; see [reference/README.md](reference/README.md).
 - `papers/hosted/`: the openly licensed papers the site serves. Other papers stay out of git.
 - `.github/workflows/pages.yml` builds the site, figures and paper and deploys them to GitHub Pages.
+
+## Licence
+
+MIT (see [LICENSE](LICENSE)). The papers in `papers/hosted/` and the figures reproduced from Corominas-Murtra et al.
+(2013) in `site/public/hc/` keep their own licences and copyright.

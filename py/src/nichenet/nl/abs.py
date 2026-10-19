@@ -18,7 +18,7 @@ import numpy as np
 
 try:
     from numba import njit
-except ImportError:  # Pyodide: plain Python fallback (slow, for small T only)
+except ImportError:  # without numba: plain Python fallback (slow, for small T only)
     def njit(*args, **kwargs):
         if args and callable(args[0]):
             return args[0]

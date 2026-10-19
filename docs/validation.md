@@ -14,7 +14,6 @@ Checks that must pass before experiments are reported. Each line names its test 
 | B3 | Tempered fixed points are softmax(−ln D / T_eff), T_eff = (T − κ)/(1 − κ); equal to a 600-step simulation to 1e-9; the Sato–Crutchfield replicator with r = −ln D, β = (1−κ)/T, α = 1 − κ/T vanishes there | pass | same |
 | B5 | Symmetric large-δ closed forms: x* = u*/(u* + N − 2), u* = ρ^{(1−κ)/(T−κ)}; contraction (1 + εκ/T)/(1+ε); condensation for T < κ; T_½ = κ + (1−κ) ln ρ / ln(N−2) | pass | `test_large_delta.py` |
 | — | Large-δ distances D = δ − ln T_sj track the full RWED (to 1e-3) under proportional reward, and fail under selective cuts, where weights fall below e^{−δ} and two-hop paths set the distance | pass (limit documented) | same |
-| — | Pyodide (numpy 1.26) runs the nichenet wheel and matches CPython (numpy 2.5) to 4e-16 on an SS run and eigen D(β) | pass | `web/scripts/pyodide-smoke.mjs` |
 | — | JAX kernel equals numpy clean mode (7 configs incl. tempered selection, sparse graphs) | pass | `test_jax_kernel.py` |
 | V-NL0 | nichenet eigenfunction solver equals Lee et al.'s on 6 cases (passive, stabilizer, destabilizer; τ_E = 3–300; 5 values of β), rtol 1e-8 | pass | `py/tests/test_nl.py` |
 | V-NL1 | Fig. 2c–d: τ_m* ∼ τ_E^{1/2}, D* ∼ τ_E^{−1/2} | pass, see below | `python -m nichenet.experiments.v_nl1` → `data/site/v_nl1.json` |

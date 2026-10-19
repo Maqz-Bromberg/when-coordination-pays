@@ -1,4 +1,4 @@
-"""E2: the tempered-selection crossover across network sizes (note §8: smooth crossover near T ~ 1/ln N).
+"""E2: the tempered-selection crossover across network sizes (predicted: smooth crossover near T ~ 1/ln N).
 
 Clean SS, complete graphs N in {16, 32, 64, 128, 256}, constant source, tempered selection over T, kappa in {0, 0.3},
 eps = 1, 1500 steps, 2 seeds, GPU. Compares the final source attention with the B5 closed form

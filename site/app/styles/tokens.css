@@ -1,5 +1,5 @@
-/* Colour and type tokens, shared with the research site (web/app/globals.css). One palette; tints mix a token. */
-/* Tokens follow the synthesis note: one hue per model (MG, NL, SS) plus TR for transport networks. */
+/* Colour and type tokens. One palette; tints mix a token. */
+/* One hue per model (MG, NL, SS) plus TR for transport networks. */
 :root {
   --bg: #F2F5F3; --surface: #FFFFFF; --ink: #17201C; --muted: #55625B; --rule: #D3DBD6;
   --mg: #3A4BA6; --nl: #2B7351; --ss: #A3621A; --tr: #7A3E7A;

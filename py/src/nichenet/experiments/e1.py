@@ -1,10 +1,10 @@
 """E1: optimal reinforcement memory against source persistence, with noisy seeding (extension).
 
-The synthesis note predicted eps* ∝ tau_E^(-1/2) (tau_m* ∝ tau_E^(1/2)). In the thesis model distances are exact, so
+The prediction is eps* ∝ tau_E^(-1/2) (tau_m* ∝ tau_E^(1/2)). In the thesis model distances are exact, so
 without noise the fastest memory always wins and there is no interior optimum. Here a persistent source switches
 with mean dwell tau_E (Markov) and each step the seeded node is the true source with probability 1 - nu, else a
 random node. Fitness is the time-averaged log-loss of attention on the true source, mean_i -ln A[s_true, i] (lower
-is better): the Kelly regret of section 5 of the note. Mean effective distance from the source is not usable: the
+is better): the Kelly regret. Mean effective distance from the source is not usable: the
 RWED depends on T_sk = A_sk / sum_j A_sj, a share, so uniform attention to the source leaves every distance at
 delta + ln(N - 1) however large that attention is.
 

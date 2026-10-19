@@ -9,26 +9,9 @@ export function slug(text: string): string {
   return text.toLowerCase().replace(/<[^>]+>/g, "").replace(/[^\p{L}\p{N}\s-]/gu, "").trim().replace(/\s+/g, "-");
 }
 
-/** Links in the research docs point at the private research site; map them onto this site's pages. */
-const LINKS: [RegExp, string][] = [
-  [/^\/results\/coordination\/#kl-reward/, "/appendix/e9/"],
-  [/^\/results\/coordination\/#analysis/, "/appendix/analysis/"],
-  [/^\/results\/coordination\/?.*/, "/appendix/e8/"],
-  [/^\/results\/e5\/?/, "/appendix/e5/"],
-  [/^\/results\/e6\/?/, "/appendix/e6/"],
-  [/^\/results\/#e1-.*/, "/appendix/e1/"],
-  [/^\/results\/#e2-.*/, "/appendix/e2/"],
-  [/^\/results\/#e4-.*/, "/appendix/e4/"],
-  [/^\/results\/#bridges.*/, "/appendix/bridges/"],
-  [/^\/results\/?.*/, "/appendix/e8/"],
-  [/^\/errata\/?/, "/appendix/errata/"],
-  [/^\/validation\/?/, "/appendix/validation/"],
-  [/^\/results\/source-structure\/?/, "/appendix/validation/"],
-];
-
+/** Site-absolute links get the base path. */
 function mapLink(href: string): string {
   if (!href.startsWith("/")) return href;
-  for (const [re, to] of LINKS) if (re.test(href)) return `${BASE}${to}`;
   return `${BASE}${href}`;
 }
 
@@ -79,9 +62,7 @@ function math(markdown: string) {
 }
 
 export function render(markdown: string): string {
-  // inline links to the research site that only make sense there ("Interactive version ...") are dropped
-  const cleaned = markdown.replace(/^Interactive version[^\n]*\n(?:[^\n]+\n)*?\n/m, "");
-  const { src, restore } = math(cleaned);
+  const { src, restore } = math(markdown);
   // the research text writes exponents as ^{…}; outside code spans, show them as superscripts
   const html = md.parse(src, { async: false }) as string;
   return restore(html.split(/(<code>[\s\S]*?<\/code>)/).map((part) => (part.startsWith("<code>") ? part

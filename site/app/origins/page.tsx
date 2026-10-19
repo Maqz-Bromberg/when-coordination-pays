@@ -55,7 +55,7 @@ export default function Page() {
             <tr><td>Fluctuating loads keep loops in transport networks.</td>
               <td>True for a flow-based reward; with the attention reward the network locks into some tree. The budget decides
                 robustness and cost.</td><td><Link href="/structure/">8</Link></td></tr>
-            <tr><td>Three regimes: distributed, hierarchy, over-betting (the synthesis note).</td>
+            <tr><td>Three regimes: distributed, hierarchy, over-betting.</td>
               <td>Confirmed, with exact boundaries T = κ and T½.</td><td><Link href="/regimes/">3</Link></td></tr>
           </tbody>
         </table></div>
