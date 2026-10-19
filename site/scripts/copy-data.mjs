@@ -34,7 +34,7 @@ fs.mkdirSync(downloadsDst, { recursive: true });
 try {
   execFileSync("git", ["archive", "--format=zip", "--prefix=when-coordination-pays-python/",
     "--add-file=tools/python-download/README.md", "-o", path.join(downloadsDst, zipName),
-    "HEAD", "py", "hierarchy-coordinates", "environment.yml"], { cwd: path.resolve("..") });
+    "HEAD", "py", "environment.yml"], { cwd: path.resolve("..") });
   console.log(`archived the Python code and tests -> public/downloads/${zipName}`);
 } catch (e) {
   console.warn(`git archive failed, ${zipName} not built: ${e.message}`);

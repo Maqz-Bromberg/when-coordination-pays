@@ -1,5 +1,5 @@
 # Main environment for the nichenet package and experiments.
-#   conda env create -f environment.yml && conda run -n nichenet pip install -e hierarchy-coordinates -e py
+#   conda env create -f environment.yml && conda run -n nichenet pip install -e "py[experiments]"
 name: nichenet
 channels:
   - conda-forge

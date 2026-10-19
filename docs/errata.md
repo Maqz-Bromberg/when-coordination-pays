@@ -24,13 +24,13 @@ Here M is the set of maximal nodes and µ the set of minimal nodes.
 **What the code computes instead:** `np.power` raises each entry to the power k, and its k = 0 term is the all-ones
 matrix (0⁰ = 1). Every pair therefore gets weight ≥ 1, and the entropies reduce to H_b = Σ_{k∉M} ln k_in(k) and
 H_f = Σ_{k∉µ} ln k_out(k). These are plain sums of log-degrees, with no weighting by whether a walk from the boundary
-reaches the node. `hierarchy-coordinates/tests/test_thesis_variant.py` has two four- and six-node examples where this
-doubles H_b.
+reaches the node. `py/tests/test_hierarchy_thesis.py` has two four- and six-node examples where this doubles H_b.
 
 **Note on the paper:** the paper prints the sums from k = 1. Read literally, a single fork a → {b, c} would have
 H_f = 0, and a directed tree would have T = 0, which contradicts the paper's Lemma (T = F = O = 1 for trees with
-equal-length leaves) and its Figs. 12–13. The `hierarchy_coordinates` package includes the k = 0 identity term. The
-Lemma cases are tests in `hierarchy-coordinates/tests/test_coordinates.py`.
+equal-length leaves) and its Figs. 12–13. The [hierarchy-coordinates](https://github.com/Maqz-Bromberg/hierarchy-coordinates) package includes the k = 0 identity term.
+The Lemma cases are tests in its `tests/test_coordinates.py`. nichenet pins its version 0.1.0, the last with the
+thesis variant used here.
 
 ### H2. Hierarchy coordinates: treeness averages over the wrong set of subgraphs
 

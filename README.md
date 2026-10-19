@@ -59,9 +59,8 @@ of this project), and errors found in the original thesis code are written up wi
   appendices.
 - **The paper** (`paper/`): the same results as a LaTeX article, with figures printed from the site. The site serves it
   as `/paper.pdf`.
-- **The code and tests**: the site also offers `py/` and `hierarchy-coordinates/` as one zip
-  (`/downloads/when-coordination-pays-python.zip`, archived from the deployed commit), with instructions for running
-  the tests.
+- **The code and tests**: the site also offers `py/` as a zip (`/downloads/when-coordination-pays-python.zip`,
+  archived from the deployed commit), with instructions for running the tests.
 - **The notes** (`docs/`): [results](docs/results.md), [validation](docs/validation.md) and
   [errata](docs/errata.md).
 
@@ -81,9 +80,9 @@ make serve-public  # serve the public build on localhost:8001
 - `py/` (`nichenet`): every model, bridge, metric and experiment. `ss/model.py` is the numpy reference for the
   source-to-structure model (faithful and clean modes), `ss/jax_kernel.py` the batched GPU path for sweeps, and
   `metrics/` the efficiency coordinates.
-- `hierarchy-coordinates/` (`hierarchy_coordinates`): the hierarchy coordinates of Corominas-Murtra et al. (2013) for
-  weighted graphs, as a standalone package with its own tests. It is due to move to its own repository; nichenet
-  imports it as an external dependency (the `experiments` extra).
+- [hierarchy-coordinates](https://github.com/Maqz-Bromberg/hierarchy-coordinates): the hierarchy coordinates of Corominas-Murtra et al. (2013) for weighted graphs,
+  a separate package with its own tests. nichenet's `experiments` extra installs version 0.1.0, the last with the
+  thesis variant that the errata and validation use.
 - `site/`: the public Next.js site, a static export for GitHub Pages (`BASE_PATH` sets the repository path at build
   time). Hover cards, the figure lightbox and the scroll bar are adapted from remystifying-science (provenance lines at
   the top of each file).
