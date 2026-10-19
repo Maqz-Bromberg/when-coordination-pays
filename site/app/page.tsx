@@ -41,13 +41,14 @@ export default function Home() {
             <span><i style={{ border: "2px dashed var(--ob)" }} />false alarm</span>
             <span>live, simplified run of the model</span>
           </div>
+          <p className="vibe-banner"><span aria-hidden>✨</span> <b>Vibescribed</b> <span aria-hidden>✨</span> Paper prose and code written with Claude Opus 5.5.</p>
         </div>
       </div>
 
       <div className="chapter">
         <section className="sec" id="findings" style={{ borderTop: 0 }}>
           <div className="sec-num">KEY FINDINGS</div>
-          <h2>Six results in one screen</h2>
+          <h2>Six results summarized</h2>
           <div className="findings">
             {FINDINGS.map((f) => (
               <Link key={f.title} href={href(f.to)} className="finding" style={{ "--c": f.c } as React.CSSProperties}>
