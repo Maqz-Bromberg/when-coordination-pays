@@ -59,6 +59,9 @@ of this project), and errors found in the original thesis code are written up wi
   appendices.
 - **The paper** (`paper/`): the same results as a LaTeX article, with figures printed from the site. The site serves it
   as `/paper.pdf`.
+- **The code and tests**: the site also offers `py/` and `hierarchy-coordinates/` as one zip
+  (`/downloads/when-coordination-pays-python.zip`, archived from the deployed commit), with instructions for running
+  the tests.
 - **The notes** (`docs/`): [results](docs/results.md), [validation](docs/validation.md) and
   [errata](docs/errata.md).
 

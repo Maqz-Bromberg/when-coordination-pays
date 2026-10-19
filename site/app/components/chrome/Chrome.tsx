@@ -1,10 +1,10 @@
 "use client";
 
-import { FileText, Menu, X } from "lucide-react";
+import { Download, FileText, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { withBase } from "../../lib/base";
+import { PYTHON_ZIP, withBase } from "../../lib/base";
 import { APPENDIX, CHAPTERS, chapterIndex, href } from "../../lib/chapters";
 import { isEnlargedOpen } from "../figure/lightbox-store";
 import { isAnyMaximized } from "../figure/maximize";
@@ -34,6 +34,7 @@ function RailLinks({ path, onNavigate }: { path: string; onNavigate?: () => void
         ))}
       </ul>
       <a className="rail-paper" href={withBase("/paper.pdf")}><FileText size={14} /> The full paper (PDF)</a>
+      <a className="rail-paper" href={withBase(PYTHON_ZIP)} download><Download size={14} /> Python code and tests (zip)</a>
     </>
   );
 }

@@ -4,5 +4,7 @@ result: The reimplementation equals the original source-to-structure code step f
 implication: Every result on this site rests on a verified implementation of each of the three models it joins.
 chapter: /experiments/#checks
 chapterLabel: Chapter 10 · How the experiments ran
+download: /downloads/when-coordination-pays-python.zip
+downloadLabel: Download the Python code and these tests (zip)
 ---
 <!-- include: validation.md -->

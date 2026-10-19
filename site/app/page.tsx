@@ -3,7 +3,7 @@ import Pager from "./components/chrome/Pager";
 import HeroNetwork from "./components/HeroNetwork";
 import Cite from "./components/ui/Cite";
 import T from "./components/ui/T";
-import { withBase } from "./lib/base";
+import { PYTHON_ZIP, withBase } from "./lib/base";
 import { CHAPTERS, href } from "./lib/chapters";
 
 const FINDINGS: { c: string; title: string; body: string; to: string }[] = [
@@ -73,9 +73,11 @@ export default function Home() {
             <p>
               Terms with a dotted underline, like <T k="kappa">self-reinforcement κ</T> or{" "}
               <T k="T">commitment T</T>, open a definition on hover or tap. Every figure can be enlarged. Use ← and → to
-              move between chapters. The whole study is also written up as one paper.
+              move between chapters. The whole study is also written up as one paper, and the code and its tests can
+              be downloaded to check the results.
             </p>
             <p><a href={withBase("/paper.pdf")}>Read the paper (PDF) →</a></p>
+            <p><a href={withBase(PYTHON_ZIP)} download>Download the Python code and tests (zip) ↓</a></p>
           </div>
         </section>
 

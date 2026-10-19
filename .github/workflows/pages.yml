@@ -6,7 +6,9 @@ name: Site and paper
 on:
   push:
     branches: [main]
-    paths: ["site/**", "paper/**", "data/site/**", "docs/**", "references.bib", ".github/workflows/pages.yml"]
+    # py/, hierarchy-coordinates/ and tools/python-download/ are bundled into the site as the Python download
+    paths: ["site/**", "paper/**", "data/site/**", "docs/**", "references.bib", ".github/workflows/pages.yml",
+            "py/**", "hierarchy-coordinates/**", "environment.yml", "tools/python-download/**"]
   workflow_dispatch:
 
 permissions:

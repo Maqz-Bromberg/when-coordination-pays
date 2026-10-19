@@ -1,8 +1,10 @@
 // Copy files that pages fetch or link at runtime into public/, so they ship as static files:
 //  - the per-schedule E5 evolution snapshots for the regime-map slider;
 //  - the hosted papers: every references.bib entry with a `file` field, as public/papers/<key>.pdf. Only openly
-//    licensed papers and the author's own work carry a `file` field; preprints get an `eprint` (arXiv link) instead.
+//    licensed papers and the author's own work carry a `file` field; preprints get an `eprint` (arXiv link) instead;
+//  - the Python code and tests as public/downloads/when-coordination-pays-python.zip, archived from the last commit.
 // Runs before `next build` / `next dev`.
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -25,3 +27,15 @@ for (const m of bib.matchAll(/@\w+\{([^,\s]+),([\s\S]*?)(?=\n@|$)/g)) {
   hosted++;
 }
 console.log(`copied ${hosted} hosted papers -> public/papers`);
+
+const zipName = "when-coordination-pays-python.zip";
+const downloadsDst = path.resolve("public/downloads");
+fs.mkdirSync(downloadsDst, { recursive: true });
+try {
+  execFileSync("git", ["archive", "--format=zip", "--prefix=when-coordination-pays-python/",
+    "--add-file=tools/python-download/README.md", "-o", path.join(downloadsDst, zipName),
+    "HEAD", "py", "hierarchy-coordinates", "environment.yml"], { cwd: path.resolve("..") });
+  console.log(`archived the Python code and tests -> public/downloads/${zipName}`);
+} catch (e) {
+  console.warn(`git archive failed, ${zipName} not built: ${e.message}`);
+}

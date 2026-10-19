@@ -1,13 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 import Link from "next/link";
+import { withBase } from "../../lib/base";
 import { APPENDIX } from "../../lib/chapters";
 import StepsToggle from "../../components/ui/StepsToggle";
 import { render, renderInline, whole } from "../../lib/docs";
 
 /** Appendix pages from content/appendix/<slug>.md: the headline result and what it implies, then the research detail
- *  folded. Front matter: title, result, implication, chapter, chapterLabel. In the body, `<!-- include: file.md -->`
- *  pulls in a document from docs/, and `<!-- fold: Title -->` starts a new folded section (default: one fold).
+ *  folded. Front matter: title, result, implication, chapter, chapterLabel, and optionally download (a path under
+ *  public/) with downloadLabel. In the body, `<!-- include: file.md -->` pulls in a document from docs/, and
+ *  `<!-- fold: Title -->` starts a new folded section (default: one fold).
  *  Inside a fold, `<!-- step: Title -->` starts a numbered step of a derivation, each folded on its own with its title
  *  as the one-line claim, and `<!-- /steps -->` ends the steps (what follows is shown after them). */
 const DIR = path.join(process.cwd(), "content", "appendix");
@@ -58,6 +60,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         <p className="ap-result">{meta.result}</p>
         <p className="ap-implication"><b>What it means.</b> {meta.implication}</p>
         {meta.chapter && <p className="ap-chapter"><Link href={meta.chapter}>{meta.chapterLabel ?? "Read the chapter"} →</Link></p>}
+        {meta.download && <p className="ap-chapter"><a href={withBase(meta.download)} download>{meta.downloadLabel ?? "Download"} ↓</a></p>}
       </section>
       {folds.map((f) => {
         const { before, list, after } = steps(f.md);
