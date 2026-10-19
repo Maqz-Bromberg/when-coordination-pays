@@ -1,6 +1,6 @@
 /** A graphic introduction to hierarchy coordinates (Corominas-Murtra et al. 2013): six toy networks and where they sit
  *  in the (T, F, O) cube, next to the point a weighted hub reaches in this model. The toy coordinates were computed
- *  with nichenet.metrics.hierarchy (variant "corominas", unweighted). Static SVG, styled by theme tokens. */
+ *  with the hierarchy_coordinates package (variant "corominas", unweighted). Static SVG, styled by theme tokens. */
 
 type Pt = [number, number];
 type Toy = { title: string; values: string; nodes: Pt[]; edges: [number, number][]; loop?: [number, number][] };

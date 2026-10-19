@@ -13,7 +13,8 @@ dependencies = ["numpy>=1.23", "scipy>=1.10", "networkx>=2.8"]
 
 [project.optional-dependencies]
 fast = ["jax>=0.4.30", "numba>=0.60"]
-experiments = ["pandas>=2.2", "pyarrow>=16", "pydantic>=2.7", "pyyaml", "joblib"]
+# hierarchy-coordinates is its own package (hierarchy-coordinates/ until it moves to its own repository)
+experiments = ["hierarchy-coordinates", "pandas>=2.2", "pyarrow>=16", "pydantic>=2.7", "pyyaml", "joblib"]
 dev = ["pytest", "pytest-xdist", "hypothesis", "ruff"]
 
 [tool.setuptools.packages.find]

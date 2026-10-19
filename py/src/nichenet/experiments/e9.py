@@ -22,11 +22,11 @@ from pathlib import Path
 
 import networkx as nx
 import numpy as np
+from hierarchy_coordinates import hierarchy_coordinates
 from joblib import Parallel, delayed
 
 from nichenet import compare
 from nichenet.core import graphs
-from nichenet.metrics.hierarchy import hierarchy_coordinates
 from nichenet.ss import jax_kernel, schedules
 
 OUT = Path(__file__).resolve().parents[3].parent / "data" / "site" / "e9.json"

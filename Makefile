@@ -6,14 +6,15 @@ export XLA_PYTHON_CLIENT_PREALLOCATE = false
 
 .PHONY: envs test test-slow test-legacy test-pyodide golden bench errata v-nl1 wheel site serve public figures tables paper release serve-public
 
-envs:            ## create the three conda envs and install nichenet in editable mode
+envs:            ## create the three conda envs and install hierarchy-coordinates and nichenet in editable mode
 	conda env create -f environment.yml
 	conda env create -f tools/legacy_oracle/environment.yml
 	conda env create -f tools/lee_oracle/environment.yml
-	$(RUN) pip install -e py
+	$(RUN) pip install -e hierarchy-coordinates -e py
 
-test:            ## nichenet tests (golden traces, metrics, JAX kernel)
+test:            ## nichenet tests (golden traces, metrics, JAX kernel) and hierarchy-coordinates tests
 	cd py && $(RUN) pytest -q -n 8
+	cd hierarchy-coordinates && $(RUN) pytest -q
 
 test-slow:       ## include slow statistical tests (e.g. tau_m* ~ tau_E^1/2)
 	cd py && $(RUN) pytest -q -n 8 -m 'slow or not slow'

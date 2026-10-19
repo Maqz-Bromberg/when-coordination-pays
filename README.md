@@ -77,7 +77,10 @@ make serve-public  # serve the public build on localhost:8001
 
 - `py/` (`nichenet`): every model, bridge, metric and experiment. `ss/model.py` is the numpy reference for the
   source-to-structure model (faithful and clean modes), `ss/jax_kernel.py` the batched GPU path for sweeps, and
-  `metrics/` the hierarchy and efficiency coordinates.
+  `metrics/` the efficiency coordinates.
+- `hierarchy-coordinates/` (`hierarchy_coordinates`): the hierarchy coordinates of Corominas-Murtra et al. (2013) for
+  weighted graphs, as a standalone package with its own tests. It is due to move to its own repository; nichenet
+  imports it as an external dependency (the `experiments` extra).
 - `site/`: the public Next.js site, a static export for GitHub Pages (`BASE_PATH` sets the repository path at build
   time). Hover cards, the figure lightbox and the scroll bar are adapted from remystifying-science (provenance lines at
   the top of each file).

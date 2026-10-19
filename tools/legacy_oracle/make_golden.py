@@ -2,7 +2,7 @@
 
 Run in the legacy env:
     conda run -n nvd-legacy python tools/legacy_oracle/make_golden.py
-Writes py/tests/golden/ss_traces.npz, hierarchy.npz and efficiency.npz.
+Writes py/tests/golden/ss_traces.npz and efficiency.npz, and hierarchy-coordinates/tests/golden/thesis_code.npz.
 
 Seeding is replaced by an explicit source list (the thesis code's random seeding is unseeded and its
 constant_source_node=0 means "random"), so both implementations see identical sources.
@@ -128,7 +128,7 @@ def hierarchy():
         data[f"A_{name}"] = A
         data[f"lin_{name}"] = np.array(hc.average_hierarchy_coordinates(A, exp_threshold_distribution=None))
         data[f"exp_{name}"] = np.array(hc.average_hierarchy_coordinates(A, exp_threshold_distribution=0.5))
-    np.savez_compressed(OUT / "hierarchy.npz", **data)
+    np.savez_compressed(REPO_ROOT / "hierarchy-coordinates" / "tests" / "golden" / "thesis_code.npz", **data)
     print(f"hierarchy: {len(data) // 3} matrices (order: orderability, feedforwardness, treeness)")
 
 

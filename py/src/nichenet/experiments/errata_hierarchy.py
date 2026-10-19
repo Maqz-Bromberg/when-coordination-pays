@@ -13,10 +13,10 @@ import time
 from pathlib import Path
 
 import numpy as np
+from hierarchy_coordinates import hierarchy_coordinates
 from joblib import Parallel, delayed
 
 from nichenet.core import graphs
-from nichenet.metrics.hierarchy import hierarchy_coordinates
 from nichenet.ss import SSParams, run, schedules
 
 N, STEPS = 30, 150

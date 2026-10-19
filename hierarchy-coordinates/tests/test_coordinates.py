@@ -1,10 +1,10 @@
-"""Corominas-Murtra et al. (2013) hierarchy coordinates on graphs with known values."""
+"""Hierarchy coordinates (Corominas-Murtra et al. 2013) on graphs with known values."""
 
 import networkx as nx
 import numpy as np
 import pytest
 
-from nichenet.metrics.hierarchy import graph_entropy, hierarchy_coordinates
+from hierarchy_coordinates import graph_entropy, hierarchy_coordinates
 
 
 def balanced_tree(branching, height):
@@ -45,7 +45,7 @@ def test_fork_entropies():
 def test_matrix_powers_weight_entropy_by_reach():
     """Diamond with a tail: 0 -> {1, 2} -> 3 -> 4. Reversing from 4 crosses node 3 (two parents) with
     probability 1, so H_b = ln 2; following the flow, the only choice is at 0, so H_f = ln 2.
-    Graphs where reach weighting matters are in test_errata.py."""
+    Graphs where reach weighting matters are in test_thesis_variant.py."""
     G = nx.DiGraph([(0, 1), (0, 2), (1, 3), (2, 3), (3, 4)])
     assert graph_entropy(G, forward=False) == pytest.approx(np.log(2))
     assert graph_entropy(G, forward=True) == pytest.approx(np.log(2))

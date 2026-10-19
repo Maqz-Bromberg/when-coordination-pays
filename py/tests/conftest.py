@@ -15,10 +15,5 @@ def ss_golden():
 
 
 @pytest.fixture(scope="session")
-def hierarchy_golden():
-    return np.load(GOLDEN / "hierarchy.npz")
-
-
-@pytest.fixture(scope="session")
 def efficiency_golden():
     return np.load(GOLDEN / "efficiency.npz")

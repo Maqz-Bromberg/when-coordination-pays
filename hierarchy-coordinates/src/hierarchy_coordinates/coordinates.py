@@ -6,8 +6,8 @@ thesis: threshold the weights into binary graphs, condense each to a node-weight
 connected component, compute (T, F, O) and average over thresholds.
 
 ``variant="corominas"`` (default) uses the paper's definitions. ``variant="thesis"`` reproduces
-``reference/Networks_Via_Diffusion/hierarchy_coordinates.py``, which differs in two ways recorded as errors in
-docs/errata.md:
+``hierarchy_coordinates.py`` in the thesis code (github.com/MaxBromberg/Networks_Via_Diffusion, commit 6eeb396),
+which differs in two ways (see the README):
 
 1. Path probabilities use element-wise powers ``np.power(B, k)`` for k = 0 .. n-1 instead of matrix powers B^k.
    Because 0**0 = 1 the k = 0 term is the all-ones matrix, so every pair gets probability >= 1 and the entropies

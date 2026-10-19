@@ -1,10 +1,10 @@
-"""nichenet faithful mode and metric ports against traces recorded from the 2020 thesis code
+"""nichenet faithful mode and the efficiency port against traces recorded from the 2020 thesis code
 (tools/legacy_oracle/make_golden.py)."""
 
 import numpy as np
 import pytest
 
-from nichenet.metrics import efficiency, hierarchy
+from nichenet.metrics import efficiency
 from nichenet.ss import SSParams, run
 
 N_CASES = 28
@@ -35,16 +35,6 @@ def test_ss_faithful_distances_match(ss_golden, case):
 
 def _names(golden):
     return sorted(k[2:] for k in golden.files if k.startswith("A_"))
-
-
-def test_hierarchy_thesis_variant_matches_thesis_code(hierarchy_golden):
-    for name in _names(hierarchy_golden):
-        A = hierarchy_golden[f"A_{name}"]
-        for key, exp in (("lin", None), ("exp", 0.5)):
-            o, f, t = hierarchy_golden[f"{key}_{name}"]  # thesis order: orderability, feedforwardness, treeness
-            got = hierarchy.hierarchy_coordinates(A, exp_threshold_distribution=exp, variant="thesis")
-            np.testing.assert_allclose([got.orderability, got.feedforwardness, got.treeness], [o, f, t],
-                                       rtol=1e-9, atol=1e-12, err_msg=f"{name} ({key} thresholds)")
 
 
 def test_efficiency_matches_thesis_code(efficiency_golden):

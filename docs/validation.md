@@ -5,8 +5,9 @@ Checks that must pass before experiments are reported. Each line names its test 
 | ID | Check | Status | Where |
 |----|-------|--------|-------|
 | V-SS0 | Faithful SS mode equals the thesis code step for step: 28 cases (κ, φ grid, sparse, uncoupled, all 8 directionality binaries, undirected, update interval, δ, ρ), matrices after every update and effective distances, rtol 1e-9 | pass | `py/tests/test_golden_reference.py` |
-| — | Hierarchy coordinates (thesis variant) and efficiency coordinates equal the thesis code on 10 and 5 matrices | pass | same |
-| — | Corominas-Murtra hierarchy coordinates: trees and stars give (1, 1, 1), inverted tree T = −1, cycle O = 0 | pass | `py/tests/test_hierarchy.py` |
+| — | Efficiency coordinates equal the thesis code on 5 matrices | pass | same |
+| — | Hierarchy coordinates (thesis variant) equal the thesis code on 10 matrices | pass | `hierarchy-coordinates/tests/test_thesis_variant.py` |
+| — | Corominas-Murtra hierarchy coordinates: trees and stars give (1, 1, 1), inverted tree T = −1, cycle O = 0 | pass | `hierarchy-coordinates/tests/test_coordinates.py` |
 | B1 | Reward step is w ← (w + ε r)/(1 + ε); thesis code has ε = 1 | pass | `test_ss_model.py`, `tools/legacy_oracle` |
 | B5 | φ = 0, constant source: source attention ρ/(ρ + N − 2), contraction (1+κ)/2, in faithful and clean modes | pass | same |
 | B2 | The SS step W' = (W + εR)/(1+ε) is exactly a forward-Euler step of the logit flow dW/dt = R(W) − W with step ε/(1+ε) | pass (identity) | `test_continuum.py` |
