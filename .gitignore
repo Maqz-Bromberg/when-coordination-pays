@@ -54,3 +54,7 @@ site/public/paper.pdf
 .figserver.pid
 site/public/data/
 site/public/papers/
+
+# bits and bobs
+permission-email.md
+claude-questions.md
