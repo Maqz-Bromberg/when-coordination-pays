@@ -1,4 +1,4 @@
-"""Checks of how the reference thesis code behaves, backing the claims in PLAN.md §0 and §2.3/§2.5.
+"""Checks of how the reference thesis code behaves, backing docs/errata.md and the B5 reduction in docs/results.md.
 
 Run with:  conda run -n nvd-legacy pytest -q tools/legacy_oracle
 """
@@ -90,7 +90,7 @@ def test_rwed_large_delta_expansion():
 @pytest.mark.parametrize("n_nodes", [20, 60])
 @pytest.mark.parametrize("kappa", [0.2, 0.5, 0.8])
 def test_proportional_reward_fixed_point_and_memory(n_nodes, kappa):
-    """Large-delta reduction (PLAN.md B5): with phi = 0 and a constant source, attention on the source edge
+    """Large-delta reduction (B5, docs/results.md): with phi = 0 and a constant source, attention on the source edge
     converges to rho/(rho + N - 2) for every kappa, at a linear rate close to (1 + kappa)/2."""
     np.random.seed(1)
     G = graph.Graph(n_nodes, edge_conservation_coefficient=kappa, selectivity=0.0)

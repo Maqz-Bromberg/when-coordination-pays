@@ -1,4 +1,4 @@
-"""B5: closed forms of the SS map at large delta in the symmetric state (PLAN.md §2.5).
+"""B5: closed forms of the SS map at large delta in the symmetric state.
 
 At delta >> 1 the RWED is D_k = delta - ln T_sk with T_sk = A_sk / sum_j A_sj. Take a constant source and the
 symmetric state in which every node puts weight x on the source and (1 - x)/(N - 2) on each peer. Then T_sk is uniform

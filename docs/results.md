@@ -40,7 +40,7 @@ Tests: `py/tests/test_continuum.py`, `py/tests/test_large_delta.py`.
 
 ## E6: what keeps loops, the budget or the reward?
 
-**Question (note §6.4, PLAN.md §3):** the source-to-structure model and adaptive transport networks both reinforce
+**Question (note §6.4):** the source-to-structure model and adaptive transport networks both reinforce
 edges by use. Which ingredient decides tree versus loops?
 
 **Design:** a 2 × 2 factorial (`nichenet/compare.py`). Every cell runs W ← (1 − η)W + η·N[U^p] on the same 7 × 7

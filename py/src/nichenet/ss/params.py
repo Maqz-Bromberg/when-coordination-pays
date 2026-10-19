@@ -2,7 +2,7 @@
 
 ``SSParams.faithful`` reproduces ``reference/Networks_Via_Diffusion/graph.py`` step for step, including its
 implementation quirks. ``SSParams.clean`` fixes each quirk; every fix is a separate field so any one can be
-switched back on. See PLAN.md §2.3 for the quirk table.
+switched back on. See docs/errata.md (Q1-Q7) for the quirk table.
 """
 
 from dataclasses import dataclass, replace
@@ -57,5 +57,5 @@ class SSParams:
 
     @property
     def beta_eff(self):
-        """Linearized memory near the symmetric fixed point (PLAN.md B5): (1 + kappa) / 2 for epsilon = 1."""
+        """Linearized memory near the symmetric fixed point (B5): (1 + kappa) / 2 for epsilon = 1."""
         return (1.0 + self.kappa * self.epsilon) / (1.0 + self.epsilon)

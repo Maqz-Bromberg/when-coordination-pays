@@ -73,7 +73,7 @@ Mean treeness by selectivity, linear thresholds:
 ## Implementation behaviours of the SS model
 
 These are not errors against a published definition, but they change results. nichenet's faithful mode keeps them
-and clean mode fixes them (`SSParams.clean`; PLAN.md §2.3).
+and clean mode fixes them (`SSParams.clean`).
 
 | ID | Behaviour | Effect | Test |
 |----|-----------|--------|------|

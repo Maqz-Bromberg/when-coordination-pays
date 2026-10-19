@@ -1,4 +1,4 @@
-"""Properties of the SS model claimed in PLAN.md (B1, B5, quirks) checked on nichenet itself."""
+"""Properties of the SS model in docs/results.md and docs/errata.md (B1, B5, quirks), checked on nichenet itself."""
 
 import numpy as np
 import pytest

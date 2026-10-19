@@ -1,6 +1,6 @@
 # Validation status
 
-Checks that must pass before experiments are reported (PLAN.md §3). Each line names its test or script.
+Checks that must pass before experiments are reported. Each line names its test or script.
 
 | ID | Check | Status | Where |
 |----|-------|--------|-------|
