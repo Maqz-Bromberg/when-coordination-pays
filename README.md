@@ -1,6 +1,8 @@
 # When coordination pays
 
-![When coordination pays: a network of agents organized around the current source](docs/hero.png)
+[![When coordination pays: a network of agents organized around the current source](docs/hero.png)](https://maqz-bromberg.github.io/when-coordination-pays/)
+
+**[Read the site](https://maqz-bromberg.github.io/when-coordination-pays/)** · **[Paper (PDF)](https://maqz-bromberg.github.io/when-coordination-pays/paper.pdf)** · **[Python code and tests (zip)](https://maqz-bromberg.github.io/when-coordination-pays/downloads/when-coordination-pays-python.zip)**
 
 **Attention networks under a moving, noisy source: regimes, costs, mechanisms and implications.**
 
@@ -55,12 +57,11 @@ of this project), and errors found in the original thesis code are written up wi
 
 ## Read it
 
-- **The site** (`site/`): a chaptered, interactive version with live runs of the model, glossary hover cards and the
+- **[The site](https://maqz-bromberg.github.io/when-coordination-pays/)** (`site/`): a chaptered, interactive version with live runs of the model, glossary hover cards and the
   appendices.
-- **The paper** (`paper/`): the same results as a LaTeX article, with figures printed from the site. The site serves it
-  as `/paper.pdf`.
-- **The code and tests**: the site also offers `py/` as a zip (`/downloads/when-coordination-pays-python.zip`,
-  archived from the deployed commit), with instructions for running the tests.
+- **[The paper](https://maqz-bromberg.github.io/when-coordination-pays/paper.pdf)** (`paper/`): the same results as a LaTeX article, with figures printed from the site.
+- **[The code and tests](https://maqz-bromberg.github.io/when-coordination-pays/downloads/when-coordination-pays-python.zip)**: `py/` as a zip, archived from the
+  deployed commit, with instructions for running the tests.
 - **The notes** (`docs/`): [results](docs/results.md), [validation](docs/validation.md) and
   [errata](docs/errata.md).
 
